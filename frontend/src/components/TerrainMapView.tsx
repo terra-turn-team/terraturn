@@ -12,7 +12,7 @@ export function TerrainMapView({farm,mode}:{farm:Farm;mode:Exclude<ViewMode,'3d'
  const [error,setError]=useState('')
  useEffect(()=>{
   if(!container.current)return
-  const m=new maplibregl.Map({container:container.current,style:BASE,center:[farm.centroid[0],farm.centroid[1]],zoom:13.8,pitch:0,bearing:0,maxPitch:65,canvasContextAttributes:{antialias:true},attributionControl:{}})
+  const m=new maplibregl.Map({container:container.current,style:BASE,center:[farm.centroid[0],farm.centroid[1]],zoom:13.8,pitch:0,bearing:0,maxPitch:65,dragPan:true,dragRotate:true,scrollZoom:true,pitchWithRotate:true,touchZoomRotate:true,canvasContextAttributes:{antialias:true},attributionControl:{}})
   mapRef.current=m
   m.addControl(new maplibregl.NavigationControl({showCompass:true}),'bottom-right')
   m.once('load',()=>{
@@ -26,7 +26,7 @@ export function TerrainMapView({farm,mode}:{farm:Farm;mode:Exclude<ViewMode,'3d'
      m.setLayoutProperty('hillshade','visibility','none')
    }catch{setError('Camada de elevação indisponível.')}
    m.addSource('satellite-source',{type:'raster',tiles:[SATELLITE],tileSize:256,maxzoom:import.meta.env.VITE_SATELLITE_TILES?18:8,attribution:import.meta.env.VITE_SATELLITE_TILES?'Imagem: provedor configurado':'NASA GIBS / Earthdata · Blue Marble'})
-   m.addLayer({id:'satellite-raster',type:'raster',source:'satellite-source',layout:{visibility:'none'},paint:{'raster-opacity':.95}},'parcel-fill')
+   m.addLayer({id:'satellite-raster',type:'raster',source:'satellite-source',layout:{visibility:'none'},paint:{'raster-opacity':.95}},m.getLayer('hillshade')?'hillshade':'parcel-fill')
    const pts=farm.geometry.coordinates[0]
    const west=Math.min(...pts.map(p=>p[0])),east=Math.max(...pts.map(p=>p[0])),south=Math.min(...pts.map(p=>p[1])),north=Math.max(...pts.map(p=>p[1]))
    m.fitBounds([[west,south],[east,north]],{padding:80,maxZoom:16,duration:0})
@@ -37,7 +37,7 @@ export function TerrainMapView({farm,mode}:{farm:Farm;mode:Exclude<ViewMode,'3d'
   const m=mapRef.current
   if(!m)return
   const apply=()=>{
-   const relief=mode==='relief'||mode==='hybrid',satellite=mode==='satellite'
+   const relief=mode==='relief'||mode==='hybrid',satellite=mode==='satellite'||mode==='hybrid'
    if(m.getLayer('hillshade'))m.setLayoutProperty('hillshade','visibility',relief?'visible':'none')
    if(m.getLayer('satellite-raster'))m.setLayoutProperty('satellite-raster','visibility',satellite?'visible':'none')
    try{m.setTerrain(relief&&m.getSource('dem')?{source:'dem',exaggeration:1}:null)}catch{setError('Não foi possível carregar o relevo.')}
@@ -45,5 +45,5 @@ export function TerrainMapView({farm,mode}:{farm:Farm;mode:Exclude<ViewMode,'3d'
   }
   if(m.isStyleLoaded())apply();else m.once('load',apply)
  },[mode,farm.id,farm.updated_at])
- return <div className="terrain-map-holder"><div ref={container} className="terrain-map-canvas"/>{mode==='satellite'&&!import.meta.env.VITE_SATELLITE_TILES&&<div className="map-data-note">NASA Blue Marble · imagem regional de baixa resolução. Para imagens detalhadas configure VITE_SATELLITE_TILES.</div>}{error&&<div className="map-data-note map-data-error">{error}</div>}</div>
+ return <div className="terrain-map-holder"><div ref={container} className="terrain-map-canvas"/><div className="map-navigation-note">Arraste para mover · Botão direito para girar · Role para aproximar</div>{mode==='satellite'&&!import.meta.env.VITE_SATELLITE_TILES&&<div className="map-data-note">NASA Blue Marble · imagem regional de baixa resolução. Para imagens detalhadas configure VITE_SATELLITE_TILES.</div>}{error&&<div className="map-data-note map-data-error">{error}</div>}</div>
 }
