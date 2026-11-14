@@ -1,0 +1,778 @@
+{
+  "meta": {
+    "property_id": "uberaba-mg-seu-joao-001",
+    "centroid": {
+      "lat": -19.7472,
+      "lon": -47.9381
+    },
+    "generated_at": "2026-11-14T12:00:00-03:00",
+    "model": "claude-opus-5-5",
+    "scenario": "baseline",
+    "farmer_name": "Seu João",
+    "municipality": "Uberaba, MG, Brazil",
+    "priorities": [
+      "water",
+      "soil"
+    ]
+  },
+  "climate": {
+    "rain_onset": {
+      "mean": "18/10",
+      "variation_days": 14,
+      "trend_days": 11,
+      "trend_signal": "strong"
+    },
+    "rain_end": {
+      "mean": "02/04",
+      "variation_days": 12,
+      "trend_days": -9,
+      "trend_signal": "moderate"
+    },
+    "dry_spells_nov_mar": {
+      "per_season_mean": 2.4,
+      "seasons_with_dry_spell_pct": 80,
+      "trend": "increasing",
+      "trend_signal": "moderate"
+    },
+    "key_trends": [
+      {
+        "label": "Rain Sep–Nov",
+        "recent": 87.3,
+        "previous": 116.1,
+        "difference": -28.8,
+        "unit": "mm/month",
+        "signal": "strong"
+      },
+      {
+        "label": "Mean temperature Sep–Oct",
+        "recent": 25.1,
+        "previous": 24.2,
+        "difference": 0.9,
+        "unit": "°C",
+        "signal": "moderate"
+      },
+      {
+        "label": "Soil moisture Feb–May",
+        "recent": 28.4,
+        "previous": 31.9,
+        "difference": -3.5,
+        "unit": "%",
+        "signal": "moderate"
+      },
+      {
+        "label": "Growing window length",
+        "recent": 166,
+        "previous": 186,
+        "difference": -20,
+        "unit": "days",
+        "signal": "strong"
+      }
+    ],
+    "anomalous_months": [
+      {
+        "month": "2023-02",
+        "reasons": [
+          "Rain 69% below the February average",
+          "Dry spell of 17 days during soybean grain filling"
+        ]
+      },
+      {
+        "month": "2024-09",
+        "reasons": [
+          "Mean temperature 3.2 °C above the September average"
+        ]
+      },
+      {
+        "month": "2024-10",
+        "reasons": [
+          "Rain 68% below the October average",
+          "Rain onset delayed to 09/11"
+        ]
+      }
+    ],
+    "headline": "Your growing window shrank about 3 weeks in the last 5 years: rain starts later and ends earlier."
+  },
+  "soil_cover": {
+    "is_cropland": true,
+    "bare_soil_months": [
+      7,
+      8,
+      9,
+      10
+    ],
+    "bare_soil_days_per_year": 105,
+    "double_crop_seasons_pct": 80,
+    "erosion_risk_months": [
+      10,
+      11
+    ],
+    "erosion_events_per_year": 1.6
+  },
+  "timeline": [
+    {
+      "month": "2021-01",
+      "rain_mm": 278.7,
+      "temp_mean_c": 23.7,
+      "soil_moisture_pct": 36.7,
+      "ndvi": 0.75,
+      "bare_soil": false
+    },
+    {
+      "month": "2021-02",
+      "rain_mm": 221.0,
+      "temp_mean_c": 24.9,
+      "soil_moisture_pct": 39.4,
+      "ndvi": 0.51,
+      "bare_soil": false
+    },
+    {
+      "month": "2021-03",
+      "rain_mm": 163.1,
+      "temp_mean_c": 23.6,
+      "soil_moisture_pct": 33.3,
+      "ndvi": 0.62,
+      "bare_soil": false
+    },
+    {
+      "month": "2021-04",
+      "rain_mm": 53.6,
+      "temp_mean_c": 22.8,
+      "soil_moisture_pct": 29.9,
+      "ndvi": 0.74,
+      "bare_soil": false
+    },
+    {
+      "month": "2021-05",
+      "rain_mm": 28.7,
+      "temp_mean_c": 21.4,
+      "soil_moisture_pct": 24.9,
+      "ndvi": 0.65,
+      "bare_soil": false
+    },
+    {
+      "month": "2021-06",
+      "rain_mm": 13.7,
+      "temp_mean_c": 20.2,
+      "soil_moisture_pct": 18.0,
+      "ndvi": 0.45,
+      "bare_soil": false
+    },
+    {
+      "month": "2021-07",
+      "rain_mm": 9.8,
+      "temp_mean_c": 19.8,
+      "soil_moisture_pct": 13.6,
+      "ndvi": 0.26,
+      "bare_soil": true
+    },
+    {
+      "month": "2021-08",
+      "rain_mm": 16.3,
+      "temp_mean_c": 22.1,
+      "soil_moisture_pct": 15.8,
+      "ndvi": 0.28,
+      "bare_soil": true
+    },
+    {
+      "month": "2021-09",
+      "rain_mm": 44.8,
+      "temp_mean_c": 24.6,
+      "soil_moisture_pct": 15.3,
+      "ndvi": 0.26,
+      "bare_soil": true
+    },
+    {
+      "month": "2021-10",
+      "rain_mm": 138.7,
+      "temp_mean_c": 24.9,
+      "soil_moisture_pct": 26.2,
+      "ndvi": 0.33,
+      "bare_soil": true
+    },
+    {
+      "month": "2021-11",
+      "rain_mm": 212.1,
+      "temp_mean_c": 23.5,
+      "soil_moisture_pct": 30.4,
+      "ndvi": 0.56,
+      "bare_soil": false
+    },
+    {
+      "month": "2021-12",
+      "rain_mm": 208.3,
+      "temp_mean_c": 23.6,
+      "soil_moisture_pct": 34.6,
+      "ndvi": 0.79,
+      "bare_soil": false
+    },
+    {
+      "month": "2022-01",
+      "rain_mm": 278.2,
+      "temp_mean_c": 24.3,
+      "soil_moisture_pct": 37.2,
+      "ndvi": 0.75,
+      "bare_soil": false
+    },
+    {
+      "month": "2022-02",
+      "rain_mm": 169.4,
+      "temp_mean_c": 25.4,
+      "soil_moisture_pct": 37.9,
+      "ndvi": 0.56,
+      "bare_soil": false
+    },
+    {
+      "month": "2022-03",
+      "rain_mm": 139.0,
+      "temp_mean_c": 24.7,
+      "soil_moisture_pct": 33.0,
+      "ndvi": 0.61,
+      "bare_soil": false
+    },
+    {
+      "month": "2022-04",
+      "rain_mm": 93.3,
+      "temp_mean_c": 23.5,
+      "soil_moisture_pct": 29.3,
+      "ndvi": 0.76,
+      "bare_soil": false
+    },
+    {
+      "month": "2022-05",
+      "rain_mm": 40.7,
+      "temp_mean_c": 21.8,
+      "soil_moisture_pct": 21.4,
+      "ndvi": 0.65,
+      "bare_soil": false
+    },
+    {
+      "month": "2022-06",
+      "rain_mm": 10.5,
+      "temp_mean_c": 19.7,
+      "soil_moisture_pct": 17.3,
+      "ndvi": 0.52,
+      "bare_soil": false
+    },
+    {
+      "month": "2022-07",
+      "rain_mm": 9.5,
+      "temp_mean_c": 19.8,
+      "soil_moisture_pct": 16.9,
+      "ndvi": 0.29,
+      "bare_soil": true
+    },
+    {
+      "month": "2022-08",
+      "rain_mm": 16.8,
+      "temp_mean_c": 22.0,
+      "soil_moisture_pct": 12.6,
+      "ndvi": 0.23,
+      "bare_soil": true
+    },
+    {
+      "month": "2022-09",
+      "rain_mm": 45.4,
+      "temp_mean_c": 23.6,
+      "soil_moisture_pct": 16.5,
+      "ndvi": 0.29,
+      "bare_soil": true
+    },
+    {
+      "month": "2022-10",
+      "rain_mm": 110.4,
+      "temp_mean_c": 24.4,
+      "soil_moisture_pct": 27.0,
+      "ndvi": 0.32,
+      "bare_soil": true
+    },
+    {
+      "month": "2022-11",
+      "rain_mm": 146.3,
+      "temp_mean_c": 23.5,
+      "soil_moisture_pct": 29.7,
+      "ndvi": 0.59,
+      "bare_soil": false
+    },
+    {
+      "month": "2022-12",
+      "rain_mm": 318.0,
+      "temp_mean_c": 24.0,
+      "soil_moisture_pct": 34.4,
+      "ndvi": 0.8,
+      "bare_soil": false
+    },
+    {
+      "month": "2023-01",
+      "rain_mm": 330.7,
+      "temp_mean_c": 24.6,
+      "soil_moisture_pct": 40.8,
+      "ndvi": 0.82,
+      "bare_soil": false
+    },
+    {
+      "month": "2023-02",
+      "rain_mm": 61.7,
+      "temp_mean_c": 25.2,
+      "soil_moisture_pct": 38.1,
+      "ndvi": 0.55,
+      "bare_soil": false
+    },
+    {
+      "month": "2023-03",
+      "rain_mm": 148.2,
+      "temp_mean_c": 24.7,
+      "soil_moisture_pct": 32.7,
+      "ndvi": 0.61,
+      "bare_soil": false
+    },
+    {
+      "month": "2023-04",
+      "rain_mm": 71.2,
+      "temp_mean_c": 24.0,
+      "soil_moisture_pct": 31.3,
+      "ndvi": 0.72,
+      "bare_soil": false
+    },
+    {
+      "month": "2023-05",
+      "rain_mm": 34.1,
+      "temp_mean_c": 21.0,
+      "soil_moisture_pct": 25.5,
+      "ndvi": 0.74,
+      "bare_soil": false
+    },
+    {
+      "month": "2023-06",
+      "rain_mm": 10.4,
+      "temp_mean_c": 20.3,
+      "soil_moisture_pct": 19.7,
+      "ndvi": 0.45,
+      "bare_soil": false
+    },
+    {
+      "month": "2023-07",
+      "rain_mm": 9.0,
+      "temp_mean_c": 20.2,
+      "soil_moisture_pct": 17.7,
+      "ndvi": 0.3,
+      "bare_soil": true
+    },
+    {
+      "month": "2023-08",
+      "rain_mm": 9.8,
+      "temp_mean_c": 21.9,
+      "soil_moisture_pct": 11.1,
+      "ndvi": 0.3,
+      "bare_soil": true
+    },
+    {
+      "month": "2023-09",
+      "rain_mm": 42.6,
+      "temp_mean_c": 24.5,
+      "soil_moisture_pct": 14.8,
+      "ndvi": 0.21,
+      "bare_soil": true
+    },
+    {
+      "month": "2023-10",
+      "rain_mm": 113.6,
+      "temp_mean_c": 25.5,
+      "soil_moisture_pct": 21.5,
+      "ndvi": 0.32,
+      "bare_soil": true
+    },
+    {
+      "month": "2023-11",
+      "rain_mm": 115.1,
+      "temp_mean_c": 24.6,
+      "soil_moisture_pct": 33.6,
+      "ndvi": 0.54,
+      "bare_soil": false
+    },
+    {
+      "month": "2023-12",
+      "rain_mm": 269.2,
+      "temp_mean_c": 24.2,
+      "soil_moisture_pct": 35.6,
+      "ndvi": 0.85,
+      "bare_soil": false
+    },
+    {
+      "month": "2024-01",
+      "rain_mm": 247.2,
+      "temp_mean_c": 24.2,
+      "soil_moisture_pct": 38.2,
+      "ndvi": 0.8,
+      "bare_soil": false
+    },
+    {
+      "month": "2024-02",
+      "rain_mm": 162.1,
+      "temp_mean_c": 24.7,
+      "soil_moisture_pct": 40.0,
+      "ndvi": 0.56,
+      "bare_soil": false
+    },
+    {
+      "month": "2024-03",
+      "rain_mm": 164.7,
+      "temp_mean_c": 24.6,
+      "soil_moisture_pct": 32.7,
+      "ndvi": 0.59,
+      "bare_soil": false
+    },
+    {
+      "month": "2024-04",
+      "rain_mm": 66.4,
+      "temp_mean_c": 23.6,
+      "soil_moisture_pct": 27.4,
+      "ndvi": 0.71,
+      "bare_soil": false
+    },
+    {
+      "month": "2024-05",
+      "rain_mm": 25.9,
+      "temp_mean_c": 21.7,
+      "soil_moisture_pct": 21.4,
+      "ndvi": 0.74,
+      "bare_soil": false
+    },
+    {
+      "month": "2024-06",
+      "rain_mm": 14.1,
+      "temp_mean_c": 19.5,
+      "soil_moisture_pct": 17.4,
+      "ndvi": 0.5,
+      "bare_soil": false
+    },
+    {
+      "month": "2024-07",
+      "rain_mm": 6.5,
+      "temp_mean_c": 19.7,
+      "soil_moisture_pct": 18.6,
+      "ndvi": 0.31,
+      "bare_soil": true
+    },
+    {
+      "month": "2024-08",
+      "rain_mm": 13.4,
+      "temp_mean_c": 22.6,
+      "soil_moisture_pct": 15.8,
+      "ndvi": 0.23,
+      "bare_soil": true
+    },
+    {
+      "month": "2024-09",
+      "rain_mm": 27.1,
+      "temp_mean_c": 27.1,
+      "soil_moisture_pct": 15.5,
+      "ndvi": 0.25,
+      "bare_soil": true
+    },
+    {
+      "month": "2024-10",
+      "rain_mm": 38.4,
+      "temp_mean_c": 25.2,
+      "soil_moisture_pct": 26.9,
+      "ndvi": 0.28,
+      "bare_soil": true
+    },
+    {
+      "month": "2024-11",
+      "rain_mm": 143.7,
+      "temp_mean_c": 24.1,
+      "soil_moisture_pct": 34.2,
+      "ndvi": 0.55,
+      "bare_soil": false
+    },
+    {
+      "month": "2024-12",
+      "rain_mm": 225.3,
+      "temp_mean_c": 24.2,
+      "soil_moisture_pct": 36.5,
+      "ndvi": 0.79,
+      "bare_soil": false
+    },
+    {
+      "month": "2025-01",
+      "rain_mm": 221.9,
+      "temp_mean_c": 25.3,
+      "soil_moisture_pct": 37.7,
+      "ndvi": 0.82,
+      "bare_soil": false
+    },
+    {
+      "month": "2025-02",
+      "rain_mm": 200.5,
+      "temp_mean_c": 24.4,
+      "soil_moisture_pct": 40.0,
+      "ndvi": 0.58,
+      "bare_soil": false
+    },
+    {
+      "month": "2025-03",
+      "rain_mm": 215.8,
+      "temp_mean_c": 25.2,
+      "soil_moisture_pct": 37.1,
+      "ndvi": 0.59,
+      "bare_soil": false
+    },
+    {
+      "month": "2025-04",
+      "rain_mm": 72.5,
+      "temp_mean_c": 23.1,
+      "soil_moisture_pct": 28.4,
+      "ndvi": 0.7,
+      "bare_soil": false
+    },
+    {
+      "month": "2025-05",
+      "rain_mm": 31.8,
+      "temp_mean_c": 22.3,
+      "soil_moisture_pct": 21.6,
+      "ndvi": 0.73,
+      "bare_soil": false
+    },
+    {
+      "month": "2025-06",
+      "rain_mm": 11.4,
+      "temp_mean_c": 20.1,
+      "soil_moisture_pct": 21.7,
+      "ndvi": 0.53,
+      "bare_soil": false
+    },
+    {
+      "month": "2025-07",
+      "rain_mm": 8.0,
+      "temp_mean_c": 20.6,
+      "soil_moisture_pct": 13.9,
+      "ndvi": 0.28,
+      "bare_soil": true
+    },
+    {
+      "month": "2025-08",
+      "rain_mm": 17.3,
+      "temp_mean_c": 22.4,
+      "soil_moisture_pct": 14.3,
+      "ndvi": 0.28,
+      "bare_soil": true
+    },
+    {
+      "month": "2025-09",
+      "rain_mm": 26.3,
+      "temp_mean_c": 24.3,
+      "soil_moisture_pct": 16.0,
+      "ndvi": 0.29,
+      "bare_soil": true
+    },
+    {
+      "month": "2025-10",
+      "rain_mm": 75.5,
+      "temp_mean_c": 25.7,
+      "soil_moisture_pct": 21.5,
+      "ndvi": 0.29,
+      "bare_soil": true
+    },
+    {
+      "month": "2025-11",
+      "rain_mm": 160.3,
+      "temp_mean_c": 24.7,
+      "soil_moisture_pct": 30.4,
+      "ndvi": 0.54,
+      "bare_soil": false
+    },
+    {
+      "month": "2025-12",
+      "rain_mm": 333.1,
+      "temp_mean_c": 24.0,
+      "soil_moisture_pct": 37.6,
+      "ndvi": 0.82,
+      "bare_soil": false
+    }
+  ],
+  "rotations": [
+    {
+      "name": "Soybean → Safrinha corn (current)",
+      "is_current": true,
+      "crops": [
+        "soybean",
+        "corn_safrinha"
+      ],
+      "calendar": [
+        {
+          "crop": "soybean",
+          "sow_month": 10,
+          "harvest_month": 2
+        },
+        {
+          "crop": "corn_safrinha",
+          "sow_month": 2,
+          "harvest_month": 6
+        }
+      ],
+      "farmer_summary": "What you do today: soybean in the rains, safrinha corn after. Good income, but the soil stays bare from July to October.",
+      "why": "Standard double-crop system for the Triângulo Mineiro, well supported by ZARC sowing windows.",
+      "evidence": [
+        "Soil was bare about 105 days per year in the last 5 years.",
+        "Rain ending 9 days earlier puts safrinha corn at risk in 3 of 5 seasons.",
+        "Double cropping happened in 80% of seasons."
+      ],
+      "benefits": [
+        "Two harvests per year",
+        "Known market and machinery"
+      ],
+      "risks": [
+        "Water stress for safrinha corn after April",
+        "Bare soil when the first storms arrive (erosion)"
+      ],
+      "scores": {
+        "water": 2,
+        "soil": 2,
+        "income": 4
+      },
+      "risk_scores": {
+        "water_stress": 68,
+        "heat": 55,
+        "bare_soil": 72
+      },
+      "uncertainty": "low",
+      "general_knowledge": [
+        "Bare soil under heavy first rains loses more topsoil."
+      ]
+    },
+    {
+      "name": "Soybean → Corn + Brachiaria intercrop",
+      "is_current": false,
+      "crops": [
+        "soybean",
+        "corn_safrinha",
+        "brachiaria"
+      ],
+      "calendar": [
+        {
+          "crop": "soybean",
+          "sow_month": 10,
+          "harvest_month": 2
+        },
+        {
+          "crop": "corn_safrinha",
+          "sow_month": 2,
+          "harvest_month": 6
+        },
+        {
+          "crop": "brachiaria",
+          "sow_month": 2,
+          "harvest_month": 9
+        }
+      ],
+      "farmer_summary": "Same soybean and corn, but sow brachiaria with the corn so the soil stays covered through the dry season.",
+      "why": "Best match for your water and soil priorities with little change to income.",
+      "evidence": [
+        "Covers the 4 bare-soil months (Jul–Oct) seen in the satellite data.",
+        "Soil moisture in Feb–May fell 3.5 points; straw cover helps keep it.",
+        "Erosion risk peaks in Oct–Nov, about 1.6 events per year."
+      ],
+      "benefits": [
+        "Straw for no-till soybean",
+        "Less erosion",
+        "More water kept in the soil"
+      ],
+      "risks": [
+        "Corn yield may drop slightly if brachiaria competes",
+        "Needs herbicide management before soybean"
+      ],
+      "scores": {
+        "water": 4,
+        "soil": 5,
+        "income": 4
+      },
+      "risk_scores": {
+        "water_stress": 52,
+        "heat": 50,
+        "bare_soil": 18
+      },
+      "uncertainty": "medium",
+      "general_knowledge": [
+        "Corn–brachiaria intercrop is a common Embrapa practice in the Cerrado.",
+        "Brachiaria roots improve soil structure and infiltration."
+      ]
+    },
+    {
+      "name": "Soybean → Sorghum",
+      "is_current": false,
+      "crops": [
+        "soybean",
+        "sorghum"
+      ],
+      "calendar": [
+        {
+          "crop": "soybean",
+          "sow_month": 10,
+          "harvest_month": 2
+        },
+        {
+          "crop": "sorghum",
+          "sow_month": 2,
+          "harvest_month": 6
+        }
+      ],
+      "farmer_summary": "Swap safrinha corn for sorghum, which handles the shorter rainy season better.",
+      "why": "Sorghum tolerates the earlier end of rains and dry spells better than corn.",
+      "evidence": [
+        "Rain now ends about 9 days earlier than before.",
+        "80% of seasons had at least one dry spell between November and March."
+      ],
+      "benefits": [
+        "Lower water stress in the second crop",
+        "Lower input cost"
+      ],
+      "risks": [
+        "Lower price than corn",
+        "Fewer buyers nearby"
+      ],
+      "scores": {
+        "water": 5,
+        "soil": 3,
+        "income": 3
+      },
+      "risk_scores": {
+        "water_stress": 35,
+        "heat": 40,
+        "bare_soil": 55
+      },
+      "uncertainty": "medium",
+      "general_knowledge": [
+        "Sorghum needs less water than corn to complete its cycle."
+      ]
+    }
+  ],
+  "recommendation": {
+    "suggested_crop": "brachiaria",
+    "rotation_name": "Soybean → Corn + Brachiaria intercrop",
+    "message_to_farmer": "Seu João, in the last five years the rains on your farm started later and ended earlier, and the soil stayed bare from July to October, right when the first heavy storms arrive. You care most about water and soil, so we suggest keeping soybean and safrinha corn but sowing brachiaria together with the corn. After the corn harvest the grass keeps the ground covered, holds moisture, reduces erosion and leaves straw for planting soybean in October. Your income should stay close to today. Please talk to a local agronomist before deciding."
+  },
+  "glossary": {
+    "NDVI": "A satellite number from 0 to 1 that shows how green the land is. High means lots of plants; low means bare soil.",
+    "dry spell (veranico)": "A run of days without useful rain in the middle of the rainy season.",
+    "trend": "The difference between the average of the last 5 years and the average of the years before.",
+    "rain onset": "The day the rainy season really starts and stays.",
+    "safrinha": "The second crop sown right after the soybean harvest.",
+    "_mm": "Millimetres of rain.",
+    "_c": "Degrees Celsius.",
+    "_pct": "Percent.",
+    "_days": "Number of days."
+  },
+  "limitations": [
+    "Climate data comes from a grid of about 50 km, not from your farm.",
+    "NASA POWER shows about 24% less rain than INMET stations in this region.",
+    "Trends use only the last 5 years compared with earlier years.",
+    "The current rotation was inferred from satellite data, not reported by the farmer."
+  ],
+  "sources": [
+    "NASA POWER",
+    "MODIS MOD13Q1 v061",
+    "Embrapa/ZARC",
+    "FAO GAEZ"
+  ],
+  "disclaimer": "Validate with a local agronomist before deciding."
+}
