@@ -49,3 +49,9 @@ python -m pytest -q
 
 The Cloudflare Worker (`frontend/worker/index.ts`) forwards `/api/*` to the URL in the Worker variable
 `API_ORIGIN` (for example `https://terraturn-api.onrender.com`). Same domain, so the session cookie works.
+
+## Brazilian states and cities
+
+Served from `app/br_locations.json` (27 states, 5,571 municipalities with IBGE codes), so the form works even when
+the IBGE API is unreachable from the server. Data: IBGE codes via
+[kelvins/municipios-brasileiros](https://github.com/kelvins/municipios-brasileiros) (MIT).

@@ -115,3 +115,12 @@ def test_settings_accept_origin_list():
     s = Settings(frontend_origin="https://terraturn.work, https://www.terraturn.work/", jwt_secret="x" * 40)
     assert s.allowed_origins == ["https://terraturn.work", "https://www.terraturn.work"]
     assert s.primary_origin == "https://terraturn.work"
+
+
+def test_brazil_locations_are_local(client):
+    register(client)
+    states = client.get("/api/v1/locations/states?country=BR").json()
+    assert len(states) == 27 and {"code": "MG", "name": "Minas Gerais"} in states
+    cities = client.get("/api/v1/locations/cities?country=BR&state=mg").json()
+    assert {"code": "3170107", "name": "Uberaba"} in cities and len(cities) == 853
+    assert client.get("/api/v1/locations/cities?country=BR&state=XX").status_code == 422

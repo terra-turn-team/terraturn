@@ -320,10 +320,10 @@ def replace_history(farm_id: str, payload: list[CropHistoryIn], user: User = Dep
 
 _GEO_LOCK = asyncio.Lock()
 _GEO_LAST_CALL = 0.0
-_IBGE = "https://servicodados.ibge.gov.br/api/v1/localidades"
 _WORLD = "https://countriesnow.space/api/v0.1/countries"
 _COUNTRIES = json.loads((Path(__file__).parent / "countries.json").read_text(encoding="utf-8"))
 _COUNTRY_CODES = {c["code"] for c in _COUNTRIES}
+_BR = json.loads((Path(__file__).parent / "br_locations.json").read_text(encoding="utf-8"))
 USER_AGENT = "TerraTurn/0.3 (NASA Space Apps 2026 project; https://terraturn.work)"
 
 
@@ -367,15 +367,14 @@ async def _states(db: Session, country: str):
         raise HTTPException(status_code=422, detail="Invalid country")
 
     async def fetch():
-        if country == "BR":
-            rows = await _get_json(_IBGE + "/estados", params={"orderBy": "nome"})
-            return sorted([{"code": x["sigla"], "name": x["nome"]} for x in rows], key=lambda x: x["name"])
         en_name = next(c.get("en_name", c["name"]) for c in _COUNTRIES if c["code"] == country)
         result = await _get_json(_WORLD + "/states", payload={"country": en_name})
         if result.get("error"):
             return []
         return [{"code": x.get("state_code") or x["name"], "name": x["name"]} for x in result.get("data", {}).get("states", [])]
 
+    if country == "BR":
+        return _BR["states"]
     return await _cached_lookup(db, "states:" + country, fetch)
 
 
@@ -393,11 +392,6 @@ async def cities(country: str = "BR", state: str = "MG", user: User = Depends(cu
         raise HTTPException(status_code=422, detail="Invalid country")
 
     async def fetch():
-        if country == "BR":
-            if not (len(state) == 2 and state.isalpha()):
-                raise HTTPException(status_code=422, detail="Invalid Brazilian state code")
-            rows = await _get_json(f"{_IBGE}/estados/{state.upper()}/municipios")
-            return sorted([{"code": str(x["id"]), "name": x["nome"]} for x in rows], key=lambda x: x["name"])
         c = next(v for v in _COUNTRIES if v["code"] == country)
         states_list = await _states(db, country)
         state_name = next((v["name"] for v in states_list if v["code"] == state or v["name"] == state), state)
@@ -406,6 +400,11 @@ async def cities(country: str = "BR", state: str = "MG", user: User = Depends(cu
             return []
         return [{"code": v, "name": v} for v in sorted(set(result.get("data", [])))]
 
+    if country == "BR":
+        cities_br = _BR["cities"].get(state.upper())
+        if cities_br is None:
+            raise HTTPException(status_code=422, detail="Invalid Brazilian state code")
+        return cities_br
     return await _cached_lookup(db, "cities:" + country + ":" + state.lower(), fetch)
 
 
