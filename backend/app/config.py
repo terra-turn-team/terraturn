@@ -1,0 +1,27 @@
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
+
+class Settings(BaseSettings):
+    database_url: str = "sqlite:///./terraturn.db"
+    jwt_secret: str = ""
+    frontend_origin: str = "http://localhost:5173"
+    cookie_secure: bool = False
+    smtp_host: str = "localhost"
+    smtp_port: int = 1025
+    smtp_user: str = ""
+    smtp_password: str = ""
+    email_from: str = "TerraTurn <no-reply@localhost>"
+    password_reset_enabled: bool = True
+    reverse_geocoding_enabled: bool = True
+    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
+
+    @property
+    def allowed_origins(self) -> list[str]:
+        return [o.strip().rstrip("/") for o in self.frontend_origin.split(",") if o.strip()]
+
+    @property
+    def primary_origin(self) -> str:
+        return self.allowed_origins[0]
+
+
+settings = Settings()
