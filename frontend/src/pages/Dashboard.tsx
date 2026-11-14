@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
-import { Activity, ArrowDownToLine, ArrowRight, Bell, CalendarClock, Check, ChevronDown, Cloud, CloudRain, Compass, Edit3, Ellipsis, ExternalLink, Layers3, Leaf, LogOut, Map, MapPin, Menu, Mountain, Plus, RefreshCw, Ruler, Search, Settings2, ShieldCheck, Sparkles, Sprout, ThermometerSun, Trash2, UserRound, Wind, X } from 'lucide-react'
+import { Activity, ArrowDownToLine, ArrowRight, Bell, CalendarClock, Check, ChevronDown, Cloud, CloudRain, Compass, Edit3, Ellipsis, ExternalLink, Layers3, Leaf, LogOut, Map, MapPin, Menu, Moon, Mountain, Plus, RefreshCw, Ruler, Search, Settings2, ShieldCheck, Sparkles, Sprout, Sun, ThermometerSun, Trash2, UserRound, Wind, X } from 'lucide-react'
 import Brand from '../components/Brand'
 import FarmForm from '../components/FarmForm'
 import TerrainPlot from '../components/TerrainPlot'
@@ -23,6 +23,7 @@ const irrigationNames:Record<string,string>={unknown:'Não informado',rainfed:'S
 export default function Dashboard(){
   const {user,logout}=useAuth()
   const {t}=useI18n()
+  const [theme,setTheme]=useState<'light'|'dark'>(()=>{try{return localStorage.getItem('terraturn-theme')==='dark'?'dark':'light'}catch{return 'light'}})
   const [viewMode,setViewMode]=useState<ViewMode>('3d')
   const [showMarkers,setShowMarkers]=useState(true)
   const navigate=useNavigate(),queryClient=useQueryClient()
@@ -55,10 +56,11 @@ export default function Dashboard(){
   const exportData=async()=>{try{const json=await api<Record<string,unknown>>('/privacy/export');const b=new Blob([JSON.stringify(json,null,2)],{type:'application/json'});const url=URL.createObjectURL(b);const a=document.createElement('a');a.href=url;a.download='terraturn-meus-dados.json';a.click();URL.revokeObjectURL(url);showAction('Exportação dos seus dados concluída')}catch{showAction('Falha na exportação dos dados')}}
   const deleteAccount=async()=>{if(!user)return;setAccountError('');try{await api<void>('/privacy/account',{method:'DELETE',body:JSON.stringify({email:user.email,password:deletePassword})});queryClient.clear();navigate('/login');location.reload()}catch(e){setAccountError(e instanceof ApiError?e.message:'Não foi possível excluir a conta')}}
   const signOut=async()=>{await logout();queryClient.clear();navigate('/login')}
+  const toggleTheme=()=>{const next=theme==='dark'?'light':'dark';setTheme(next);try{localStorage.setItem('terraturn-theme',next)}catch{showAction(t('Não foi possível salvar a preferência de tema.'))}}
   const selectFarm=(id:string)=>{setViewMode('3d');setSelectedFarmId(id);setPickerOpen(false);setSidebarOpen(false);setMonthIndex(new Date().getMonth());showAction('Propriedade selecionada')}
-  return <div className="dashboard">
+  return <div className="dashboard" data-theme={theme}>
     <header className="topbar"><div className="topbar-brand"><button className="icon-btn mobile-menu" aria-label="Abrir menu" onClick={()=>setSidebarOpen(true)}><Menu size={20}/></button><Brand/><span className="topbar-divider"/><span className="topbar-product">{t('CENTRAL DE ANÁLISE')}</span></div>
-      <div className="topbar-actions"><LanguagePicker/><span className="top-status"><span/> {t('MODO PREPARAÇÃO')}</span><button type="button" className="icon-btn" title="Configurações" onClick={()=>setSettings(true)}><Settings2 size={19}/></button><button type="button" className="user-button" onClick={()=>setSettings(true)} title="Conta e privacidade"><span>{user?.name?.slice(0,1)?.toUpperCase()||'U'}</span><div><strong>{user?.name?.split(' ')[0]}</strong><small>{t('Minha conta')}</small></div><ChevronDown size={15}/></button></div>
+      <div className="topbar-actions"><LanguagePicker/><span className="top-status"><span/> {t('MODO PREPARAÇÃO')}</span><button type="button" className="icon-btn theme-toggle" title={t(theme==='dark'?'Ativar tema claro':'Ativar tema escuro')} aria-label={t(theme==='dark'?'Ativar tema claro':'Ativar tema escuro')} aria-pressed={theme==='dark'} onClick={toggleTheme}>{theme==='dark'?<Sun size={19}/>:<Moon size={19}/>}</button><button type="button" className="icon-btn" title="Configurações" onClick={()=>setSettings(true)}><Settings2 size={19}/></button><button type="button" className="user-button" onClick={()=>setSettings(true)} title="Conta e privacidade"><span>{user?.name?.slice(0,1)?.toUpperCase()||'U'}</span><div><strong>{user?.name?.split(' ')[0]}</strong><small>{t('Minha conta')}</small></div><ChevronDown size={15}/></button></div>
     </header>
     <div className="dashboard-layout">
       {sidebarOpen&&<button className="mobile-scrim" aria-label="Fechar menu" onClick={()=>setSidebarOpen(false)}/>}
@@ -78,9 +80,14 @@ export default function Dashboard(){
           <div className="stats-grid"><div className="mini-stat"><div><span>{t('ÁREA DE CULTIVO')}</span><Ruler size={17}/></div><strong>{formatHa(farm.area_ha)}</strong><small>{t('Calculada pelo contorno')}</small></div><div className="mini-stat"><div><span>{t('CULTURA PRINCIPAL')}</span><Sprout size={17}/></div><strong>{farm.crop}</strong><small>{t('Informada no cadastro')}</small></div><div className="mini-stat"><div><span>{t('TEXTURA DO SOLO')}</span><Layers3 size={17}/></div><strong>{textureNames[farm.soil.texture]}</strong><small>{t('Informação declarada')}</small></div><div className="mini-stat"><div><span>{t('DADOS CLIMÁTICOS')}</span><Cloud size={17}/></div><strong className="pending-title">{t('Aguardando')}</strong><small>{t('Integração NASA pendente')}</small></div></div>
           <section className="model-card"><div className="model-toolbar"><div><span className="eyebrow">{t('GÊMEO DIGITAL · ÁREA SELECIONADA')}</span><h2>{t('Visão do terreno')} <span className="model-crop-chip">{farm.crop}</span></h2></div><div className="model-actions"><span className="model-chip"><span className="live-indicator"/> {t('SIMULAÇÃO VISUAL')}</span><button className="btn btn-outline btn-small" onClick={editFarm}><Edit3 size={14}/> {t('Ajustar terreno')}</button></div></div>
             <div className="model-viewbar" aria-label={t('VISUALIZAÇÃO')}>
-              <div className="view-modes">{([
-                ['map','Mapa'],['relief','Mapa com relevo'],['satellite','Satélite'],['3d','3D'],['hybrid','3D + mapa']
-              ] as [ViewMode,string][]).map(([mode,name])=><button key={mode} type="button" aria-pressed={viewMode===mode} className={viewMode===mode?'active':''} onClick={()=>setViewMode(mode)}>{t(name)}</button>)}</div>
+              <div className="view-modes">
+                <div className="view-mode-group" role="group" aria-label={t('Tipo de mapa')}><span>{t('MAPA')}</span>{([
+                  ['map','Mapa'],['relief','Mapa com relevo'],['satellite','Satélite']
+                ] as [ViewMode,string][]).map(([mode,name])=><button key={mode} type="button" aria-pressed={viewMode===mode} className={viewMode===mode?'active':''} onClick={()=>setViewMode(mode)}>{t(name)}</button>)}</div>
+                <div className="view-mode-group" role="group" aria-label={t('Visualização 3D')}><span>{t('MODELO')}</span>{([
+                  ['3d','3D'],['hybrid','3D + mapa']
+                ] as [ViewMode,string][]).map(([mode,name])=><button key={mode} type="button" aria-pressed={viewMode===mode} className={viewMode===mode?'active':''} onClick={()=>setViewMode(mode)}>{t(name)}</button>)}</div>
+              </div>
               <button type="button" className="marker-toggle" aria-pressed={showMarkers} onClick={()=>setShowMarkers(v=>!v)}><MapPin size={15}/>{t(showMarkers?'Ocultar marcadores':'Exibir marcadores')}</button>
             </div>
             <div className="model-canvas">

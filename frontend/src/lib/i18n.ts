@@ -7,6 +7,7 @@ export const useLanguage = create<{language:Language;setLanguage:(language:Langu
 // Portuguese keys are the original UX copy. Missing translations transparently fall back to PT-BR.
 const translations:Record<string,[string,string]>={
 'MODO PREPARAÇÃO':['PREPARATION MODE','MODO PREPARACIÓN'], 'Idioma':['Language','Idioma'], 'Português':['Portuguese','Portugués'],'Inglês':['English','Inglés'],'Espanhol':['Spanish','Español'],
+'Ativar tema claro':['Switch to light theme','Activar tema claro'],'Ativar tema escuro':['Switch to dark theme','Activar tema oscuro'],'Tipo de mapa':['Map type','Tipo de mapa'],'Visualização 3D':['3D view','Vista 3D'],'MAPA':['MAP','MAPA'],'MODELO':['MODEL','MODELO'],'Não foi possível salvar a preferência de tema.':['Could not save the theme preference.','No se pudo guardar la preferencia de tema.'],
 'GERENCIAMENTO DE PROPRIEDADES':['PROPERTY MANAGEMENT','GESTIÓN DE PROPIEDADES'],
 'Nova propriedade rural':['New rural property','Nueva propiedad rural'],'Editar propriedade':['Edit property','Editar propiedad'],
 'Cadastre seu terreno e prepare a base para os estudos agronômicos.':['Register your land and prepare the foundation for agronomic studies.','Registre su terreno y prepare la base para estudios agronómicos.'],
