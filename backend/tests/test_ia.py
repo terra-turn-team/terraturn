@@ -254,3 +254,10 @@ def test_clean_text_removes_engine_field_names():
     assert clean_text("Soja tolera pouco a seca (tolera_seca baixa).", "pt") == "Soja tolera pouco a seca."
     out = clean_text({"risks": ["tolera_seca is low", 3]}, "en")
     assert out == {"risks": ["drought tolerance is low", 3]}
+
+
+def test_crop_traits_from_official_table():
+    from app.ia.service import crop_traits
+
+    t = crop_traits()
+    assert t["soja"] == {"drought": "baixa", "cycle_days": 120, "market": "alto", "fixes_n": True, "cover": False}

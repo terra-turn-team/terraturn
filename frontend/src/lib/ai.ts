@@ -33,6 +33,7 @@ export type FarmData = {
 export type StudyResult = {
   analysis: Analysis; farm_data: FarmData; priority: string; language: string; irrigated_warning: boolean
   crop_names: Record<string, { pt?: string; en?: string; es?: string }>
+  crop_traits?: Record<string, { drought?: string; cycle_days?: number; market?: string; fixes_n?: boolean; cover?: boolean }>
   validation: { passed: boolean; corrections: number; remaining_issues: string[] }
   model: string; engine: string; generated_at: string
 }

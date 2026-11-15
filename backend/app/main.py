@@ -542,7 +542,7 @@ def _clean_result(s: AiStudy):
 
     if not s.result:
         return s.result
-    return {**s.result, "analysis": service.clean_text(s.result.get("analysis"), s.language)}
+    return {**s.result, "analysis": service.clean_text(s.result.get("analysis"), s.language), "crop_traits": service.crop_traits()}
 
 
 def study_output(s: AiStudy) -> dict:
