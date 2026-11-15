@@ -2,9 +2,9 @@ import { useEffect, useId, useRef, useState } from 'react'
 import { Check, ChevronDown } from 'lucide-react'
 
 export type SelectItem = { code: string; name: string }
-type Props = { label: string; items: SelectItem[]; value: string; onChange: (code: string) => void; placeholder?: string; disabled?: boolean }
+type Props = { label: string; items: SelectItem[]; value: string; onChange: (code: string) => void; placeholder?: string; disabled?: boolean; hideLabel?: boolean }
 
-export default function Select({ label, items, value, onChange, placeholder, disabled }: Props) {
+export default function Select({ label, items, value, onChange, placeholder, disabled, hideLabel }: Props) {
   const id = useId(), ref = useRef<HTMLDivElement>(null), btn = useRef<HTMLButtonElement>(null)
   const [open, setOpen] = useState(false), [active, setActive] = useState(0)
   const index = Math.max(0, items.findIndex(i => i.code === value))
@@ -22,7 +22,7 @@ export default function Select({ label, items, value, onChange, placeholder, dis
     else if (e.key === 'Escape') setOpen(false)
   }
   return <div ref={ref} className="combobox-field">
-    <span id={id + '-label'} className="input-label">{label}</span>
+    <span id={id + '-label'} className={hideLabel ? 'sr-only' : 'input-label'}>{label}</span>
     <div className="combobox-wrap">
       <button ref={btn} type="button" className="select-trigger" aria-haspopup="listbox" aria-expanded={open} aria-labelledby={id + '-label'} aria-controls={id + '-choices'} disabled={disabled} onClick={() => open ? setOpen(false) : show()} onKeyDown={keys}>
         <span className={chosen ? '' : 'placeholder'}>{chosen?.name ?? placeholder ?? ''}</span>

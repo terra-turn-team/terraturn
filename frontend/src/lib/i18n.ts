@@ -7,6 +7,7 @@ if (typeof document !== 'undefined') document.documentElement.lang=initial
 export const useLanguage = create<{language:Language;setLanguage:(language:Language)=>void}>((set)=>({language:initial,setLanguage:(language)=>{try{localStorage.setItem('terraturn-language',language)}catch{};document.documentElement.lang=language;set({language})}}))
 // Portuguese keys are the original UX copy. Missing translations transparently fall back to PT-BR.
 const translations:Record<string,[string,string]>={
+'seuemail@exemplo.com':['you@example.com','usted@ejemplo.com'],
 'Os dados da propriedade serão acessíveis apenas à sua conta.':['Property data is visible only to your account.','Los datos de la propiedad solo son visibles para su cuenta.'],
 'Localização pelo perímetro':['Location from the boundary','Ubicación por el perímetro'],
 'Localizar um ponto não altera automaticamente o perímetro já desenhado.':['Going to a point does not change the boundary you already drew.','Ir a un punto no cambia el perímetro ya dibujado.'],

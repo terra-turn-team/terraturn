@@ -36,3 +36,31 @@
 .base-toggle button{border:0;background:transparent;border-radius:5px;padding:6px 9px;font-size:10px;font-weight:700;color:#5d6b61}
 .base-toggle button.active{background:#1C2B22;color:#fff}
 .picker-map .maplibregl-ctrl-attrib{font-size:9px}
+.brand{display:inline-flex;align-items:center;gap:9px;text-decoration:none}
+.brand-mark-img{width:34px;height:34px;display:block}
+.brand .brand-word{font-size:23px;font-weight:700;letter-spacing:-.05em;color:#1C2B22;line-height:1}
+.brand .brand-word span{color:#3E7C4F}
+.brand.on-dark .brand-word{color:#F2EDE4}
+.brand.on-dark .brand-word span{color:#9fd3a9}
+.brand.compact .brand-mark-img{width:28px;height:28px}
+.brand.compact .brand-word{font-size:19px}
+.rail-logo img{width:34px;height:34px}
+.function-rail button.active{background:#1C2B22;color:#fff;box-shadow:0 6px 14px #1c2b2226}
+.function-rail button:not(.active){color:#6f7c72}
+.function-rail .rail-avatar{width:40px;height:40px;border-radius:50%;background:#e6f0e7;color:#2f5d3b;border:2px solid #fff;outline:1px solid #c9d6c8;font-weight:700;font-size:14px}
+.function-rail .rail-avatar:hover{outline-color:#3E7C4F}
+.panel-brand{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px}
+.panel-brand .workspace-eyebrow{margin:0}
+.settings-intro{display:flex;align-items:center;gap:12px}
+.settings-avatar{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:#e6f0e7;color:#2f5d3b;font-weight:700;font-size:17px;flex-shrink:0}
+.settings-private{display:flex;align-items:center;gap:6px;font-size:10px;letter-spacing:.08em;color:#6f8a74;margin:2px 0 6px}
+.language-picker.full{width:100%}
+.language-picker.full .combobox-field{margin-bottom:6px}
+.language-picker.compact{display:inline-flex;align-items:center;gap:6px;color:#3E7C4F}
+.language-picker.compact .combobox-field{margin:0;min-width:74px}
+.language-picker.compact .select-trigger{height:32px;font-size:11px;font-weight:700;padding:0 26px 0 9px}
+.language-picker.compact .combobox-chevron{right:7px}
+.language-picker.compact .combobox-options{min-width:90px}
+.language-picker.full,.language-picker.compact{border:0;background:none;padding:0;box-shadow:none;min-height:0}
+.language-picker.full .select-trigger{width:100%}
+.language-picker.full .combobox-field,.language-picker.full .combobox-wrap{width:100%}
