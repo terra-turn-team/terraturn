@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react'
+import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { ArrowUp, Bot, Check, Sparkles, AlertCircle } from 'lucide-react'
 import type { Farm, ChatItem, WeatherLayer } from '../types'
 import { useViewStore } from '../lib/viewStore'
@@ -6,17 +6,21 @@ import {useI18n} from '../lib/i18n'
 import { ApiError } from '../lib/api'
 import { aiApi } from '../lib/ai'
 import Markdown from './Markdown'
+import { useChatStore } from '../lib/chatStore'
 const now=()=>new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})
 const initial:ChatItem[]=[{id:'intro',role:'assistant',text:'Olá! Pergunte qualquer coisa sobre a sua fazenda: chuva, temperatura, quando plantar ou qual cultura combina com a área. Eu respondo com os dados da NASA desta propriedade.',time:now()}]
 export function Assistant({farm,onEdit,onNew,onChangeCrop}:{farm:Farm;onEdit:()=>void;onNew:()=>void;onChangeCrop:(crop:string)=>Promise<void>}){
   const {t,language}=useI18n()
-  const [messages,setMessages]=useState<ChatItem[]>(initial)
+  const saved=useChatStore(s=>s.byFarm[farm.id]),addToStore=useChatStore(s=>s.add)
+  const messages=saved?.length?[...initial,...saved]:initial
+  const listRef=useRef<HTMLDivElement>(null)
+  useEffect(()=>{const el=listRef.current;if(el)el.scrollTop=el.scrollHeight},[messages.length])
   const [text,setText]=useState('')
   const [sending,setSending]=useState(false)
   const [pendingCrop,setPendingCrop]=useState('')
   const setLayer=useViewStore(s=>s.setLayer),setMonthIndex=useViewStore(s=>s.setMonthIndex)
   const month=useViewStore(s=>s.monthIndex),setTab=useViewStore(s=>s.setSelectedTab),showAction=useViewStore(s=>s.showAction)
-  const add=(role:'assistant'|'user',msg:string)=>setMessages(m=>[...m,{id:crypto.randomUUID(),role,text:msg,time:now()}])
+  const add=(role:'assistant'|'user',msg:string)=>addToStore(farm.id,{id:crypto.randomUUID(),role,text:msg,time:now()})
   const send=async(e:FormEvent)=>{
     e.preventDefault();const input=text.trim();if(!input||sending)return
     add('user',input);setText('');setSending(true)
@@ -39,7 +43,7 @@ export function Assistant({farm,onEdit,onNew,onChangeCrop}:{farm:Farm;onEdit:()=
     }finally{setSending(false)}
   }
   const confirmChange=async()=>{try{await onChangeCrop(pendingCrop);add('assistant',`Cultura principal alterada para ${pendingCrop}. O modelo 3D foi atualizado com aparência ilustrativa.`);showAction(`Cultura alterada para ${pendingCrop}`);setPendingCrop('')}catch{add('assistant','Não foi possível salvar a alteração. Tente pelo formulário de edição.')}}
-  return <div className="assistant-panel"><div className="chat-messages" aria-live="polite">{messages.map(m=><div key={m.id} className={`chat-message ${m.role}`}><div className="chat-avatar">{m.role==='assistant'?<Bot size={16}/>:<span>EU</span>}</div><div className="chat-bubble">{m.role==='assistant'?<Markdown text={m.id==='intro'?t(m.text):m.text}/>:<p>{m.text}</p>}<time>{m.time}</time></div></div>)}{pendingCrop&&<div className="chat-confirm"><AlertCircle size={16}/><span>Salvar cultura “{pendingCrop}” nesta propriedade?</span><button type="button" className="btn btn-primary btn-small" onClick={confirmChange}><Check size={13}/> Confirmar</button><button type="button" className="btn btn-outline btn-small" onClick={()=>setPendingCrop('')}>Cancelar</button></div>}</div>
+  return <div className="assistant-panel"><div className="chat-messages" aria-live="polite" ref={listRef}>{messages.map(m=><div key={m.id} className={`chat-message ${m.role}`}><div className="chat-avatar">{m.role==='assistant'?<Bot size={16}/>:<span>EU</span>}</div><div className="chat-bubble">{m.role==='assistant'?<Markdown text={m.id==='intro'?t(m.text):m.text}/>:<p>{m.text}</p>}<time>{m.time}</time></div></div>)}{pendingCrop&&<div className="chat-confirm"><AlertCircle size={16}/><span>Salvar cultura “{pendingCrop}” nesta propriedade?</span><button type="button" className="btn btn-primary btn-small" onClick={confirmChange}><Check size={13}/> Confirmar</button><button type="button" className="btn btn-outline btn-small" onClick={()=>setPendingCrop('')}>Cancelar</button></div>}</div>
     <form onSubmit={send} className="chat-compose"><Sparkles size={17}/><input value={text} onChange={e=>setText(e.target.value)} placeholder={t('Pergunte, altere ou explore a sua propriedade...')} maxLength={2000} aria-label="Mensagem para assistente"/><button type="submit" disabled={!text.trim()||sending} aria-label="Enviar mensagem"><ArrowUp size={18}/></button></form><p className="chat-disclaimer">{t('Respostas com dados da NASA desta fazenda · valide com um agrônomo local')}</p>
   </div>
 }
