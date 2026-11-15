@@ -165,6 +165,8 @@ const translations:Record<string,[string,string]>={
 'Cultivo':["Crop","Cultivo"],
 'Solo':["Soil","Suelo"],
 'Clima':["Climate","Clima"],
+"A IA está gerando a resposta…":["The AI is writing the answer…", "La IA está generando la respuesta…"],
+"Ainda analisando os dados da NASA… pode levar até 30 segundos.":["Still analyzing the NASA data… this can take up to 30 seconds.", "Todavía analizando los datos de la NASA… puede tardar hasta 30 segundos."],
 "Dados NASA":["NASA data", "Datos NASA"],
 "Em breve":["Coming soon", "Próximamente"],
 "Chuva menos evapotranspiração, média anual":["Rainfall minus evapotranspiration, yearly average", "Lluvia menos evapotranspiración, promedio anual"],
