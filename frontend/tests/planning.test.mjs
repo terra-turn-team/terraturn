@@ -12,3 +12,15 @@ test('optional initial crop asks the integration to recommend it',()=>{const r=p
 test('provided crop and field-release dates are retained',()=>{const f={...farm,crop:'Café',planning:{...farm.planning,crop_status:'established',crop_end_month:'2027-05'}};const r=p.buildSimulationRequest(f);assert.equal(r.planning.initial_crop,'Café');assert.equal(r.planning.initial_crop_mode,'provided');assert.equal(r.planning.crop_end_month,'2027-05')})
 test('legacy farms get defaults without changing their boundary',()=>{const f=p.normalizeFarm({...farm,crop:'não informado',planning:undefined,indicators:undefined});assert.equal(f.crop,'');assert.equal(f.planning.horizon_months,12);assert.equal(f.geometry,farm.geometry);assert.equal(f.indicators.length,6)})
 test('pending integration never fabricates measurements or crops',()=>{const c=p.emptyContext(farm);assert.equal(c.status,'pending');assert.deepEqual(c.metrics,[]);assert.deepEqual(c.plan.cycles,[]);assert.equal(c.history.observed_through,null);assert.deepEqual(c.history.monthly,[])})
+
+const mdSource=await readFile(new URL('../src/lib/markdown.ts',import.meta.url),'utf8')
+const md=await import('data:text/javascript;base64,'+Buffer.from(ts.transpileModule(mdSource,{compilerOptions:{target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.ES2022}}).outputText).toString('base64'))
+test('chat markdown turns asterisks into bold and lists instead of showing them',()=>{
+  const b=md.parseMarkdown('**Rain on your farm**\n- **Monthly average:** May 109 mm\n- Start of rains: *23 April*\n\n1. Soy\n2. Maize')
+  assert.deepEqual(b[0],{type:'p',lines:[[{type:'strong',text:'Rain on your farm'}]]})
+  assert.equal(b[1].type,'ul');assert.deepEqual(b[1].items[0],[{type:'strong',text:'Monthly average:'},{type:'text',text:' May 109 mm'}])
+  assert.deepEqual(b[1].items[1][1],{type:'em',text:'23 April'})
+  assert.equal(b[2].type,'ol');assert.equal(b[2].items.length,2)
+  assert.equal(JSON.stringify(b).includes('**'),false)
+})
+test('chat markdown keeps plain math and snake_case untouched',()=>assert.deepEqual(md.parseInline('2 * 3 * 4 and crop_status'),[{type:'text',text:'2 * 3 * 4 and crop_status'}]))
