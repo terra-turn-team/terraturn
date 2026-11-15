@@ -16,6 +16,7 @@ class Settings(BaseSettings):
     ai_studies_per_day: int = 15
     ai_chat_per_day: int = 40
     demo_autogenerate: bool = True
+    demo_editable: bool = False
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
     @property

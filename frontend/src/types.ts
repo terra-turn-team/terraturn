@@ -1,4 +1,4 @@
-export type User={id:string;name:string;email:string}
+export type User={id:string;name:string;email:string;can_edit_farms?:boolean}
 export type GeoPolygon={type:'Polygon';coordinates:number[][][]}
 export type Soil={texture:'unknown'|'sandy'|'loamy'|'clayey'|'silty';ph:number|null;organic_matter_percent:number|null;irrigation:'rainfed'|'irrigated'|'mixed'|'unknown'}
 export type Goal='water'|'soil'|'resilience'|'yield'|'cost'|'fertility'|'erosion'|'phytosanitary'|'diversity'|'margin'
