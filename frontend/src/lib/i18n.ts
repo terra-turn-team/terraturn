@@ -96,7 +96,7 @@ const translations:Record<string,[string,string]>={
 'VISUALIZAÇÃO':['VIEW','VISUALIZACIÓN'],'MARCAÇÕES':['MARKERS','MARCADORES'],'Exibir marcadores':['Show markers','Mostrar marcadores'],'Ocultar marcadores':['Hide markers','Ocultar marcadores'],
 'Planejamento':['Planning','Planificación'],'Observação':['Observation','Observación'],'Declaração do usuário':['User-provided','Declaración del usuario'],
 'Bem-vindo de volta.':['Welcome back.','Bienvenido de nuevo.'],'Comece pela sua terra.':['Start with your land.','Empiece por su tierra.'],'Recupere seu acesso.':['Recover your access.','Recupere su acceso.'],'Defina uma nova senha.':['Set a new password.','Defina una nueva contraseña.'],
-'SUA ÁREA DE TRABALHO':['YOUR WORKSPACE','SU ESPACIO DE TRABAJO'],'Nome completo':['Full name','Nombre completo'],'E-mail':['Email','Correo electrónico'],'Senha':['Password','Contraseña'],
+'Nome completo':['Full name','Nombre completo'],'E-mail':['Email','Correo electrónico'],'Senha':['Password','Contraseña'],
 'Esqueci minha senha':['Forgot my password','Olvidé mi contraseña'],'Entrar na plataforma':['Sign in','Iniciar sesión'],'Criar minha conta':['Create my account','Crear mi cuenta'],'Enviar link de recuperação':['Send recovery link','Enviar enlace de recuperación'],'Redefinir senha':['Reset password','Restablecer contraseña'],
 'Cadastre-se':['Sign up','Registrarse'],'Fazer login':['Sign in','Iniciar sesión'],'Voltar ao login':['Back to login','Volver al inicio de sesión'],
 'Seus dados são privados e acessíveis apenas à sua conta.':['Your data is private and only accessible from your account.','Sus datos son privados y solo accesibles desde su cuenta.'],

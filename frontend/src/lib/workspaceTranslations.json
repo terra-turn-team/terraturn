@@ -3,37 +3,13 @@
     "Overview",
     "Vista general"
   ],
-  "Cada detalhe da sua terra, em perspectiva.": [
-    "Every detail of your land, in perspective.",
-    "Cada detalle de su tierra, en perspectiva."
-  ],
-  "Organize suas áreas de cultivo.": [
-    "Organize your growing areas.",
-    "Organice sus áreas de cultivo."
-  ],
   "Planejamento": [
     "Planning",
     "Planificación"
   ],
-  "Escolhas de hoje. Próximas safras.": [
-    "Today's choices. Future harvests.",
-    "Decisiones de hoy. Próximas cosechas."
-  ],
   "Clima e histórico": [
     "Climate and history",
     "Clima e historial"
-  ],
-  "O passado ajuda a planejar o futuro.": [
-    "The past helps plan the future.",
-    "El pasado ayuda a planificar el futuro."
-  ],
-  "Explore o que compõe sua área.": [
-    "Explore the layers of your land.",
-    "Explore los componentes de su área."
-  ],
-  "Seu ponto de apoio no campo.": [
-    "Your support in the field.",
-    "Su apoyo en el campo."
   ],
   "A IA deverá propor a cultura inicial e a sequência de cultivos com base no clima, no solo e nas restrições informadas. A disponibilidade da área deverá ser validada.": [
     "AI will propose the initial crop and crop sequence using climate, soil and declared constraints. Field availability must be validated.",
@@ -238,10 +214,6 @@
   "INDICADORES DA ÁREA": [
     "FIELD INDICATORS",
     "INDICADORES DEL ÁREA"
-  ],
-  "INTELIGÊNCIA PARA O SOLO": [
-    "INTELLIGENCE FOR THE SOIL",
-    "INTELIGENCIA PARA EL SUELO"
   ],
   "Indicadores no painel": [
     "Dashboard indicators",
