@@ -15,6 +15,7 @@ class Settings(BaseSettings):
     reverse_geocoding_enabled: bool = True
     ai_studies_per_day: int = 15
     ai_chat_per_day: int = 40
+    demo_autogenerate: bool = True
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
     @property

@@ -74,12 +74,19 @@ def rate_limit(db: Session, request: Request, action: str, identifier: str, limi
     now = datetime.now(timezone.utc)
     window = int(now.timestamp()) // (minutes * 60)
     key = hashlib.sha256(f"{action}:{client_ip(request)}:{identifier}:{window}".encode()).hexdigest()
-    row = db.get(RateLimit, key)
-    if row is None:
-        row = RateLimit(key=key, count=0, expires_at=now + timedelta(minutes=minutes * 2))
-        db.add(row)
-    row.count += 1
-    db.commit()
+    from sqlalchemy.exc import IntegrityError
+
+    for _ in range(3):
+        row = db.get(RateLimit, key)
+        if row is None:
+            row = RateLimit(key=key, count=0, expires_at=now + timedelta(minutes=minutes * 2))
+            db.add(row)
+        row.count += 1
+        try:
+            db.commit()
+            break
+        except IntegrityError:
+            db.rollback()
     if row.count > limit:
         raise HTTPException(status_code=429, detail="Too many attempts. Please try again later.")
 

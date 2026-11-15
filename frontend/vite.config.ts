@@ -7,7 +7,7 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.png', 'brand-official-guidelines.png', 'brand-guidelines-dark.png', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png'],
+      includeAssets: ['favicon.png', 'brand/lockup.svg', 'brand/lockup-on-dark.svg', 'brand/logomark.svg', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png'],
       manifest: {
         name: 'TerraTurn — 20 years of NASA data, one planting decision',
         short_name: 'TerraTurn',

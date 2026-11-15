@@ -41,6 +41,14 @@ async def lifespan(app: FastAPI):
 
     service.mark_interrupted()
     service.EXECUTOR.submit(service.motor)
+    from app import demo
+
+    try:
+        demo.seed()
+        if settings.demo_autogenerate:
+            service.EXECUTOR.submit(demo.generate_missing_studies)
+    except Exception:
+        logger.exception("Demo seed failed")
     yield
 
 
@@ -207,6 +215,26 @@ def login(payload: LoginIn, request: Request, response: Response, db: Session = 
     return output_user(user)
 
 
+def deny_demo(user: User) -> None:
+    from app.demo import is_demo
+
+    if is_demo(user):
+        raise HTTPException(status_code=403, detail="This is a read-only demo. Create a free account to save your own farm.")
+
+
+@app.post(BASE + "/auth/demo", response_model=UserOut)
+def demo_login(request: Request, response: Response, db: Session = Depends(get_db)):
+    from app.demo import DEMO_EMAIL, seed
+
+    rate_limit(db, request, "demo", "all", limit=60, minutes=15)
+    user = db.query(User).filter(User.email == DEMO_EMAIL).first()
+    if user is None:
+        seed()
+        user = db.query(User).filter(User.email == DEMO_EMAIL).first()
+    session_cookie(response, user)
+    return output_user(user)
+
+
 @app.get(BASE + "/auth/me", response_model=UserOut)
 def me(user: User = Depends(current_user)):
     return output_user(user)
@@ -215,9 +243,12 @@ def me(user: User = Depends(current_user)):
 @app.post(BASE + "/auth/logout", status_code=204)
 def logout(response: Response, request: Request, db: Session = Depends(get_db)):
     try:
+        from app.demo import is_demo
+
         user = current_user(request.cookies.get(COOKIE_NAME), db)
-        user.token_version += 1
-        db.commit()
+        if not is_demo(user):
+            user.token_version += 1
+            db.commit()
     except HTTPException:
         pass
     response.status_code = 204
@@ -277,6 +308,7 @@ def list_farms(user: User = Depends(current_user), db: Session = Depends(get_db)
 
 @app.post(BASE + "/farms", status_code=201)
 def create_farm(payload: FarmIn, user: User = Depends(current_user), db: Session = Depends(get_db)):
+    deny_demo(user)
     prop = Property(user_id=user.id, property_id_slug=slugify(payload.name), created_at=now_utc())
     apply_farm(prop, payload)
     db.add(prop)
@@ -292,6 +324,7 @@ def get_farm(farm_id: str, user: User = Depends(current_user), db: Session = Dep
 
 @app.put(BASE + "/farms/{farm_id}")
 def update_farm(farm_id: str, payload: FarmIn, user: User = Depends(current_user), db: Session = Depends(get_db)):
+    deny_demo(user)
     prop = owned_farm(db, farm_id, user)
     apply_farm(prop, payload)
     db.commit()
@@ -301,6 +334,7 @@ def update_farm(farm_id: str, payload: FarmIn, user: User = Depends(current_user
 
 @app.delete(BASE + "/farms/{farm_id}", status_code=204)
 def delete_farm(farm_id: str, user: User = Depends(current_user), db: Session = Depends(get_db)):
+    deny_demo(user)
     db.delete(owned_farm(db, farm_id, user))
     db.commit()
     return Response(status_code=204)
@@ -314,6 +348,7 @@ def get_history(farm_id: str, user: User = Depends(current_user), db: Session = 
 
 @app.put(BASE + "/farms/{farm_id}/history", response_model=list[CropHistoryOut])
 def replace_history(farm_id: str, payload: list[CropHistoryIn], user: User = Depends(current_user), db: Session = Depends(get_db)):
+    deny_demo(user)
     if len(payload) > 30:
         raise HTTPException(status_code=422, detail="At most 30 seasons are allowed.")
     prop = owned_farm(db, farm_id, user)
@@ -489,6 +524,7 @@ def export_my_data(user: User = Depends(current_user), db: Session = Depends(get
 
 @app.delete(BASE + "/privacy/account", status_code=204)
 def delete_account(payload: LoginIn, user: User = Depends(current_user), db: Session = Depends(get_db)):
+    deny_demo(user)
     if normalize_email(payload.email) != user.email or not verify_password(user.hashed_password, payload.password):
         raise HTTPException(status_code=403, detail="Please confirm your credentials")
     db.query(ResetToken).filter(ResetToken.user_id == user.id).delete()
@@ -533,6 +569,7 @@ def start_study(db: Session, request: Request, user: User, prop: Property, langu
     running = db.query(AiStudy).filter(AiStudy.property_id == prop.id, AiStudy.status.in_(["queued", "running"])).first()
     if running is not None:
         return running
+
     rate_limit(db, request, "study", user.id, limit=settings.ai_studies_per_day, minutes=1440)
     study = AiStudy(user_id=user.id, property_id=prop.id, status="queued", stage="queued",
                     language=service.motor_language(language), priority=service.priority_from_goals(goals or prop.priorities or []),

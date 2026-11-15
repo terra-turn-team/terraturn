@@ -14,7 +14,7 @@ const queryClient = new QueryClient({defaultOptions:{queries:{staleTime:30_000,r
 function Private({children}:{children:React.ReactNode}) {
   const {user,ready}=useAuth()
   if(!ready)return <div className="loading-page">Loading TerraTurn…</div>
-  if(!user)return <Navigate to="/login" replace/>
+  if(!user){if(IS_DEMO)return <Navigate to="/login" replace/>;window.location.replace('/demo');return <div className="loading-page">Loading TerraTurn…</div>}
   return <>{children}</>
 }
 function Root(){return <BrowserRouter><AuthProvider><Routes>
@@ -23,8 +23,8 @@ function Root(){return <BrowserRouter><AuthProvider><Routes>
   <Route path="/forgot-password" element={<AuthPage mode="forgot"/>}/>
   <Route path="/reset-password" element={<AuthPage mode="reset"/>}/>
   <Route path="/privacy" element={<Privacy/>}/>
-  <Route path="/app" element={IS_DEMO?<Dashboard/>:<Private><Dashboard/></Private>}/>
-  <Route path="/demo" element={<Dashboard/>}/>
+  <Route path="/app" element={<Private><Dashboard/></Private>}/>
+  <Route path="/demo" element={<Private><Dashboard/></Private>}/>
   <Route path="*" element={<Navigate to="/app" replace/>}/>
 </Routes></AuthProvider></BrowserRouter>}
 
