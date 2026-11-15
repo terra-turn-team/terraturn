@@ -42,6 +42,11 @@ const TXT: Dict = {
   slowNote: ['We are fetching this area from the NASA APIs (POWER daily climate since 2005, MODIS NDVI and evapotranspiration). It only happens the first time and can take a few minutes. You can keep using the app.', 'Estamos buscando os dados desta área nas APIs da NASA (clima diário POWER desde 2005, NDVI e evapotranspiração MODIS). Isso só acontece na primeira vez e pode levar alguns minutos. Você pode continuar usando o app.', 'Estamos obteniendo los datos de esta área en las APIs de la NASA (clima diario POWER desde 2005, NDVI y evapotranspiración MODIS). Solo ocurre la primera vez y puede tardar unos minutos. Puede seguir usando la app.'],
   elapsed: ['Elapsed', 'Tempo decorrido', 'Tiempo transcurrido'],
   etaSlow: ['usually 3–8 min', 'normalmente 3–8 min', 'normalmente 3–8 min'],
+  stepQueue: ['Queue', 'Fila', 'Cola'],
+  stepData: ['NASA data', 'Dados NASA', 'Datos NASA'],
+  stepDownload: ['Downloading NASA data', 'Baixando dados NASA', 'Descargando datos NASA'],
+  stepAi: ['AI comparison', 'Comparação com IA', 'Comparación con IA'],
+  retry: ['Try again', 'Tentar novamente', 'Intentar de nuevo'],
   etaFast: ['usually ~30 s', 'normalmente ~30 s', 'normalmente ~30 s'],
   viewFull: ['View full analysis', 'Ver análise completa', 'Ver análisis completo'],
   langNote: ['The AI writes in English or Portuguese; Spanish shows the English answer.', 'A IA escreve em inglês ou português; em espanhol, a resposta aparece em inglês.', 'La IA escribe en inglés o portugués; en español se muestra la respuesta en inglés.'],
@@ -56,7 +61,6 @@ const MONTH_NAMES: Record<Language, string[]> = {
   'pt-BR': ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'],
   es: ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'],
 }
-const EXPECTED: Record<string, number> = { queued: 20, nasa_data_cached: 45, analyzing: 45, downloading_nasa_data: 360 }
 
 function Progress({ stage, startedAt }: { stage: string; startedAt?: string }) {
   const { x } = useTxt()
@@ -65,13 +69,13 @@ function Progress({ stage, startedAt }: { stage: string; startedAt?: string }) {
   const t0 = startedAt ? Date.parse(startedAt) : now
   const secs = Math.max(0, Math.round((now - t0) / 1000))
   const slow = stage === 'downloading_nasa_data'
-  const total = slow ? EXPECTED.downloading_nasa_data + EXPECTED.analyzing : EXPECTED.analyzing
-  const pct = Math.min(95, Math.round((secs / total) * 100))
   const mm = Math.floor(secs / 60), ss = String(secs % 60).padStart(2, '0')
+  const current = stage === 'analyzing' ? 2 : stage === 'downloading_nasa_data' || stage === 'nasa_data_cached' ? 1 : 0
+  const steps = ['stepQueue', slow ? 'stepDownload' : 'stepData', 'stepAi']
   return <div className={`study-progress ${slow ? 'slow' : ''}`}>
     <div className="study-progress-row"><Loader2 size={18} className="spin" /><span>{x(TXT[stage] ? stage : 'queued')}</span></div>
     {slow && <p className="study-progress-note">{x('slowNote')}</p>}
-    <div className="progress-track" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={pct}><i style={{ width: pct + '%' }} /></div>
+    <ol className="study-steps">{steps.map((k, i) => <li key={k} className={i < current ? 'done' : i === current ? 'active' : ''} aria-current={i === current ? 'step' : undefined}>{i < current ? <CheckCircle2 size={14} /> : <span className="dot" />}{x(k)}</li>)}</ol>
     <div className="progress-meta"><span>{x('elapsed')} {mm}:{ss}</span><span>{x(slow ? 'etaSlow' : 'etaFast')}</span></div>
   </div>
 }
@@ -153,7 +157,8 @@ export default function StudyPanel({ farm, compact = false }: { farm: Farm; comp
   if (compact) return <section className="study-panel compact" aria-live="polite">
     <div className="study-top"><div><span className="eyebrow">{x('eyebrow')}</span><h2>{x('title')}</h2></div></div>
     {isRunning && <Progress stage={study?.stage ?? 'queued'} startedAt={study?.created_at} />}
-    {study?.status === 'failed' && !isRunning && <p className="form-error" role="alert">{x('failed')} {study.error}</p>}
+    {study?.status === 'failed' && !isRunning && <><p className="form-error" role="alert">{x('failed')} {study.error}</p><button type="button" className="btn btn-outline btn-wide" disabled={start.isPending} onClick={() => start.mutate(language)}><RefreshCw size={15} /> {x('retry')}</button></>}
+    {startError && <p className="form-error" role="alert">{startError}</p>}
     {result && rec && <div className="study-recommendation"><span className="eyebrow">{x('suggestion')}</span><h3>{cropLabel(rec.suggested_crop, result.crop_names, language)}</h3><p>{rec.message_to_farmer}</p></div>}
     <button type="button" className="btn btn-primary btn-wide" onClick={() => openSheet(true)}><Sparkles size={16} /> {x('viewFull')}</button>
   </section>

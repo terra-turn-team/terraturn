@@ -41,14 +41,11 @@ export function AuthPage({mode}:{mode:Mode}) {
     <div className="auth-side" style={{backgroundImage:'url(/auth-satellite.jpg)'}}>
       <div className="auth-side-top"><Brand onDark/><span className="eyebrow">NASA SPACE APPS 2026 / FIELD SHIFT</span></div>
       <div className="auth-intro"><span className="auth-line"/><h1>{t('O futuro da')}<br/>{t('sua terra começa')}<br/><em>{t('com uma escolha.')}</em></h1><p>{t('Dados geoespaciais, planejamento agrícola e decisões mais conscientes — em um só lugar.')}</p></div>
-      <div className="auth-side-footer"><span className="auth-steps">01 / 03 <i className="on"/><i/><i/></span><span>{t('OBSERVE · PLANEJE · TRANSFORME')}</span></div>
-      <div className="auth-decor" aria-hidden="true"><div/><div/><div/><div/></div>
+      <div className="auth-side-footer"><span>{t('20 ANOS DE DADOS NASA · 31 CULTURAS')}</span></div>
     </div>
     <main className="auth-panel"><div className="auth-language-row"><LanguagePicker/></div>
       <div className="auth-mobile-brand"><Brand /></div>
       <div className="auth-box">
-        <div className="auth-panel-icon"><ShieldCheck size={22}/></div>
-        <span className="eyebrow muted">{t('SUA ÁREA DE TRABALHO')}</span>
         <h2>{t(title)}</h2>
         <p className="auth-subtitle">{t({login:'Acesse suas propriedades e continue de onde parou.',register:'Crie uma conta e comece a mapear suas propriedades.',forgot:'Enviaremos um link temporário para seu e-mail cadastrado.',reset:'Sua nova senha deve conter pelo menos 10 caracteres.'}[mode])}</p>
         <form onSubmit={submit} className="auth-form">

@@ -107,7 +107,7 @@ const translations:Record<string,[string,string]>={
 'sua terra começa':["your land starts","su tierra comienza"],
 'com uma escolha.':["with a choice.","con una decisión."],
 'Dados geoespaciais, planejamento agrícola e decisões mais conscientes — em um só lugar.':["Geospatial data, crop planning and informed decisions — in one place.","Datos geoespaciales, planificación agrícola y mejores decisiones — en un solo lugar."],
-'OBSERVE · PLANEJE · TRANSFORME':["OBSERVE · PLAN · TRANSFORM","OBSERVE · PLANIFIQUE · TRANSFORME"],
+'20 ANOS DE DADOS NASA · 31 CULTURAS':["20 YEARS OF NASA DATA · 31 CROPS","20 AÑOS DE DATOS NASA · 31 CULTIVOS"],
 'Acesse suas propriedades e continue de onde parou.':["Access your properties and pick up where you left off.","Acceda a sus propiedades y continúe donde lo dejó."],
 'Crie uma conta e comece a mapear suas propriedades.':["Create an account and start mapping your properties.","Cree una cuenta y comience a cartografiar sus propiedades."],
 'Enviaremos um link temporário para seu e-mail cadastrado.':["We will email a temporary link to your registered address.","Enviaremos un enlace temporal a su correo registrado."],
