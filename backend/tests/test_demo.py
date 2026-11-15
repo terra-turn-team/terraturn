@@ -143,3 +143,15 @@ def test_demo_autogenerate_queues_both_languages(monkeypatch):
         assert {r.language for r in rows} == {"en", "pt"}
         db.query(AiStudy).filter(AiStudy.id.in_(queued)).delete()
         db.commit()
+
+
+def test_farm_report_pdf(client):
+    demo_login(client)
+    farm = client.get("/api/v1/farms").json()[0]
+    for lang in ("pt-BR", "en", "es"):
+        r = client.get(f"/api/v1/farms/{farm['id']}/report.pdf?language={lang}")
+        assert r.status_code == 200, r.text
+        assert r.headers["content-type"] == "application/pdf"
+        assert r.content.startswith(b"%PDF") and len(r.content) > 3000
+        assert 'filename="terraturn-' in r.headers["content-disposition"]
+    assert client.get("/api/v1/farms/nao-existe/report.pdf").status_code == 404

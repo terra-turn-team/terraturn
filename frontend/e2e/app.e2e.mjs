@@ -196,6 +196,17 @@ for (const [profile, P] of Object.entries(PROFILES)) {
       })
     }
 
+    test('relatório da fazenda baixa em PDF', async () => {
+      const { ctx, page } = await open(profile)
+      await page.locator(P.mobile ? '.map-account' : '.rail-avatar').first().click()
+      const [download] = await Promise.all([page.waitForEvent('download', { timeout: 30000 }),
+        page.locator('.workspace-dialog button', { hasText: 'Farm report (PDF)' }).click()])
+      assert.match(download.suggestedFilename(), /^terraturn-.+\.pdf$/)
+      const bytes = Buffer.concat(await (await download.createReadStream()).toArray())
+      assert.equal(bytes.subarray(0, 4).toString(), '%PDF')
+      await ctx.close()
+    })
+
     test('editor: ajustar o contorno arrastando um vértice e salvar', async () => {
       const { ctx, page } = await open(profile)
       const farmName = P.farm
