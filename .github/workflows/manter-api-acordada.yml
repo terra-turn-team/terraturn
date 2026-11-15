@@ -16,7 +16,7 @@ jobs:
       - name: Chamar /api/v1/health
         run: |
           for i in 1 2 3; do
-            code=$(curl -s -o /tmp/health.json -w '%{http_code}' --max-time 90 https://terraturn.work/api/v1/health || true)
+            code=$(curl -s -o /tmp/health.json -w '%{http_code}' --max-time 90 https://www.terraturn.work/api/v1/health || true)
             echo "tentativa $i: HTTP $code $(cat /tmp/health.json 2>/dev/null)"
             [ "$code" = "200" ] && exit 0
             sleep 20
