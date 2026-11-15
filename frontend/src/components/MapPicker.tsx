@@ -58,7 +58,39 @@ function MapPickerGL({value,onChange,target}:Props) {
       map.addLayer({id:'farm-fill',type:'fill',source:'farm-line',paint:{'fill-color':'#7fd18f','fill-opacity':0.22}})
       map.addLayer({id:'farm-outline',type:'line',source:'farm-line',paint:{'line-color':'#ffffff','line-width':3,'line-dasharray':[1.5,1]}})
       map.addSource('farm-vertices',{type:'geojson',data:{type:'FeatureCollection',features:[]}})
-      map.addLayer({id:'farm-vertices',type:'circle',source:'farm-vertices',paint:{'circle-radius':6,'circle-color':'#ffffff','circle-stroke-color':'#1C2B22','circle-stroke-width':2.7}})
+      map.addSource('farm-mids',{type:'geojson',data:{type:'FeatureCollection',features:[]}})
+      map.addLayer({id:'farm-mids',type:'circle',source:'farm-mids',paint:{'circle-radius':5,'circle-color':'#3E7C4F','circle-opacity':0.85,'circle-stroke-color':'#ffffff','circle-stroke-width':2}})
+      map.addLayer({id:'farm-vertices',type:'circle',source:'farm-vertices',paint:{'circle-radius':8,'circle-color':'#ffffff','circle-stroke-color':'#1C2B22','circle-stroke-width':2.7}})
+      // Arrastar vértices (e pontos do meio de cada lado) para ajustar um contorno já concluído.
+      const startDrag=(ev:maplibregl.MapLayerMouseEvent|maplibregl.MapLayerTouchEvent,insert:boolean)=>{
+        if(!finishedRef.current||!ev.features?.length)return
+        if('points' in ev&&ev.points&&ev.points.length>1)return
+        ev.preventDefault()
+        const i=Number(ev.features[0].properties?.i)
+        const before=pointRef.current
+        let pts=insert?[...before.slice(0,i+1),[ev.lngLat.lng,ev.lngLat.lat],...before.slice(i+1)]:[...before]
+        const idx=insert?i+1:i
+        map.getCanvas().style.cursor='grabbing'
+        const move=(e:MapMouseEvent|maplibregl.MapTouchEvent)=>{pts=pts.map((p,k)=>k===idx?[Number(e.lngLat.lng.toFixed(7)),Number(e.lngLat.lat.toFixed(7))]:p);setPoints(pts)}
+        const end=()=>{
+          map.off('mousemove',move);map.off('touchmove',move);map.getCanvas().style.cursor=''
+          if(isValidPolygon(pts)){setPoints(pts);onChangeRef.current(closedPolygon(pts));setError('')}
+          else{setPoints(before);setError(t('Esse ajuste deixa a área inválida. Tente outra posição.'))}
+        }
+        map.on('mousemove',move);map.on('touchmove',move);map.once('mouseup',end);map.once('touchend',end)
+      }
+      for(const [layer,insert] of [['farm-vertices',false],['farm-mids',true]] as const){
+        map.on('mousedown',layer,e=>startDrag(e,insert))
+        map.on('touchstart',layer,e=>startDrag(e,insert))
+        map.on('mouseenter',layer,()=>{if(finishedRef.current)map.getCanvas().style.cursor='grab'})
+        map.on('mouseleave',layer,()=>{map.getCanvas().style.cursor=''})
+      }
+      map.on('dblclick','farm-vertices',e=>{
+        if(!finishedRef.current||!e.features?.length)return
+        e.preventDefault()
+        const i=Number(e.features[0].properties?.i),pts=pointRef.current.filter((_,k)=>k!==i)
+        if(isValidPolygon(pts)){setPoints(pts);onChangeRef.current(closedPolygon(pts))}
+      })
       setMapReady(true)
     })
     return ()=>{map.off('click',handleMapClick);map.remove();mapRef.current=null}
@@ -74,6 +106,8 @@ function MapPickerGL({value,onChange,target}:Props) {
     else if(points.length>=2)features.push({type:'Feature',properties:{},geometry:{type:'LineString',coordinates:points}})
     ;(map.getSource('farm-line') as maplibregl.GeoJSONSource)?.setData({type:'FeatureCollection',features} as any)
     ;(map.getSource('farm-vertices') as maplibregl.GeoJSONSource)?.setData({type:'FeatureCollection',features:points.map((point,i)=>({type:'Feature',properties:{i},geometry:{type:'Point',coordinates:point}}))} as any)
+    const mids=finished&&points.length>=3?points.map((p,i)=>{const q=points[(i+1)%points.length];return{type:'Feature',properties:{i},geometry:{type:'Point',coordinates:[(p[0]+q[0])/2,(p[1]+q[1])/2]}}}):[]
+    ;(map.getSource('farm-mids') as maplibregl.GeoJSONSource)?.setData({type:'FeatureCollection',features:mids} as any)
   },[points,finished,mapReady])
 
   useEffect(()=>{
@@ -108,7 +142,7 @@ function MapPickerGL({value,onChange,target}:Props) {
         <button type="button" onClick={locate} className="map-tool" title={t('Usar minha localização')}><LocateFixed size={17}/><span>{t('Localizar')}</span></button>
         <div className="base-toggle" role="group" aria-label={t('Tipo de mapa')}>{(['satellite','map'] as const).map(b=><button key={b} type="button" aria-pressed={base===b} className={base===b?'active':''} onClick={()=>switchBase(b)}>{t(b==='satellite'?'Satélite':'Mapa')}</button>)}</div>
       </div>
-      <div className="picker-map-tip">{t('Clique para marcar vértices · Enter para concluir · Backspace desfaz')}</div>
+      <div className="picker-map-tip">{t(finished?'Arraste os pontos para ajustar o contorno · puxe os pontos verdes para criar novos':'Clique para marcar vértices · Enter para concluir · Backspace desfaz')}</div>
     </div>
     <div className="picker-footer">
       <div><span className="eyebrow muted">{t('ÁREA ESTIMADA')}</span><strong>{area!==null?formatHa(area):'—'}</strong><small>{points.length>=3?`${points.length} vértices · WGS84`:t('Marque ao menos 3 pontos')}</small></div>
