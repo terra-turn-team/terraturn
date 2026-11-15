@@ -606,6 +606,31 @@ def pick_study(db: Session, prop: Property, language: str | None) -> AiStudy | N
     return rows[0]
 
 
+@app.get(BASE + "/farms/{farm_id}/report.pdf")
+def farm_report(farm_id: str, language: str | None = Query(default=None, max_length=8), user: User = Depends(current_user),
+                db: Session = Depends(get_db)):
+    """Relatório da fazenda em PDF: cadastro, dados NASA, clima mês a mês e a última análise da IA no idioma pedido."""
+    from app.ia import agronomy, service
+    from app.ia.motor import motor
+    from app.report import build_farm_report
+
+    prop = owned_farm(db, farm_id, user)
+    study = pick_study(db, prop, language)
+    context = agronomy.context_for(prop, study, language)
+    farm_data = land_use = None
+    try:
+        nome = motor().fazenda_mais_proxima(prop.latitude, prop.longitude)
+        farm_data = service.monthly_overview(nome) if nome else None
+        land_use = service.land_use_check(nome) if nome else None
+    except Exception:
+        logger.exception("Report: NASA data unavailable for farm %s", prop.id)
+    pdf = build_farm_report(prop, context, study, language, farm_data, land_use)
+    nome_arquivo = re.sub(r"[^a-z0-9]+", "-", unicodedata.normalize("NFKD", prop.nome_propriedade or "fazenda")
+                          .encode("ascii", "ignore").decode().lower()).strip("-")[:60] or "fazenda"
+    return Response(content=pdf, media_type="application/pdf",
+                    headers={"Content-Disposition": f'attachment; filename="terraturn-{nome_arquivo}.pdf"'})
+
+
 @app.get(BASE + "/farms/{farm_id}/agronomy")
 def farm_agronomy(farm_id: str, language: str | None = Query(default=None, max_length=8), user: User = Depends(current_user), db: Session = Depends(get_db)):
     from app.ia import agronomy

@@ -320,6 +320,28 @@ def point_overview(nome: str) -> dict:
     }
 
 
+def monthly_overview(nome: str) -> dict:
+    """Médias mensais 2020-2024 já carregadas do ponto, sem chamar analisar_fazenda.
+
+    analisar_fazenda usa a trava de dados do motor, que fica presa enquanto outra área baixa dados da NASA (minutos);
+    o relatório em PDF não pode esperar por isso. Mesmas colunas e regras do motor (déficit: balanço < 0; solo
+    descoberto: NDVI < 0,30).
+    """
+    m = motor()
+    df = m.DADOS[nome]
+    por_mes = df.groupby(df.index.month).mean(numeric_only=True).reindex(range(1, 13))
+    r1 = lambda v: None if v is None or v != v else round(float(v), 1)  # noqa: E731
+    monthly = [{"month": int(mes), "rain_mm": r1(row.get("chuva_power_mm")), "temp_mean_c": r1(row.get("temp_c")),
+                "evapotranspiration_mm": r1(row.get("et_mm_mes")), "water_balance_mm": r1(row.get("balanco_power_mm")),
+                "ndvi": None if row.get("ndvi") != row.get("ndvi") or row.get("ndvi") is None else round(float(row["ndvi"]), 2),
+                "root_soil_moisture_pct": r1(row.get("umid_raiz_power") * 100) if row.get("umid_raiz_power") == row.get("umid_raiz_power") and row.get("umid_raiz_power") is not None else None}
+               for mes, row in por_mes.iterrows()]
+    return {"monthly": monthly,
+            "deficit_months": [r["month"] for r in monthly if r["water_balance_mm"] is not None and r["water_balance_mm"] < 0],
+            "bare_soil_months": [r["month"] for r in monthly if r["ndvi"] is not None and r["ndvi"] < 0.30],
+            "agro_indicators": None}
+
+
 def crop_traits() -> dict:
     """Características da tabela oficial de culturas usadas na comparação visual das rotações."""
     return {c: {"drought": t.get("tolera_seca"), "cycle_days": t.get("ciclo_dias"), "market": t.get("mercado"),
