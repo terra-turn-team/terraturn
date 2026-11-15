@@ -24,3 +24,10 @@ test('chat markdown turns asterisks into bold and lists instead of showing them'
   assert.equal(JSON.stringify(b).includes('**'),false)
 })
 test('chat markdown keeps plain math and snake_case untouched',()=>assert.deepEqual(md.parseInline('2 * 3 * 4 and crop_status'),[{type:'text',text:'2 * 3 * 4 and crop_status'}]))
+test('summary keeps the first sentence when it has a decimal number',()=>{
+  const t='Sow sorghum in February, with February rainfall about 160.9 mm. Sorghum tolerates dry weather. Third sentence.'
+  const r=md.firstSentences(t,2)
+  assert.equal(r.short,'Sow sorghum in February, with February rainfall about 160.9 mm. Sorghum tolerates dry weather.')
+  assert.equal(r.more,true)
+  assert.deepEqual(md.firstSentences('Only one.',2),{short:'Only one.',more:false})
+})

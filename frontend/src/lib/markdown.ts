@@ -42,3 +42,9 @@ export function parseMarkdown(src:string):Block[]{
   flush()
   return blocks
 }
+
+// Primeiras frases de um texto. Só corta quando há espaço depois de . ! ?, para não partir números como 160.9.
+export function firstSentences(text:string,n:number):{short:string;more:boolean}{
+  const parts=text.trim().split(/(?<=[.!?])\s+/).filter(Boolean)
+  return {short:parts.slice(0,n).join(' '),more:parts.length>n}
+}

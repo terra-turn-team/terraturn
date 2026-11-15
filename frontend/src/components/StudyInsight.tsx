@@ -1,3 +1,4 @@
+import { firstSentences } from '../lib/markdown'
 import { useState, type ReactNode } from 'react'
 import { AlertTriangle, CalendarDays, Check, CheckCircle2, ChevronDown, Satellite } from 'lucide-react'
 import { useI18n, type Language } from '../lib/i18n'
@@ -153,9 +154,7 @@ function Evidence({ rotation }: { rotation: Rotation }) {
 function Message({ text }: { text: string }) {
   const { x } = useTxt()
   const [open, setOpen] = useState(false)
-  const parts = text.match(/[^.!?]+(?:[.!?]+(?=\s|$)|$)/g) ?? [text]
-  const short = parts.slice(0, 2).join('').trim()
-  const long = parts.length > 2
+  const { short, more: long } = firstSentences(text, 2)
   return <div className="si-message"><p>{open || !long ? text : short}</p>
     {long && <button type="button" className="si-more" aria-expanded={open} onClick={() => setOpen(!open)}>{x(open ? 'less' : 'more')} <ChevronDown size={15} className={open ? 'flip' : ''} /></button>}</div>
 }
