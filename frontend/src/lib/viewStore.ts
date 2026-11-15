@@ -18,7 +18,7 @@ type ViewState = {
 }
 export const useViewStore = create<ViewState>((set)=>({
   selectedFarmId: null, setSelectedFarmId: id => set({ selectedFarmId:id }),
-  monthIndex: new Date().getMonth(), setMonthIndex: n => set({monthIndex:((n%12)+12)%12}),
+  monthIndex: 0, setMonthIndex: n => set({monthIndex:Math.max(0,Math.min(23,n))}),
   layer: 'cultivo', setLayer: layer => set({layer}),
   selectedTab: 'timeline', setSelectedTab: selectedTab=>set({selectedTab}),
   rainfallPct: 0, setRainfallPct: rainfallPct => set({rainfallPct}),

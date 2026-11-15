@@ -149,3 +149,49 @@ def test_chat_without_key(client, motor, monkeypatch):
     register(client)
     r = client.post("/api/v1/ai/chat", json={"message": "Hello"}, headers=ORIGIN)
     assert r.status_code == 503
+
+
+def test_farm_keeps_planning_fields(client):
+    register(client)
+    planning = {"start_month": "2026-11", "horizon_months": 24, "crop_status": "established", "crop_start_month": "2026-10", "crop_end_month": "2027-02"}
+    farm = client.post("/api/v1/farms", json=farm_payload(geometry=TOCA, goals=["erosion", "water"], indicators=["rainfall", "ndvi"], planning=planning), headers=ORIGIN)
+    assert farm.status_code == 201, farm.text
+    body = farm.json()
+    assert body["planning"]["horizon_months"] == 24 and body["indicators"] == ["rainfall", "ndvi"] and body["goals"] == ["erosion", "water"]
+
+
+def test_agronomy_context_uses_nasa_cache(client):
+    register(client)
+    farm = client.post("/api/v1/farms", json=farm_payload(geometry=TOCA, indicators=["rainfall", "temperature", "water_balance", "soil_moisture", "ndvi", "cover"]), headers=ORIGIN).json()
+    ctx = client.get(f"/api/v1/farms/{farm['id']}/agronomy").json()
+    assert ctx["status"] in ("partial", "ready")
+    months = [m["month"] for m in ctx["history"]["monthly"]]
+    assert months == sorted(months) and len(months) == len(set(months)) and len(months) > 30
+    assert ctx["history"]["start_date"][:7] <= months[0] and months[-1] <= ctx["history"]["end_date"][:7]
+    ids = {m["id"] for m in ctx["metrics"]}
+    assert {"rainfall", "temperature", "ndvi"} <= ids
+    assert ctx["plan"]["status"] == "not_connected"
+
+
+def test_simulation_builds_plan_from_study(client, motor, monkeypatch):
+    monkeypatch.setattr(motor, "CLIENTES", {"anthropic": object()})
+    monkeypatch.setattr(motor, "rodar", lambda *a, **k: (SAMPLE, "tool", [], 1.0, 1, 1, 0.0, 0, []))
+    register(client)
+    planning = {"start_month": "2026-11", "horizon_months": 24, "crop_status": "unspecified", "crop_start_month": None, "crop_end_month": None}
+    farm = client.post("/api/v1/farms", json=farm_payload(geometry=TOCA, planning=planning), headers=ORIGIN).json()
+    r = client.post(f"/api/v1/farms/{farm['id']}/simulations", json={"scenario": {"rainfall_percent": 0, "temperature_delta_c": 0}}, headers=ORIGIN)
+    assert r.status_code == 200 and r.json()["status"] in ("processing", "ready")
+    fim = time.time() + 30
+    while time.time() < fim:
+        plan = client.get(f"/api/v1/farms/{farm['id']}/agronomy").json()["plan"]
+        if plan["status"] == "ready":
+            break
+        time.sleep(0.2)
+    assert plan["status"] == "ready" and plan["model_version"] and plan["generated_at"]
+    cycles = plan["cycles"]
+    assert cycles, plan
+    last = None
+    for c in cycles:
+        assert "2026-11" <= c["start_month"] <= c["end_month"] <= "2028-10"
+        assert last is None or c["start_month"] >= last
+        last = c["end_month"]

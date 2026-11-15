@@ -1,3 +1,4 @@
+import {IS_DEMO} from '../lib/demo'
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
 import { sessionApi } from '../lib/api'
 import type { User } from '../types'
@@ -7,7 +8,7 @@ const AuthContext = createContext<AuthContextType|null>(null)
 export function AuthProvider({children}:{children:ReactNode}) {
   const [user,setUser] = useState<User|null>(null)
   const [ready,setReady] = useState(false)
-  useEffect(() => { let active=true; sessionApi.me().then(u=>{if(active)setUser(u)}).catch(()=>{}).finally(()=>{if(active)setReady(true)}); return()=>{active=false} },[])
+  useEffect(() => { let active=true; (IS_DEMO?Promise.resolve(null):sessionApi.me()).then(u=>{if(active)setUser(u)}).catch(()=>{}).finally(()=>{if(active)setReady(true)}); return()=>{active=false} },[])
   const logout = async () => { try { await sessionApi.logout() } finally { setUser(null) } }
   return <AuthContext.Provider value={{user,ready,setUser,logout}}>{children}</AuthContext.Provider>
 }

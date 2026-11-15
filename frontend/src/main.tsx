@@ -7,6 +7,8 @@ import { AuthPage } from './pages/AuthPages'
 import Privacy from './pages/Privacy'
 import Dashboard from './pages/Dashboard'
 import './styles.css'
+import './workspace.css'
+import {IS_DEMO} from './lib/demo'
 
 const queryClient = new QueryClient({defaultOptions:{queries:{staleTime:30_000,retry:1}}})
 function Private({children}:{children:React.ReactNode}) {
@@ -21,7 +23,8 @@ function Root(){return <BrowserRouter><AuthProvider><Routes>
   <Route path="/forgot-password" element={<AuthPage mode="forgot"/>}/>
   <Route path="/reset-password" element={<AuthPage mode="reset"/>}/>
   <Route path="/privacy" element={<Privacy/>}/>
-  <Route path="/app" element={<Private><Dashboard/></Private>}/>
+  <Route path="/app" element={IS_DEMO?<Dashboard/>:<Private><Dashboard/></Private>}/>
+  <Route path="/demo" element={<Dashboard/>}/>
   <Route path="*" element={<Navigate to="/app" replace/>}/>
 </Routes></AuthProvider></BrowserRouter>}
 

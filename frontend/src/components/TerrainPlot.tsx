@@ -53,13 +53,13 @@ export default function TerrainPlot({farm,monthIndex,layer,onInspect,transparent
  <Canvas shadows dpr={[1,1.6]} camera={{position:[10,11,12],fov:43,near:.1,far:80}} gl={{antialias:true,alpha:true}}>
  {!transparent&&<color attach="background" args={['#E8E9E0']}/>}<ambientLight intensity={2.3}/><directionalLight position={[8,12,6]} castShadow intensity={2} shadow-mapSize={[1024,1024]}/>
  <Suspense fallback={<Html center>Preparando visualização…</Html>}><Land farm={farm} monthIndex={monthIndex} layer={layer} onInspect={onInspect}/></Suspense>
- <OrbitControls enablePan minDistance={8} maxDistance={30} maxPolarAngle={Math.PI*.48} minPolarAngle={.17} enableDamping dampingFactor={.08} target={[0,0,0]}/>
+ <OrbitControls enablePan={false} enabled={!transparent} minDistance={8} maxDistance={30} maxPolarAngle={Math.PI*.48} minPolarAngle={.17} enableDamping dampingFactor={.08} target={[0,0,0]}/>
  </Canvas>
  {!transparent&&layer==='chuva'&&<div className="weather-overlay rain-overlay" aria-hidden="true">{Array.from({length:21},(_,i)=><i key={i} style={{left:`${(i*19)%95+2}%`,animationDelay:`${(i%8)*-.31}s`}}/>)}</div>}
  {!transparent&&layer==='vento'&&<div className="weather-overlay wind-overlay" aria-hidden="true">{Array.from({length:12},(_,i)=><i key={i} style={{top:`${(i*23)%81+5}%`,animationDelay:`${(i%7)*-.46}s`}}/>)}</div>}
  {!transparent&&layer==='temperatura'&&<div className="weather-overlay sun-overlay" aria-hidden="true"/>}
  {!transparent&&<div className="terrain-watermark"><span className="plot-dot"/> PLANTAS ESTILIZADAS · NÃO SÃO MEDIÇÕES NASA</div>}
- <div className="terrain-instruction">Arraste para orbitar · Botão direito para mover · Role para aproximar</div>
+ {!transparent&&<div className="terrain-instruction">Arraste para orbitar · Role para aproximar</div>}
  {!transparent&&<div className="terrain-axis" aria-hidden="true"><strong>N</strong><span>↑</span></div>}
  </div>
 }

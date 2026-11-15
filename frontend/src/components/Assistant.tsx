@@ -22,14 +22,14 @@ export function Assistant({farm,onEdit,onNew,onChangeCrop}:{farm:Farm;onEdit:()=
     const lower=input.toLocaleLowerCase('pt-BR')
     try {
       const layers:Record<string,WeatherLayer>={chuva:'chuva',rain:'chuva',precipitação:'chuva',rainfall:'chuva',lluvia:'chuva',temperatura:'temperatura',temperature:'temperatura',calor:'temperatura',heat:'temperatura',vento:'vento',wind:'vento',viento:'vento',solo:'solo',soil:'solo',suelo:'solo',cultivo:'cultivo',crop:'cultivo',plantação:'cultivo',maize:'cultivo'}
-      const wantsLayer=/^(mostrar|exibir|ver|show|display|mostrar capa|ver capa)\b/.test(lower)
+      const wantsLayer=/^(mostrar|exibir|ver|show|display)\b/.test(lower)
       const layerKey=wantsLayer?Object.keys(layers).find(k=>lower.includes(k)):undefined
       const changing=lower.match(/(?:mudar|alterar|trocar)\s+(?:a\s+)?cultura\s+(?:para\s+)?([a-zà-úç\-\s]+)/i)
       if(changing){setPendingCrop(changing[1].trim().replace(/[.!?]$/,''));add('assistant',`Deseja alterar a cultura de ${farm.crop} para ${changing[1].trim()}? Confirme no painel abaixo antes de gravar.`);showAction('Alteração de cultivo pendente de confirmação')}
-      else if(lower.includes('next month')||lower.includes('mes siguiente')||lower.includes('próximo mês')||lower.includes('avançar')||lower.includes('mês seguinte')){setMonthIndex(month+1);setTab('timeline');add('assistant','Timeline avançada em um mês. A etapa selecionada foi destacada.');showAction('Timeline avançada')}
+      else if(lower.includes('next month')||lower.includes('mes siguiente')||lower.includes('próximo mês')||lower.includes('avançar')||lower.includes('mês seguinte')){setMonthIndex(Math.min(month+1,farm.planning.horizon_months-1));setTab('timeline');add('assistant','Timeline avançada em um mês. A etapa selecionada foi destacada.');showAction('Timeline avançada')}
       else if(lower.includes('edit property')||lower.includes('editar propiedad')||lower.includes('editar propriedade')||lower.includes('editar cadastro')){onEdit();add('assistant','Abri o formulário de edição da propriedade.');showAction('Edição de propriedade aberta')}
       else if(lower.includes('new property')||lower.includes('nueva propiedad')||lower.includes('nova propriedade')||lower.includes('cadastrar propriedade')){onNew();add('assistant','Abri o cadastro de uma nova propriedade.');showAction('Novo cadastro aberto')}
-      else if(layerKey){setLayer(layers[layerKey]);add('assistant',`Camada “${layerKey}” selecionada no visualizador 3D. Os indicadores climáticos reais serão mostrados quando a NASA estiver conectada.`);showAction(`Camada alterada para ${layerKey}`)}
+      else if(layerKey){setLayer(layers[layerKey]);add('assistant',`Camada “${layerKey}” selecionada no mapa. Os indicadores climáticos reais serão mostrados quando a NASA estiver conectada.`);showAction(`Camada alterada para ${layerKey}`)}
       else {
         const history=messages.filter(m=>m.id!=='intro').slice(-6).map(m=>({role:m.role,content:m.text}))
         try{const r=await aiApi.chat(input,farm.id,language,history);add('assistant',r.answer||t('Não consegui responder agora. Tente reformular a pergunta.'))}
