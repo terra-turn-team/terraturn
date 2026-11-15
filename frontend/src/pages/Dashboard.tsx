@@ -10,7 +10,6 @@ import {Assistant} from '../components/Assistant'
 import {OverviewPanel,PlanningPanel,ClimatePanel,LayersPanel,SectionEmpty} from '../components/WorkspacePanels'
 import EmptyMap from '../components/EmptyMap'
 import AiLayer from '../components/AiLayer'
-import {aiApi} from '../lib/ai'
 import {useAuth} from '../components/AuthProvider'
 import {api,farmApi,agronomyApi} from '../lib/api'
 import {useViewStore} from '../lib/viewStore'
@@ -32,7 +31,7 @@ export default function Dashboard(){
  const key=['farms',IS_DEMO],farmsQuery=useQuery({queryKey:key,queryFn:farmApi.list}),farms=farmsQuery.data??[];const selected=useViewStore(s=>s.selectedFarmId),select=useViewStore(s=>s.setSelectedFarmId),month=useViewStore(s=>s.monthIndex),setMonth=useViewStore(s=>s.setMonthIndex),layer=useViewStore(s=>s.layer),action=useViewStore(s=>s.latestAction),notify=useViewStore(s=>s.showAction);const farm=useMemo(()=>farms.find(f=>f.id===selected)??farms[0],[farms,selected]);const contextQuery=useQuery({queryKey:['agronomy',farm?.id,farm?.updated_at,language],queryFn:()=>agronomyApi.context(farm!,language),enabled:!!farm,refetchInterval:q=>q.state.data?.plan.status==='processing'?5000:false});const context=contextQuery.data
  useEffect(()=>{if(farm&&selected!==farm.id)select(farm.id)},[farm,selected,select]);useEffect(()=>{if(action){const timer=setTimeout(()=>notify(''),5000);return()=>clearTimeout(timer)}},[action,notify]);useEffect(()=>{setMonth(0);setInspect(!MOBILE)},[farm?.id,setMonth]);
  const go=(p:Panel)=>{setPanel(p);setOpen(true)},edit=()=>IS_DEMO&&!user?.can_edit_farms?notify(t('Na demonstração as fazendas são fixas. Crie uma conta gratuita para cadastrar a sua.')):farm&&setEditor({farm}),newFarm=()=>IS_DEMO?notify(t('Na demonstração as fazendas são fixas. Crie uma conta gratuita para cadastrar a sua.')):setEditor({}),nav=NAV.find(x=>x.id===panel)!,activeLayer=getLayer(layer)
- function saved(f:Farm){const isNew=!editor?.farm;qc.setQueryData<Farm[]>(key,old=>[f,...(old??[]).filter(x=>x.id!==f.id)]);select(f.id);setEditor(null);notify(t('Propriedade salva com sucesso'));go('overview');if(isNew&&!IS_DEMO){setAiOpen(true);aiApi.start(f.id,language).then(st=>qc.setQueryData(['study',f.id,language],st)).catch(()=>qc.invalidateQueries({queryKey:['study',f.id]}))}}
+ function saved(f:Farm){qc.setQueryData<Farm[]>(key,old=>[f,...(old??[]).filter(x=>x.id!==f.id)]);select(f.id);setEditor(null);notify(t('Propriedade salva com sucesso'));go('overview')}
  async function changeCrop(crop:string){if(!farm)return;const {id,area_ha,centroid,created_at,updated_at,...payload}=farm;saved(await farmApi.update(id,{...payload,crop,planning:{...payload.planning,crop_status:crop?'planned':'unspecified',crop_start_month:null,crop_end_month:null}}))}
  async function remove(){if(!removing)return;setBusy(true);setError('');try{await farmApi.remove(removing.id);qc.setQueryData<Farm[]>(key,old=>(old??[]).filter(f=>f.id!==removing.id));setRemoving(null);notify(t('Propriedade removida'))}catch(e){setError((e as Error).message)}finally{setBusy(false)}}
  async function exportAll(){try{downloadJson(IS_DEMO?{mode:'demo',farms}:await api('/privacy/export'),'terraturn-meus-dados.json');notify(t('Exportação dos seus dados concluída'))}catch(e){setError((e as Error).message)}}
