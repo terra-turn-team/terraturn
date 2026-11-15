@@ -7,6 +7,11 @@ const json = (status: number, detail: string) =>
   new Response(JSON.stringify({ detail }), { status, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' } })
 
 export default {
+  // Agendamento (wrangler.jsonc): mantém a API do Render acordada. Só faz GET em /health, não grava nada.
+  async scheduled(_event: unknown, env: Env, ctx: { waitUntil(p: Promise<unknown>): void }): Promise<void> {
+    if (!env.API_ORIGIN) return
+    ctx.waitUntil(fetch(new URL('/api/v1/health', env.API_ORIGIN).toString(), { headers: { 'User-Agent': 'terraturn-keepalive' } }).catch(() => undefined))
+  },
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url)
     if (!url.pathname.startsWith('/api/')) return env.ASSETS.fetch(request)
