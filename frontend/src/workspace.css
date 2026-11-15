@@ -260,3 +260,10 @@ html,body{overscroll-behavior:none;-webkit-tap-highlight-color:transparent}
 .ai-fab,.workspace-map:has(.map-timeline) .ai-fab{bottom:52px}
 .map-timeline,.parcel-inspector{bottom:112px}
 }
+/* Camadas: valor real da fazenda e grupo "Em breve" */
+.workspace-layer .layer-value{display:block;font-size:14px;font-weight:700;color:#1C2B22;margin:2px 0}
+.layer-soon{margin-top:4px;border-top:1px solid var(--ws-line);padding-top:10px}
+.layer-soon>summary{cursor:pointer;font-weight:600;color:#5d6b61;list-style:none;display:flex;justify-content:space-between;align-items:center;padding:6px 2px}
+.layer-soon>summary::-webkit-details-marker{display:none}
+.layer-soon>summary span{font-size:11px;color:#78857d}
+.workspace-layer.is-soon{opacity:.6;cursor:default}
