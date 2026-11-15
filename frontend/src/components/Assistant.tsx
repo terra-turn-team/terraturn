@@ -16,9 +16,12 @@ export function Assistant({farm,onEdit,onNew,onChangeCrop}:{farm:Farm;onEdit:()=
   const saved=useChatStore(s=>s.byFarm[farm.id]),addToStore=useChatStore(s=>s.add)
   const messages=saved?.length?[...initial,...saved]:initial
   const listRef=useRef<HTMLDivElement>(null)
-  useEffect(()=>{const el=listRef.current;if(el)el.scrollTop=el.scrollHeight},[messages.length])
   const [text,setText]=useState('')
   const [sending,setSending]=useState(false)
+  const [waited,setWaited]=useState(0)
+  useEffect(()=>{const el=listRef.current;if(el)el.scrollTop=el.scrollHeight},[messages.length,sending])
+  // Conta os segundos de espera para avisar quando a resposta da IA demora mais.
+  useEffect(()=>{if(!sending){setWaited(0);return}const id=setInterval(()=>setWaited(w=>w+1),1000);return()=>clearInterval(id)},[sending])
   const [pendingCrop,setPendingCrop]=useState('')
   const setLayer=useViewStore(s=>s.setLayer),setMonthIndex=useViewStore(s=>s.setMonthIndex)
   const month=useViewStore(s=>s.monthIndex),setTab=useViewStore(s=>s.setSelectedTab),showAction=useViewStore(s=>s.showAction)
@@ -45,7 +48,7 @@ export function Assistant({farm,onEdit,onNew,onChangeCrop}:{farm:Farm;onEdit:()=
     }finally{setSending(false)}
   }
   const confirmChange=async()=>{try{await onChangeCrop(pendingCrop);add('assistant',fill(t('Cultura principal alterada para {cultura}. O modelo 3D foi atualizado com aparência ilustrativa.'),{cultura:pendingCrop}));showAction(fill(t('Cultura alterada para {cultura}'),{cultura:pendingCrop}));setPendingCrop('')}catch{add('assistant',t('Não foi possível salvar a alteração. Tente pelo formulário de edição.'))}}
-  return <div className="assistant-panel"><div className="chat-messages" aria-live="polite" ref={listRef}>{messages.map(m=><div key={m.id} className={`chat-message ${m.role}`}><div className="chat-avatar">{m.role==='assistant'?<Bot size={16}/>:<span>{t('EU')}</span>}</div><div className="chat-bubble">{m.role==='assistant'?<Markdown text={m.id==='intro'?t(m.text):m.text}/>:<p>{m.text}</p>}<time>{m.time}</time></div></div>)}{pendingCrop&&<div className="chat-confirm"><AlertCircle size={16}/><span>{fill(t('Salvar cultura “{cultura}” nesta propriedade?'),{cultura:pendingCrop})}</span><button type="button" className="btn btn-primary btn-small" onClick={confirmChange}><Check size={13}/> {t('Confirmar')}</button><button type="button" className="btn btn-outline btn-small" onClick={()=>setPendingCrop('')}>{t('Cancelar')}</button></div>}</div>
+  return <div className="assistant-panel"><div className="chat-messages" aria-live="polite" ref={listRef}>{messages.map(m=><div key={m.id} className={`chat-message ${m.role}`}><div className="chat-avatar">{m.role==='assistant'?<Bot size={16}/>:<span>{t('EU')}</span>}</div><div className="chat-bubble">{m.role==='assistant'?<Markdown text={m.id==='intro'?t(m.text):m.text}/>:<p>{m.text}</p>}<time>{m.time}</time></div></div>)}{sending&&<div className="chat-message assistant chat-typing" role="status" aria-live="polite"><div className="chat-avatar"><Bot size={16}/></div><div className="chat-bubble"><span className="typing-dots" aria-hidden="true"><i/><i/><i/></span><p>{t(waited>=8?'Ainda analisando os dados da NASA… pode levar até 30 segundos.':'A IA está gerando a resposta…')}</p></div></div>}{pendingCrop&&<div className="chat-confirm"><AlertCircle size={16}/><span>{fill(t('Salvar cultura “{cultura}” nesta propriedade?'),{cultura:pendingCrop})}</span><button type="button" className="btn btn-primary btn-small" onClick={confirmChange}><Check size={13}/> {t('Confirmar')}</button><button type="button" className="btn btn-outline btn-small" onClick={()=>setPendingCrop('')}>{t('Cancelar')}</button></div>}</div>
     <form onSubmit={send} className="chat-compose"><Sparkles size={17}/><input value={text} onChange={e=>setText(e.target.value)} placeholder={t('Pergunte, altere ou explore a sua propriedade...')} maxLength={2000} aria-label={t('Mensagem para assistente')}/><button type="submit" disabled={!text.trim()||sending} aria-label={t('Enviar mensagem')}><ArrowUp size={18}/></button></form><p className="chat-disclaimer">{t('Respostas com dados da NASA desta fazenda · valide com um agrônomo local')}</p>
   </div>
 }

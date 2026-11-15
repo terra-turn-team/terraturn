@@ -45,7 +45,7 @@ async function open(profile, { language = 'en', path = '/demo' } = {}) {
   // Mapa base e imagens de satélite externos ficam fora do teste; a IA é simulada.
   await page.route(/tiles\.openfreemap\.org/, r => r.fulfill({ json: STYLE }))
   await page.route(/arcgisonline|opentopomap|mapterhorn|gibs\.earthdata/, r => r.abort())
-  await page.route('**/api/v1/ai/chat', r => r.fulfill({ json: { answer: AI_ANSWER, farm_data: true } }))
+  await page.route('**/api/v1/ai/chat', async r => { await new Promise(x => setTimeout(x, 800)); await r.fulfill({ json: { answer: AI_ANSWER, farm_data: true } }) })
   await page.goto(BASE + path)
   if (path.startsWith('/demo')) await page.locator('.function-rail').waitFor()
   await page.waitForTimeout(1500)
@@ -131,7 +131,9 @@ for (const [profile, P] of Object.entries(PROFILES)) {
       await page.locator('.ai-fab').click()
       await page.locator('.chat-compose input').fill('How much rain?')
       await page.keyboard.press('Enter')
+      await page.locator('.chat-typing').waitFor({ timeout: 3000 }) // indicador de que a IA está gerando a resposta
       await page.locator('.chat-bubble strong', { hasText: 'Rain on your farm' }).waitFor()
+      assert.equal(await page.locator('.chat-typing').count(), 0, 'indicador continua depois da resposta')
       const chat = await page.locator('.ai-chat').innerText()
       assert.ok(!chat.includes('**'), 'asteriscos aparecendo')
       assert.equal(await page.locator('.ai-chat .md li').count(), 2)
