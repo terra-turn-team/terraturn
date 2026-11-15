@@ -71,7 +71,7 @@ def test_study_without_key_fails_cleanly(client, motor, monkeypatch):
     r = client.post("/api/v1/ai/studies", json={"farm_id": farm["id"]}, headers=ORIGIN)
     assert r.status_code == 202
     s = wait_study(client, r.json()["id"])
-    assert s["status"] == "failed" and "ANTHROPIC_API_KEY" in s["error"]
+    assert s["status"] == "failed" and s["error"] == "AI is temporarily unavailable. Please try again later."
 
 
 def test_study_complete_with_mocked_llm(client, motor, monkeypatch):
@@ -195,3 +195,54 @@ def test_simulation_builds_plan_from_study(client, motor, monkeypatch):
         assert "2026-11" <= c["start_month"] <= c["end_month"] <= "2028-10"
         assert last is None or c["start_month"] >= last
         last = c["end_month"]
+
+
+
+def _auth_error():
+    import httpx
+    import openai
+
+    resp = httpx.Response(401, request=httpx.Request("POST", "https://api.anthropic.com/v1/chat/completions"))
+    return openai.AuthenticationError("Error code: 401 - invalid x-api-key", response=resp, body=None)
+
+
+def test_study_invalid_key_shows_friendly_message(client, motor, monkeypatch):
+    def boom(*a, **k):
+        raise _auth_error()
+
+    monkeypatch.setattr(motor, "CLIENTES", {"anthropic": object()})
+    monkeypatch.setattr(motor, "rodar", boom)
+    register(client)
+    farm = client.post("/api/v1/farms", json=farm_payload(geometry=TOCA), headers=ORIGIN).json()
+    s = wait_study(client, client.post("/api/v1/ai/studies", json={"farm_id": farm["id"]}, headers=ORIGIN).json()["id"])
+    assert s["status"] == "failed"
+    assert s["error"] == "AI is temporarily unavailable. Please try again later." and "401" not in s["error"]
+
+
+def test_chat_invalid_key_shows_friendly_message(client, motor, monkeypatch):
+    class Bad:
+        def create(self, **kw):
+            raise _auth_error()
+
+    monkeypatch.setattr(motor, "CLIENTES", {"anthropic": SimpleNamespace(chat=SimpleNamespace(completions=Bad()))})
+    register(client)
+    r = client.post("/api/v1/ai/chat", json={"message": "Hello"}, headers=ORIGIN)
+    assert r.status_code == 503 and "401" not in r.json()["detail"]
+
+
+def test_ai_status_reports_key_state(client, motor, monkeypatch):
+    from app.ia import service
+
+    class Bad:
+        def create(self, **kw):
+            raise _auth_error()
+
+    service._STATUS_CACHE.update(at=0.0, value=None)
+    monkeypatch.setattr(motor, "CLIENTES", {})
+    assert client.get("/api/v1/ai/status").json()["llm"] == "missing_api_key"
+    monkeypatch.setattr(motor, "CLIENTES", {"anthropic": SimpleNamespace(chat=SimpleNamespace(completions=Bad()))})
+    assert client.get("/api/v1/ai/status").json()["llm"] == "invalid_api_key"
+    service._STATUS_CACHE.update(at=0.0, value=None)
+    monkeypatch.setattr(motor, "CLIENTES", {"anthropic": SimpleNamespace(chat=SimpleNamespace(completions=FakeCompletions()))})
+    assert client.get("/api/v1/ai/status").json()["llm"] == "ready"
+    service._STATUS_CACHE.update(at=0.0, value=None)

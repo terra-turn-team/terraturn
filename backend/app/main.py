@@ -516,9 +516,9 @@ def study_output(s: AiStudy) -> dict:
 
 @app.get(BASE + "/ai/status")
 def ai_status():
-    from app.ia.motor import llm_disponivel
+    from app.ia import service
 
-    return {"llm": "ready" if llm_disponivel() else "missing_api_key", "engine": "llm_v17", "crop_table": "v2"}
+    return {"llm": service.llm_status(), "engine": "llm_v17", "crop_table": "v2"}
 
 
 @app.post(BASE + "/ai/studies", status_code=202)
@@ -587,8 +587,8 @@ def ai_chat(payload: ChatIn, request: Request, user: User = Depends(current_user
     rate_limit(db, request, "chat", user.id, limit=settings.ai_chat_per_day, minutes=1440)
     try:
         return service.chat(prop, payload.message, payload.language, [h.model_dump() for h in payload.history])
-    except RuntimeError as exc:
-        raise HTTPException(status_code=503, detail=str(exc))
-    except Exception:
+    except Exception as exc:
         logger.exception("Chat failed")
-        raise HTTPException(status_code=502, detail="The assistant could not answer right now. Please try again.")
+        msg = service.user_message(exc)
+        raise HTTPException(status_code=503 if msg != service.MSG_GENERIC else 502,
+                            detail=msg if msg != service.MSG_GENERIC else "The assistant could not answer right now. Please try again.")
