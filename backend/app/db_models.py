@@ -50,6 +50,8 @@ class Property(Base):
     planting_month = Column(Integer, nullable=True)
     soil = Column(JSON, nullable=False, default=dict)
     notes = Column(Text, nullable=False, default="")
+    indicators = Column(JSON, nullable=True)
+    planning = Column(JSON, nullable=True)
     geometry = Column(JSON, nullable=False)
     created_at = Column(DateTime(timezone=True), default=_now)
     updated_at = Column(DateTime(timezone=True), default=_now, index=True)
