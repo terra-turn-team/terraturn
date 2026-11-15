@@ -17,3 +17,4 @@ saidas/
 !backend/app/ia/cache_demo/saidas/
 backend/app/ia/cache_demo/saidas/mesclado_mensal_ponto_*
 backend/app/ia/cache_demo/data/t_*
+**/e2e-screenshots/
