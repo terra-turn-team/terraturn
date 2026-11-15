@@ -4,6 +4,7 @@ import type { Farm } from '../types'
 import { useI18n, type Language } from '../lib/i18n'
 import { ApiError } from '../lib/api'
 import { cropLabel, useStudy, type Rotation, type StudyResult } from '../lib/ai'
+import { useViewStore } from '../lib/viewStore'
 
 type Dict = Record<string, [string, string, string]>
 const TXT: Dict = {
@@ -38,6 +39,7 @@ const TXT: Dict = {
   irrigated: ['You marked this farm as irrigated. TerraTurn assumes rainfed farming, so treat this analysis as a rainfed reference.', 'Você marcou esta fazenda como irrigada. O TerraTurn considera lavoura de sequeiro; use esta análise como referência de sequeiro.', 'Marcó esta finca como regada. TerraTurn asume secano; use este análisis como referencia de secano.'],
   disclaimerLocal: ['Decision support only. Validate with a local agronomist before deciding.', 'Apoio à decisão. Valide com um agrônomo local antes de decidir.', 'Apoyo a la decisión. Valide con un agrónomo local antes de decidir.'],
   sources: ['Sources', 'Fontes', 'Fuentes'],
+  viewFull: ['View full analysis', 'Ver análise completa', 'Ver análisis completo'],
   langNote: ['The AI writes in English or Portuguese; Spanish shows the English answer.', 'A IA escreve em inglês ou português; em espanhol, a resposta aparece em inglês.', 'La IA escribe en inglés o portugués; en español se muestra la respuesta en inglés.'],
 }
 const MONTHS: Record<Language, string[]> = {
@@ -122,7 +124,15 @@ export default function StudyPanel({ farm, compact = false }: { farm: Farm; comp
   const startError = start.error instanceof ApiError ? start.error.message : start.error ? x('failed') : ''
   const rec = result?.analysis.recommendation
   const recIndex = result ? result.analysis.rotations.findIndex(r => r.name === rec?.rotation_name) : -1
+  const openSheet = useViewStore(s => s.setAiSheetOpen)
   if (compact && !study && !isRunning) return null
+  if (compact) return <section className="study-panel compact" aria-live="polite">
+    <div className="study-top"><div><span className="eyebrow">{x('eyebrow')}</span><h2>{x('title')}</h2></div></div>
+    {isRunning && <div className="study-progress"><Loader2 size={18} className="spin" /><span>{x(study?.stage && TXT[study.stage] ? study.stage : 'queued')}</span></div>}
+    {study?.status === 'failed' && !isRunning && <p className="form-error" role="alert">{x('failed')} {study.error}</p>}
+    {result && rec && <div className="study-recommendation"><span className="eyebrow">{x('suggestion')}</span><h3>{cropLabel(rec.suggested_crop, result.crop_names, language)}</h3><p>{rec.message_to_farmer}</p></div>}
+    <button type="button" className="btn btn-primary btn-wide" onClick={() => openSheet(true)}><Sparkles size={16} /> {x('viewFull')}</button>
+  </section>
   const stage = isRunning ? (study?.stage && TXT[study.stage] ? study.stage : 'queued') : ''
   return <section className={`study-panel ${compact ? 'compact' : ''}`} aria-live="polite">
     <div className="study-top">

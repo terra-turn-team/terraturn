@@ -13,6 +13,8 @@ type ViewState = {
   setRainfallPct: (percent:number)=>void
   tempDeltaC: number
   setTempDeltaC: (delta:number)=>void
+  aiSheetOpen: boolean
+  setAiSheetOpen: (open:boolean)=>void
   latestAction: string
   showAction: (text:string)=>void
 }
@@ -23,5 +25,6 @@ export const useViewStore = create<ViewState>((set)=>({
   selectedTab: 'timeline', setSelectedTab: selectedTab=>set({selectedTab}),
   rainfallPct: 0, setRainfallPct: rainfallPct => set({rainfallPct}),
   tempDeltaC: 0, setTempDeltaC: tempDeltaC => set({tempDeltaC}),
+  aiSheetOpen: false, setAiSheetOpen: aiSheetOpen => set({aiSheetOpen}),
   latestAction: '', showAction: latestAction => set({latestAction})
 }))
