@@ -8,5 +8,7 @@
     "not_found_handling": "single-page-application",
     "run_worker_first": ["/api/*"]
   },
-  "keep_vars": true
+  "keep_vars": true,
+  // A cada 5 min o Worker chama /api/v1/health para o Render grátis não dormir.
+  "triggers": { "crons": ["*/5 * * * *"] }
 }
