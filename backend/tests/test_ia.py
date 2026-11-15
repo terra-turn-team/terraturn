@@ -93,7 +93,8 @@ def test_study_complete_with_mocked_llm(client, motor, monkeypatch):
     assert res["analysis"]["recommendation"]["suggested_crop"]
     assert res["farm_data"]["point"] == "fazenda_da_toca_sudeste"
     assert res["priority"] == "water" and res["language"] == "pt"
-    assert chamado["prio"] == "agua" and chamado["idioma"] == "pt"
+    assert chamado["prio"] == ["agua"] and chamado["idioma"] == "pt"
+    assert "<alternatives_rule>" in chamado["pedido"]
     assert "<farm_phases>" in chamado["pedido"] and "<pre_ranked_crops>" in chamado["pedido"]
     assert "Soja" in chamado["pedido"] and "out" in chamado["pedido"]
     latest = client.get(f"/api/v1/farms/{farm['id']}/studies/latest").json()
@@ -246,6 +247,30 @@ def test_ai_status_reports_key_state(client, motor, monkeypatch):
     monkeypatch.setattr(motor, "CLIENTES", {"anthropic": SimpleNamespace(chat=SimpleNamespace(completions=FakeCompletions()))})
     assert client.get("/api/v1/ai/status").json()["llm"] == "ready"
     service._STATUS_CACHE.update(at=0.0, value=None)
+
+
+def test_priorities_use_all_farm_goals():
+    from app.ia import service
+
+    assert service.priorities_from_goals(["soil", "yield", "erosion", "water"]) == ["solo", "renda", "erosao"]
+    assert service.priorities_from_goals(["soil", "fertility"]) == ["solo"]
+    assert service.priorities_from_goals([], first="risco") == ["risco"]
+    assert service.priorities_from_goals(["soil", "yield"], first="renda") == ["renda", "solo"]
+    assert service.priorities_from_goals(None) == ["agua"]
+    assert service.priority_text("erosao", "pt").startswith("Prioridade:")
+
+
+def test_regional_ranking_keeps_only_off_season_crops():
+    from app.ia import service
+    from app.ia.motor import motor
+
+    motor()
+    iowa = service.regional_ranking("boone_iowa_eua", ["solo", "risco"])
+    assert iowa and "guandu" not in iowa and "feijao_caupi" not in iowa
+    cerrado = service.regional_ranking("uberaba_fazenda_agronelli", ["solo", "risco"])
+    assert cerrado[:2] == ["feijao_caupi", "guandu"]
+    pedido = service.apply_regional_ranking("x\n<pre_ranked_crops>\n1. guandu\n</pre_ranked_crops>", "boone_iowa_eua", ["solo"])
+    assert pedido.count("<pre_ranked_crops>") == 1 and "1. guandu" not in pedido
 
 
 def test_clean_text_removes_engine_field_names():

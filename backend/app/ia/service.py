@@ -14,8 +14,19 @@ logger = logging.getLogger("terraturn.ia")
 EXECUTOR = ThreadPoolExecutor(max_workers=2, thread_name_prefix="ia")
 
 GOAL_TO_PRIORITY = {"water": "agua", "soil": "solo", "yield": "renda", "cost": "renda", "resilience": "risco",
-                    "fertility": "solo", "erosion": "solo", "diversity": "solo", "phytosanitary": "risco", "margin": "renda"}
-PRIORITY_TO_GOAL = {"agua": "water", "solo": "soil", "renda": "yield", "risco": "resilience"}
+                    "fertility": "solo", "erosion": "erosao", "diversity": "solo", "phytosanitary": "risco", "margin": "renda"}
+PRIORITY_TO_GOAL = {"agua": "water", "solo": "soil", "renda": "yield", "risco": "resilience", "erosao": "erosion", "forragem": "forage"}
+# O motor só traz em português as quatro prioridades originais; as demais ficam aqui.
+PRIORIDADES_PT_EXTRA = {"erosao": "Prioridade: reduzir a erosão e manter o solo coberto.",
+                        "forragem": "Prioridade: produzir forragem para o gado na seca."}
+MAX_PRIORIDADES = 3
+# Pede alternativas de fato diferentes entre si; o ranking do motor sozinho tende a repetir as mesmas culturas.
+REGRA_ALTERNATIVAS = (
+    "\n<alternatives_rule>\nThe farmer has these priorities, in order: {prios}. Weigh all of them together, using the tool data.\n"
+    "The two alternatives must be clearly different from each other: each one must use a different second-season or "
+    "cover crop (never the same crop in both), taken from different positions of <pre_ranked_crops> (for example #1 and "
+    "#3, not only #1). Recommend the alternative that best serves all the priorities with this farm's data; #1 of the "
+    "ranking is a starting point, not an obligation. Explain the choice in 'why'.\n</alternatives_rule>")
 MONTHS_EN = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 MONTHS_PT = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"]
 VAZIOS = {"", "não informado", "nao informado", "outra cultura", "not informed"}
@@ -124,6 +135,53 @@ def priority_from_goals(goals) -> str:
     return "agua"
 
 
+def priorities_from_goals(goals, first: str | None = None) -> list[str]:
+    """Todas as metas da fazenda (até 3, sem repetir), começando pela prioridade escolhida na análise."""
+    out = [first] if first else []
+    for g in goals or []:
+        p = GOAL_TO_PRIORITY.get(g)
+        if p and p not in out:
+            out.append(p)
+    return (out or ["agua"])[:MAX_PRIORIDADES]
+
+
+def regional_ranking(nome: str, prio) -> list[str]:
+    """Ranking do motor restrito às culturas que podem ser semeadas na 2ª safra ou na entressafra desta fazenda.
+
+    O motor filtra pelo clima do ano inteiro; no Sul ou na Argentina isso deixava passar culturas que só cabem no
+    verão, quando a área está com a cultura principal.
+    """
+    m = motor()
+    fases = m.FASES_POR[nome]
+    livres = set(m.meses_do_periodo(*fases[1])) | set(m.meses_do_periodo(*fases[2]))
+    cabem = {c for c, meses in m.JANELAS[nome][0].items() if set(meses) & livres}
+    if not cabem:
+        return []
+    r = m.analisar_fazenda(*m.PONTOS[nome], fases[1][0], fases[2][1])
+    if r.get("status") != "ok":
+        return []
+    return m.ranking_culturas(prio, r["deficit_months"], r["bare_soil_months"], cabem)[:4]
+
+
+def apply_regional_ranking(pedido: str, nome: str, prio) -> str:
+    ordem = regional_ranking(nome, prio)
+    if not ordem:
+        return pedido
+    bloco = ("<pre_ranked_crops>\nComputed by TerraTurn from the crop table, the priority and the deficit/bare-soil months, "
+             "keeping only crops whose sow_months fall in this farm's second-crop or dry-season phases (the main season is "
+             "already taken by the main crop). Build the 2 alternatives around these crops.\n"
+             + "\n".join(f"{i + 1}. {c}" for i, c in enumerate(ordem)) + "\n</pre_ranked_crops>")
+    novo, n = re.subn(r"<pre_ranked_crops>.*?</pre_ranked_crops>", lambda _: bloco, pedido, flags=re.S)
+    return novo if n else pedido + "\n" + bloco
+
+
+def priority_text(prio: str, idioma: str) -> str:
+    m = motor()
+    if idioma == "pt":
+        return m.PRIORIDADES_PT.get(prio) or PRIORIDADES_PT_EXTRA.get(prio) or m.PRIORIDADES[prio]
+    return m.PRIORIDADES[prio]
+
+
 def describe_rotation(prop: Property, idioma: str) -> str:
     crop = (prop.crop or "").strip()
     prev = (prop.previous_crop or "").strip()
@@ -148,14 +206,15 @@ def describe_rotation(prop: Property, idioma: str) -> str:
     return " ".join(partes) or "I have not described my current rotation yet."
 
 
-def build_request(prop: Property, prio: str, idioma: str) -> str:
-    m = motor()
+def build_request(prop: Property, prio, idioma: str) -> str:
+    prios = prio if isinstance(prio, (list, tuple)) else [prio]
+    texto_prio = " ".join(priority_text(p, idioma) for p in prios)
     rot = describe_rotation(prop, idioma)
     area = round(prop.tamanho_hectares or 0, 1)
     if idioma == "pt":
         return (f"Minha fazenda fica em lat {prop.latitude:.4f}, lon {prop.longitude:.4f}, {area} ha. {rot} "
-                f"{m.PRIORIDADES_PT.get(prio, m.PRIORIDADES[prio])}")
-    return f"My farm is at lat {prop.latitude:.4f}, lon {prop.longitude:.4f}, {area} ha. {rot} {m.PRIORIDADES[prio]}"
+                f"{texto_prio}")
+    return f"My farm is at lat {prop.latitude:.4f}, lon {prop.longitude:.4f}, {area} ha. {rot} {texto_prio}"
 
 
 def _point_files(lat: float, lon: float, nome: str):
@@ -246,7 +305,8 @@ def run_study(study_id: str) -> None:
         with SessionLocal() as db:
             s = db.get(AiStudy, study_id)
             prop = db.get(Property, s.property_id)
-            lat, lon, prio, idioma = prop.latitude, prop.longitude, s.priority, motor_language(s.language)
+            lat, lon, idioma = prop.latitude, prop.longitude, motor_language(s.language)
+            prio = priorities_from_goals(prop.priorities, first=s.priority)
             irrigated = (prop.soil or {}).get("irrigation") == "irrigated"
             pedido_txt = build_request(prop, prio, idioma)
         m = motor()
@@ -260,7 +320,8 @@ def run_study(study_id: str) -> None:
         descobertos = m.analisar_fazenda(*m.PONTOS[nome], *m.FASES_POR[nome][2]).get("bare_soil_months", [])
         janelas = m.JANELAS[nome][0]
         fatos = m.fatos_agro(nome)
-        pedido = m.montar_pedido(pedido_txt, prio, nome, idioma)
+        pedido = apply_regional_ranking(m.montar_pedido(pedido_txt, prio, nome, idioma), nome, prio)
+        pedido += REGRA_ALTERNATIVAS.format(prios=", ".join(prio))
         texto, via, chamadas, seg, tin, tout, _, corr, _ = m.rodar(
             "anthropic", m.MODELOS_TESTE[0], pedido, prio, descobertos, janelas, fatos, idioma)
         if not texto:
@@ -270,7 +331,8 @@ def run_study(study_id: str) -> None:
         result = {
             "analysis": resposta,
             "farm_data": overview,
-            "priority": PRIORITY_TO_GOAL.get(prio, prio),
+            "priority": PRIORITY_TO_GOAL.get(prio[0], prio[0]),
+            "priorities": [PRIORITY_TO_GOAL.get(p, p) for p in prio],
             "language": idioma,
             "irrigated_warning": irrigated,
             "crop_names": crop_names(),
