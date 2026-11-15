@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { Loader2, Maximize2, Minimize2, Sparkles, X } from 'lucide-react'
 import type { Farm } from '../types'
 import { useI18n } from '../lib/i18n'
@@ -41,10 +42,11 @@ export default function AiLayer({ farm, sheetOpen, setSheetOpen, hideFab, onEdit
         : rec ? <button type="button" onClick={() => setSheetOpen(true)}><small>{t('A IA recomenda')}</small><strong>{cropLabel(rec.suggested_crop, study?.result?.crop_names, language)} · {t('Ver análise')}</strong></button>
         : <button type="button" onClick={run}><small>{t('IA da TerraTurn')}</small><strong>{t('Analisar esta fazenda com IA')}</strong></button>}
     </div>
-    {sheetOpen && <div className="ai-sheet" role="dialog" aria-modal="true" aria-label={t('Análise de rotação com IA')}>
+    {/* A folha cobre a tela inteira: fica fora da área do mapa para não ser coberta pelo painel lateral. */}
+    {sheetOpen && createPortal(<div className="ai-sheet" role="dialog" aria-modal="true" aria-label={t('Análise de rotação com IA')}>
       <div className="ai-sheet-head"><span><Sparkles size={16} /> {t('Análise de rotação com IA')} · {farm.name}</span><button type="button" className="icon-btn" aria-label={t('Fechar')} onClick={() => setSheetOpen(false)}><X size={18} /></button></div>
       <div className="ai-sheet-body"><StudyPanel farm={farm} /></div>
-    </div>}
+    </div>, document.querySelector('.terra-workspace') ?? document.body)}
     {!hideFab && <>
       {chatOpen && <div className={`ai-chat ${chatSize}`} role="dialog" aria-label={t('Assistente')}>
         <div className="ai-chat-head"><span className="ai-chat-title"><img src="/brand/logomark.svg" alt="" /><span><strong>{t('IA da TerraTurn')}</strong><small>{farm.name}</small></span></span><div className="ai-chat-actions">

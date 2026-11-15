@@ -482,3 +482,26 @@ html,body{overscroll-behavior:none;-webkit-tap-highlight-color:transparent}
 @media (max-width:760px){.ai-chat{border:0;border-radius:0}.ai-chat .ai-chat-head{padding-top:calc(10px + env(safe-area-inset-top))}#root .terra-workspace .tt-chat .chat-row.assistant .md :is(p,li),#root .terra-workspace .tt-chat .chat-user{font-size:14.5px}.tt-chat .chat-compose{margin:4px 10px calc(4px + env(safe-area-inset-bottom))}}
 @media (min-width:761px){.ai-chat:not(.max){height:min(560px,calc(100% - 280px))}}
 @media (min-width:761px){.ai-chat:not(.max) .chat-empty{gap:6px;padding:0}.ai-chat:not(.max) .chat-empty-mark{width:30px;height:30px;margin:0}.ai-chat:not(.max) .chat-facts{margin-top:4px}.ai-chat:not(.max) .chat-suggestions{margin-top:4px;gap:5px}.ai-chat:not(.max) .chat-suggestions button{padding:7px 11px}#root .terra-workspace .ai-chat:not(.max) .tt-chat .chat-empty h3{font-size:21px}}
+/* Análise em tela inteira: sem moldura interna */
+.ai-sheet{position:fixed;inset:0;z-index:200;border-radius:0;box-shadow:none;background:#FBFAF6}
+.ai-sheet-head{padding:14px 28px}
+.ai-sheet-body{padding:28px 40px 48px}
+.ai-sheet-body .study-panel{max-width:none;margin:0;background:transparent;border:0;border-radius:0;padding:0}
+.ai-sheet-body .study-panel .study-top h2{font-size:28px}
+#root .study-insight .si-verdict h2{line-height:1.08;padding-bottom:4px}
+.si-after{margin-top:6px}
+.si-ind-grid{flex:0 0 auto;align-content:start}
+.si-indicators .si-src{margin-top:auto;padding-top:14px}
+@media (max-width:760px){.ai-sheet-head{padding:12px 16px}.ai-sheet-body{padding:16px 14px 32px}.ai-sheet-body .study-panel .study-top h2{font-size:22px}}
+.si-message p{font-size:17px;line-height:1.6;color:#e7eee8}
+.si-more{margin-top:10px;display:inline-flex;align-items:center;gap:6px;background:transparent;border:0;padding:0;color:#9fd3a9;font-weight:600;font-size:15px;cursor:pointer;min-height:32px}
+.si-more .flip{transform:rotate(180deg)}
+.si-verdict-why{justify-content:flex-start;padding-top:40px}
+/* Análise em tela cheia, mantendo a barra de navegação lateral visível */
+.ai-sheet{left:72px}
+@media(max-width:1100px){.ai-sheet{left:62px}}
+@media(max-width:860px){.ai-sheet{left:58px}}
+@media(max-width:760px){.ai-sheet{left:0;bottom:var(--nav-h)}}
+@container (max-width:820px){.si-verdict-why{padding-top:0}}
+/* Barra lateral: ícones centralizados com a logo */
+@media (min-width:761px){.rail-functions{align-items:center}.rail-bottom{justify-items:center}}
