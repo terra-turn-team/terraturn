@@ -152,3 +152,11 @@
 .brand.compact .brand-lockup{height:26px}
 .workspace-map.demo-mode .map-view-switch{top:119px}
 @media (max-width:760px){.workspace-map.demo-mode .map-view-switch{top:151px}}
+.chat-bubble .md,.chat-bubble .md p,.chat-bubble .md li{font-size:11px;line-height:1.6;color:inherit}
+.chat-bubble .md p{margin:0 0 6px}
+.chat-bubble .md p:last-child,.chat-bubble .md ul:last-child,.chat-bubble .md ol:last-child{margin-bottom:0}
+.chat-bubble .md ul,.chat-bubble .md ol{margin:0 0 6px;padding-left:18px}
+.chat-bubble .md li{display:list-item;margin:2px 0;padding:0}
+.chat-bubble .md li::marker{color:#3E7C4F}
+.chat-bubble .md strong,.chat-bubble .md-heading{color:#1C2B22;font-weight:700}
+.chat-bubble .md code{background:#F2EDE4;border-radius:4px;padding:0 4px;font-size:.95em}
