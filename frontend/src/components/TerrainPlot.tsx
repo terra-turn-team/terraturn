@@ -3,6 +3,7 @@ import {Canvas} from '@react-three/fiber'
 import {OrbitControls,Html} from '@react-three/drei'
 import * as THREE from 'three'
 import type {Farm,WeatherLayer} from '../types'
+import {useI18n} from '../lib/i18n'
 
 type P2=[number,number]
 type Plant={x:number;z:number;seed:number}
@@ -49,17 +50,18 @@ function Land({farm,monthIndex,layer,onInspect}:{farm:Farm;monthIndex:number;lay
  return <group><mesh geometry={surface} receiveShadow castShadow onClick={onInspect}><meshStandardMaterial color={layer==='solo'||layer==='ph'||layer==='materia_organica'?'#B5835A':'#85A88B'} roughness={.95}/></mesh><mesh geometry={surface} scale={[1.004,1.004,1.004]}><meshBasicMaterial color="#3E7C4F" wireframe transparent opacity={.08}/></mesh><CropModels plants={plants} crop={crop} growth={growth}/><pointLight position={[-3,8,-1]} intensity={layer==='temperatura'?100:38} color={layer==='temperatura'?'#B5835A':'#F2EDE4'} distance={21}/></group>
 }
 export default function TerrainPlot({farm,monthIndex,layer,onInspect,transparent=false}:{farm:Farm;monthIndex:number;layer:WeatherLayer;onInspect?:()=>void;transparent?:boolean}){
+ const {t}=useI18n()
  return <div className={`terrain-stage layer-${layer} ${transparent?'transparent-terrain':''}`}>
  <Canvas shadows dpr={[1,1.6]} camera={{position:[10,11,12],fov:43,near:.1,far:80}} gl={{antialias:true,alpha:true}}>
  {!transparent&&<color attach="background" args={['#E8E9E0']}/>}<ambientLight intensity={2.3}/><directionalLight position={[8,12,6]} castShadow intensity={2} shadow-mapSize={[1024,1024]}/>
- <Suspense fallback={<Html center>Preparando visualização…</Html>}><Land farm={farm} monthIndex={monthIndex} layer={layer} onInspect={onInspect}/></Suspense>
+ <Suspense fallback={<Html center>{t('Preparando visualização…')}</Html>}><Land farm={farm} monthIndex={monthIndex} layer={layer} onInspect={onInspect}/></Suspense>
  <OrbitControls enablePan={false} enabled={!transparent} minDistance={8} maxDistance={30} maxPolarAngle={Math.PI*.48} minPolarAngle={.17} enableDamping dampingFactor={.08} target={[0,0,0]}/>
  </Canvas>
  {!transparent&&layer==='chuva'&&<div className="weather-overlay rain-overlay" aria-hidden="true">{Array.from({length:21},(_,i)=><i key={i} style={{left:`${(i*19)%95+2}%`,animationDelay:`${(i%8)*-.31}s`}}/>)}</div>}
  {!transparent&&layer==='vento'&&<div className="weather-overlay wind-overlay" aria-hidden="true">{Array.from({length:12},(_,i)=><i key={i} style={{top:`${(i*23)%81+5}%`,animationDelay:`${(i%7)*-.46}s`}}/>)}</div>}
  {!transparent&&layer==='temperatura'&&<div className="weather-overlay sun-overlay" aria-hidden="true"/>}
- {!transparent&&<div className="terrain-watermark"><span className="plot-dot"/> PLANTAS ESTILIZADAS · NÃO SÃO MEDIÇÕES NASA</div>}
- {!transparent&&<div className="terrain-instruction">Arraste para orbitar · Role para aproximar</div>}
+ {!transparent&&<div className="terrain-watermark"><span className="plot-dot"/> {t('PLANTAS ESTILIZADAS · NÃO SÃO MEDIÇÕES NASA')}</div>}
+ {!transparent&&<div className="terrain-instruction">{t('Arraste para orbitar · Role para aproximar')}</div>}
  {!transparent&&<div className="terrain-axis" aria-hidden="true"><strong>N</strong><span>↑</span></div>}
  </div>
 }

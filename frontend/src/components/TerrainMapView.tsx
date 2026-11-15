@@ -3,6 +3,7 @@ import {hasWebGL} from '../lib/mapSupport'
 import {useEffect,useRef,useState} from 'react'
 import * as maplibregl from 'maplibre-gl'
 import type {Farm} from '../types'
+import {useI18n} from '../lib/i18n'
 export type ViewMode='map'|'relief'|'satellite'|'3d'|'hybrid'
 const BASE='https://tiles.openfreemap.org/styles/liberty'
 const DEM='https://tiles.mapterhorn.com/tilejson.json'
@@ -11,6 +12,7 @@ function TerrainMapGL({farm,mode,onInspect}:{farm:Farm;mode:Exclude<ViewMode,'3d
  const container=useRef<HTMLDivElement>(null)
  const mapRef=useRef<maplibregl.Map|null>(null)
  const [error,setError]=useState('')
+ const {t}=useI18n()
  useEffect(()=>{
   if(!container.current)return
   const m=new maplibregl.Map({container:container.current,style:BASE,center:[farm.centroid[0],farm.centroid[1]],zoom:13.8,pitch:0,bearing:0,maxPitch:65,attributionControl:{compact:true}})
@@ -47,7 +49,7 @@ function TerrainMapGL({farm,mode,onInspect}:{farm:Farm;mode:Exclude<ViewMode,'3d
   }
   if(m.isStyleLoaded())apply();else m.once('load',apply)
  },[mode,farm.id,farm.updated_at])
- return <div className="terrain-map-holder"><div ref={container} className="terrain-map-canvas"/>{error&&<div className="map-data-note map-data-error">{error}</div>}</div>
+ return <div className="terrain-map-holder"><div ref={container} className="terrain-map-canvas"/>{error&&<div className="map-data-note map-data-error">{t(error)}</div>}</div>
 }
 
 export function TerrainMapView(props:{farm:Farm;mode:Exclude<ViewMode,'3d'>;onInspect?:()=>void}){return hasWebGL()?<TerrainMapGL {...props}/>:<FlatMapView {...props}/>}

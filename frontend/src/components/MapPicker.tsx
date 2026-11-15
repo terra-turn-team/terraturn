@@ -33,7 +33,7 @@ function MapPickerGL({value,onChange,target}:Props) {
     else setPoints(p=>p.slice(0,-1))
   },[])
   const close=useCallback(()=>{
-    if(!isValidPolygon(pointRef.current))return setError('Marque pelo menos 3 pontos em uma área válida.')
+    if(!isValidPolygon(pointRef.current))return setError(t('Marque pelo menos 3 pontos em uma área válida.'))
     setFinished(true);onChangeRef.current(closedPolygon(pointRef.current));setError('')
   },[])
 
@@ -137,7 +137,7 @@ function MapPickerGL({value,onChange,target}:Props) {
   return <div className="picker-shell">
     <div className="picker-topbar"><span><MapPinned size={16}/> {t('Delimite sua área de cultivo')}</span><span className="map-status">{finished?t('Área selecionada'):`${points.length} ${t('Ponto(s)').toLowerCase()}`}</span></div>
     <div className="picker-map-wrap">
-      <div className="picker-map" ref={divRef} tabIndex={0} aria-label="Mapa de seleção em vista superior. Clique para adicionar vértices; Enter para concluir."/>
+      <div className="picker-map" ref={divRef} tabIndex={0} aria-label={t('Mapa de seleção em vista superior. Clique para adicionar vértices; Enter para concluir.')}/>
       <div className="picker-tools">
         <button type="button" onClick={locate} className="map-tool" title={t('Usar minha localização')}><LocateFixed size={17}/><span>{t('Localizar')}</span></button>
         <div className="base-toggle" role="group" aria-label={t('Tipo de mapa')}>{(['satellite','map'] as const).map(b=><button key={b} type="button" aria-pressed={base===b} className={base===b?'active':''} onClick={()=>switchBase(b)}>{t(b==='satellite'?'Satélite':'Mapa')}</button>)}</div>
@@ -145,10 +145,10 @@ function MapPickerGL({value,onChange,target}:Props) {
       <div className="picker-map-tip">{t(finished?'Arraste os pontos para ajustar o contorno · puxe os pontos verdes para criar novos':'Clique para marcar vértices · Enter para concluir · Backspace desfaz')}</div>
     </div>
     <div className="picker-footer">
-      <div><span className="eyebrow muted">{t('ÁREA ESTIMADA')}</span><strong>{area!==null?formatHa(area):'—'}</strong><small>{points.length>=3?`${points.length} vértices · WGS84`:t('Marque ao menos 3 pontos')}</small></div>
+      <div><span className="eyebrow muted">{t('ÁREA ESTIMADA')}</span><strong>{area!==null?formatHa(area):'—'}</strong><small>{points.length>=3?`${points.length} ${t('vértices')} · WGS84`:t('Marque ao menos 3 pontos')}</small></div>
       <div className="picker-actions"><button className="btn btn-muted btn-small" type="button" onClick={undo} disabled={!points.length}><Undo2 size={15}/> {t('Desfazer')}</button><button className="btn btn-muted btn-small" type="button" onClick={reset}><RotateCcw size={15}/> {t('Limpar')}</button>{!finished&&<button className="btn btn-primary btn-small" type="button" onClick={close} disabled={points.length<3}><Check size={15}/> {t('Concluir área')}</button>}</div>
     </div>
-    {finished&&value&&<p className="selection-confirm"><Check size={14}/> Perímetro definido · Centro: {formatCoord(polygonDetails(value).centroid[1])}, {formatCoord(polygonDetails(value).centroid[0])}</p>}
+    {finished&&value&&<p className="selection-confirm"><Check size={14}/> {t('Perímetro definido')} · {t('Centro')}: {formatCoord(polygonDetails(value).centroid[1])}, {formatCoord(polygonDetails(value).centroid[0])}</p>}
     {error&&<p className="form-error" role="alert">{error}</p>}
   </div>
 }
