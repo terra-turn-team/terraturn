@@ -107,7 +107,9 @@ def clear_cookie(response: Response) -> None:
 
 
 def output_user(user: User) -> dict:
-    return {"id": user.id, "name": user.nome, "email": user.email}
+    from app.demo import is_demo
+
+    return {"id": user.id, "name": user.nome, "email": user.email, "can_edit_farms": not is_demo(user) or settings.demo_editable}
 
 
 def slugify(value: str) -> str:
@@ -215,10 +217,10 @@ def login(payload: LoginIn, request: Request, response: Response, db: Session = 
     return output_user(user)
 
 
-def deny_demo(user: User) -> None:
+def deny_demo(user: User, edit: bool = False) -> None:
     from app.demo import is_demo
 
-    if is_demo(user):
+    if is_demo(user) and not (edit and settings.demo_editable):
         raise HTTPException(status_code=403, detail="This is a read-only demo. Create a free account to save your own farm.")
 
 
@@ -324,7 +326,7 @@ def get_farm(farm_id: str, user: User = Depends(current_user), db: Session = Dep
 
 @app.put(BASE + "/farms/{farm_id}")
 def update_farm(farm_id: str, payload: FarmIn, user: User = Depends(current_user), db: Session = Depends(get_db)):
-    deny_demo(user)
+    deny_demo(user, edit=True)
     prop = owned_farm(db, farm_id, user)
     apply_farm(prop, payload)
     db.commit()
@@ -348,7 +350,7 @@ def get_history(farm_id: str, user: User = Depends(current_user), db: Session = 
 
 @app.put(BASE + "/farms/{farm_id}/history", response_model=list[CropHistoryOut])
 def replace_history(farm_id: str, payload: list[CropHistoryIn], user: User = Depends(current_user), db: Session = Depends(get_db)):
-    deny_demo(user)
+    deny_demo(user, edit=True)
     if len(payload) > 30:
         raise HTTPException(status_code=422, detail="At most 30 seasons are allowed.")
     prop = owned_farm(db, farm_id, user)

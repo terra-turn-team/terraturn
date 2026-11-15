@@ -37,6 +37,22 @@ def test_demo_is_read_only(client):
     assert client.delete(f"/api/v1/farms/{farm['id']}", headers=ORIGIN).status_code == 403
     r = client.put(f"/api/v1/farms/{farm['id']}", json=farm_payload(), headers=ORIGIN)
     assert r.status_code == 403 and "demo" in r.json()["detail"].lower()
+    assert client.get("/api/v1/auth/me").json()["can_edit_farms"] is False
+
+
+def test_demo_farms_editable_when_enabled(client, monkeypatch):
+    from app.config import settings
+
+    monkeypatch.setattr(settings, "demo_editable", True)
+    assert demo_login(client)["can_edit_farms"] is True
+    farm = client.get("/api/v1/farms").json()[0]
+    payload = farm_payload() | {"name": farm["name"], "geometry": farm["geometry"], "previous_crop": "Milho"}
+    r = client.put(f"/api/v1/farms/{farm['id']}", json=payload, headers=ORIGIN)
+    assert r.status_code == 200, r.text
+    assert client.get(f"/api/v1/farms/{farm['id']}").json()["previous_crop"] == "Milho"
+    assert client.put(f"/api/v1/farms/{farm['id']}/history", json=[], headers=ORIGIN).status_code == 200
+    assert client.post("/api/v1/farms", json=farm_payload(), headers=ORIGIN).status_code == 403
+    assert client.delete(f"/api/v1/farms/{farm['id']}", headers=ORIGIN).status_code == 403
 
 
 def test_demo_logout_keeps_other_sessions(client):

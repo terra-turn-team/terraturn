@@ -30,6 +30,7 @@ class UserOut(BaseModel):
     id: str
     name: str
     email: str
+    can_edit_farms: bool = True
 
 
 class GeoGeometry(BaseModel):
