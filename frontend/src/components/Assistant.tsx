@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react'
-import { ArrowUp, Bot, Check, Sparkles, AlertCircle } from 'lucide-react'
+import { useQuery } from '@tanstack/react-query'
+import { ArrowUp, Check, AlertCircle, MapPin, Satellite } from 'lucide-react'
 import type { Farm, ChatItem, WeatherLayer } from '../types'
 import { useViewStore } from '../lib/viewStore'
-import {useI18n} from '../lib/i18n'
-import { ApiError } from '../lib/api'
+import {useI18n,localeFor} from '../lib/i18n'
+import { ApiError, agronomyApi } from '../lib/api'
 import { aiApi } from '../lib/ai'
 import { getLayer } from '../lib/layers'
 import Markdown from './Markdown'
@@ -18,16 +19,17 @@ export function Assistant({farm,onEdit,onNew,onChangeCrop}:{farm:Farm;onEdit:()=
   const listRef=useRef<HTMLDivElement>(null)
   const [text,setText]=useState('')
   const [sending,setSending]=useState(false)
-  const [waited,setWaited]=useState(0)
-  useEffect(()=>{const el=listRef.current;if(el)el.scrollTop=el.scrollHeight},[messages.length,sending])
-  // Conta os segundos de espera para avisar quando a resposta da IA demora mais.
-  useEffect(()=>{if(!sending){setWaited(0);return}const id=setInterval(()=>setWaited(w=>w+1),1000);return()=>clearInterval(id)},[sending])
+  // Rola até a última mensagem; a tela inicial (sem conversa) fica no topo.
+  useEffect(()=>{const el=listRef.current;if(el&&(saved?.length||sending))el.scrollTop=el.scrollHeight},[messages.length,sending])
+  // Mesmos dados NASA do painel (cache compartilhado do react-query) para a tela inicial do chat.
+  const context=useQuery({queryKey:['agronomy',farm.id,farm.updated_at,language],queryFn:()=>agronomyApi.context(farm,language)}).data
   const [pendingCrop,setPendingCrop]=useState('')
   const setLayer=useViewStore(s=>s.setLayer),setMonthIndex=useViewStore(s=>s.setMonthIndex)
   const month=useViewStore(s=>s.monthIndex),setTab=useViewStore(s=>s.setSelectedTab),showAction=useViewStore(s=>s.showAction)
-  const add=(role:'assistant'|'user',msg:string)=>addToStore(farm.id,{id:crypto.randomUUID(),role,text:msg,time:now()})
-  const send=async(e:FormEvent)=>{
-    e.preventDefault();const input=text.trim();if(!input||sending)return
+  const add=(role:'assistant'|'user',msg:string,data?:boolean)=>addToStore(farm.id,{id:crypto.randomUUID(),role,text:msg,time:now(),...(data?{data}:{})})
+  const send=async(e:FormEvent)=>{e.preventDefault();await ask(text)}
+  const ask=async(raw:string)=>{
+    const input=raw.trim();if(!input||sending)return
     add('user',input);setText('');setSending(true)
     const lower=input.toLocaleLowerCase('pt-BR')
     try {
@@ -42,13 +44,30 @@ export function Assistant({farm,onEdit,onNew,onChangeCrop}:{farm:Farm;onEdit:()=
       else if(layerKey){setLayer(layers[layerKey]);const name=t(getLayer(layers[layerKey]).label);add('assistant',fill(t('Camada “{camada}” selecionada no mapa.'),{camada:name}));showAction(fill(t('Camada alterada para {camada}'),{camada:name}))}
       else {
         const history=messages.filter(m=>m.id!=='intro').slice(-6).map(m=>({role:m.role,content:m.text}))
-        try{const r=await aiApi.chat(input,farm.id,language,history);add('assistant',r.answer||t('Não consegui responder agora. Tente reformular a pergunta.'))}
+        try{const r=await aiApi.chat(input,farm.id,language,history);add('assistant',r.answer||t('Não consegui responder agora. Tente reformular a pergunta.'),!!(r.answer&&r.farm_data))}
         catch(err){add('assistant',err instanceof ApiError?err.message:t('O assistente está indisponível no momento.'))}
       }
     }finally{setSending(false)}
   }
   const confirmChange=async()=>{try{await onChangeCrop(pendingCrop);add('assistant',fill(t('Cultura principal alterada para {cultura}. O modelo 3D foi atualizado com aparência ilustrativa.'),{cultura:pendingCrop}));showAction(fill(t('Cultura alterada para {cultura}'),{cultura:pendingCrop}));setPendingCrop('')}catch{add('assistant',t('Não foi possível salvar a alteração. Tente pelo formulário de edição.'))}}
-  return <div className="assistant-panel"><div className="chat-messages" aria-live="polite" ref={listRef}>{messages.map(m=><div key={m.id} className={`chat-message ${m.role}`}><div className="chat-avatar">{m.role==='assistant'?<Bot size={16}/>:<span>{t('EU')}</span>}</div><div className="chat-bubble">{m.role==='assistant'?<Markdown text={m.id==='intro'?t(m.text):m.text}/>:<p>{m.text}</p>}<time>{m.time}</time></div></div>)}{sending&&<div className="chat-message assistant chat-typing" role="status" aria-live="polite"><div className="chat-avatar"><Bot size={16}/></div><div className="chat-bubble"><span className="typing-dots" aria-hidden="true"><i/><i/><i/></span><p>{t(waited>=8?'Ainda analisando os dados da NASA… pode levar até 30 segundos.':'A IA está gerando a resposta…')}</p></div></div>}{pendingCrop&&<div className="chat-confirm"><AlertCircle size={16}/><span>{fill(t('Salvar cultura “{cultura}” nesta propriedade?'),{cultura:pendingCrop})}</span><button type="button" className="btn btn-primary btn-small" onClick={confirmChange}><Check size={13}/> {t('Confirmar')}</button><button type="button" className="btn btn-outline btn-small" onClick={()=>setPendingCrop('')}>{t('Cancelar')}</button></div>}</div>
-    <form onSubmit={send} className="chat-compose"><Sparkles size={17}/><input value={text} onChange={e=>setText(e.target.value)} placeholder={t('Pergunte, altere ou explore a sua propriedade...')} maxLength={2000} aria-label={t('Mensagem para assistente')}/><button type="submit" disabled={!text.trim()||sending} aria-label={t('Enviar mensagem')}><ArrowUp size={18}/></button></form><p className="chat-disclaimer">{t('Respostas com dados da NASA desta fazenda · valide com um agrônomo local')}</p>
+  const locale=localeFor(language),hour=new Date().getHours()
+  const greeting=t(hour<12?'Bom dia':hour<18?'Boa tarde':'Boa noite')
+  const facts=([['rainfall','Chuva'],['temperature','Temperatura'],['ndvi','NDVI']] as const).map(([id,label])=>({label,m:context?.metrics.find(x=>x.id===id&&x.value!=null)})).filter(f=>f.m)
+  const suggestions=['Quanto chove em cada mês nesta fazenda?','Qual segunda safra combina com esta área?','Em quais meses falta água no solo?']
+  const history=saved??[]
+  return <div className="assistant-panel tt-chat"><div className="chat-messages" aria-live="polite" ref={listRef}>
+    {!history.length&&<div className="chat-empty">
+      <img className="chat-empty-mark" src="/brand/logomark.svg" alt=""/>
+      <h3>{greeting}</h3>
+      <p>{fill(t('Pergunte sobre {fazenda}. Eu respondo com os dados da NASA desta área.'),{fazenda:farm.name})}</p>
+      {facts.length>0&&<div className="chat-facts">{facts.map(({label,m})=><div key={label}><small>{t(label)}</small><strong>{(m!.value as number).toLocaleString(locale,{maximumFractionDigits:2})}<em>{m!.unit}</em></strong></div>)}</div>}
+      <div className="chat-suggestions">{suggestions.map(q=><button type="button" key={q} disabled={sending} onClick={()=>ask(t(q))}>{t(q)}</button>)}</div>
+    </div>}
+    {history.map(m=><div key={m.id} className={`chat-message chat-row ${m.role}`}>{m.role==='user'?<p className="chat-user">{m.text}</p>:<><Markdown text={m.text}/>{m.data&&<span className="chat-source"><Satellite size={12}/>{t('Dados NASA desta fazenda')}</span>}</>}</div>)}
+    {sending&&<div className="chat-typing" role="status"><span className="typing-dots" aria-hidden="true"><i/><i/><i/></span><span>{t('Pensando…')}</span></div>}
+    {pendingCrop&&<div className="chat-confirm"><AlertCircle size={16}/><span>{fill(t('Salvar cultura “{cultura}” nesta propriedade?'),{cultura:pendingCrop})}</span><button type="button" className="btn btn-primary btn-small" onClick={confirmChange}><Check size={13}/> {t('Confirmar')}</button><button type="button" className="btn btn-outline btn-small" onClick={()=>setPendingCrop('')}>{t('Cancelar')}</button></div>}
+  </div>
+    <form onSubmit={send} className="chat-compose"><input value={text} onChange={e=>setText(e.target.value)} placeholder={t('Pergunte sobre esta fazenda…')} maxLength={2000} aria-label={t('Mensagem para assistente')}/><div className="chat-compose-bar"><span className="chat-compose-farm"><MapPin size={12}/>{farm.name}</span><button type="submit" className="chat-send" disabled={!text.trim()||sending} aria-label={t('Enviar mensagem')}><ArrowUp size={17}/></button></div></form>
+    <p className="chat-disclaimer">{t('Respostas com dados da NASA desta fazenda · valide com um agrônomo local')}</p>
   </div>
 }
