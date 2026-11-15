@@ -271,3 +271,11 @@ def test_regional_ranking_keeps_only_off_season_crops():
     assert cerrado[:2] == ["feijao_caupi", "guandu"]
     pedido = service.apply_regional_ranking("x\n<pre_ranked_crops>\n1. guandu\n</pre_ranked_crops>", "boone_iowa_eua", ["solo"])
     assert pedido.count("<pre_ranked_crops>") == 1 and "1. guandu" not in pedido
+
+
+def test_clean_text_removes_engine_field_names():
+    from app.ia.service import clean_text
+
+    assert clean_text("Soja tolera pouco a seca (tolera_seca baixa).", "pt") == "Soja tolera pouco a seca."
+    out = clean_text({"risks": ["tolera_seca is low", 3]}, "en")
+    assert out == {"risks": ["drought tolerance is low", 3]}

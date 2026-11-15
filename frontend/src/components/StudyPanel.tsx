@@ -37,6 +37,7 @@ const TXT: Dict = {
   bare: ['Bare-soil months (NDVI)', 'Meses de solo descoberto (NDVI)', 'Meses de suelo desnudo (NDVI)'],
   none: ['none', 'nenhum', 'ninguno'],
   irrigated: ['You marked this farm as irrigated. TerraTurn assumes rainfed farming, so treat this analysis as a rainfed reference.', 'Você marcou esta fazenda como irrigada. O TerraTurn considera lavoura de sequeiro; use esta análise como referência de sequeiro.', 'Marcó esta finca como regada. TerraTurn asume secano; use este análisis como referencia de secano.'],
+  otherLang: ['This analysis was generated in another language. Run it again to see it in English.', 'Esta análise foi gerada em outro idioma. Analise de novo para ver em português.', 'Este análisis se generó en otro idioma. Analice de nuevo para verlo en inglés.'],
   disclaimerLocal: ['Decision support only. Validate with a local agronomist before deciding.', 'Apoio à decisão. Valide com um agrônomo local antes de decidir.', 'Apoyo a la decisión. Valide con un agrónomo local antes de decidir.'],
   sources: ['Sources', 'Fontes', 'Fuentes'],
   slowNote: ['We are fetching this area from the NASA APIs (POWER daily climate since 2005, MODIS NDVI and evapotranspiration). It only happens the first time and can take a few minutes. You can keep using the app.', 'Estamos buscando os dados desta área nas APIs da NASA (clima diário POWER desde 2005, NDVI e evapotranspiração MODIS). Isso só acontece na primeira vez e pode levar alguns minutos. Você pode continuar usando o app.', 'Estamos obteniendo los datos de esta área en las APIs de la NASA (clima diario POWER desde 2005, NDVI y evapotranspiración MODIS). Solo ocurre la primera vez y puede tardar unos minutos. Puede seguir usando la app.'],
@@ -175,6 +176,7 @@ export default function StudyPanel({ farm, compact = false }: { farm: Farm; comp
     {startError && <p className="form-error" role="alert">{startError}</p>}
     {study?.status === 'failed' && !isRunning && <p className="form-error" role="alert">{x('failed')} {study.error}</p>}
     {result && rec && <>
+      {study && study.language !== (language.startsWith('pt') ? 'pt' : 'en') && <p className="study-warning"><AlertTriangle size={15} /> {x('otherLang')} <button type="button" className="btn btn-outline btn-small" disabled={start.isPending} onClick={() => start.mutate(language)}><RefreshCw size={14} /> {x('again')}</button></p>}
       {result.irrigated_warning && <p className="study-warning"><AlertTriangle size={15} /> {x('irrigated')}</p>}
       <div className="study-recommendation">
         <span className="eyebrow">{x('suggestion')}</span>
