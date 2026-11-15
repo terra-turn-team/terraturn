@@ -87,15 +87,18 @@ def generate_missing_studies() -> None:
         if user is None:
             return
         pending = []
+        # Uma análise pronta por idioma do motor (inglês e português) para cada fazenda da demo.
         for prop in db.query(Property).filter(Property.user_id == user.id).all():
-            done = db.query(AiStudy).filter(AiStudy.property_id == prop.id, AiStudy.status == "complete").first()
-            busy = db.query(AiStudy).filter(AiStudy.property_id == prop.id, AiStudy.status.in_(["queued", "running"])).first()
-            if done is None and busy is None:
-                study = AiStudy(user_id=user.id, property_id=prop.id, status="queued", stage="queued", language="en",
-                                priority=service.priority_from_goals(prop.priorities or []))
-                db.add(study)
-                db.commit()
-                pending.append(study.id)
+            for lang in ("en", "pt"):
+                done = db.query(AiStudy).filter(AiStudy.property_id == prop.id, AiStudy.language == lang, AiStudy.status == "complete").first()
+                busy = db.query(AiStudy).filter(AiStudy.property_id == prop.id, AiStudy.language == lang,
+                                                AiStudy.status.in_(["queued", "running"])).first()
+                if done is None and busy is None:
+                    study = AiStudy(user_id=user.id, property_id=prop.id, status="queued", stage="queued", language=lang,
+                                    priority=service.priority_from_goals(prop.priorities or []))
+                    db.add(study)
+                    db.commit()
+                    pending.append(study.id)
     for sid in pending:
         service.run_study(sid)
         time.sleep(1)

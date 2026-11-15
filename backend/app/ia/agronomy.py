@@ -117,32 +117,53 @@ def _cycles(prop: Property, result: dict, language: str):
     return cycles, alvo
 
 
-def plan_from_study(prop: Property, study, scenario=None) -> dict:
+# Frases fixas do plano no idioma de quem vê (o texto da IA vem da própria análise).
+PLAN_TEXT = {
+    "en": {"scenario": "Scenario sliders are not applied yet: engine v17 uses observed NASA data only.",
+           "failed": "The last analysis failed.", "recommended": "Recommended: {name}. {message}",
+           "no_cycle": "No full crop cycle of the recommended rotation fits the planning horizon; widen the horizon.",
+           "irrigated": "This farm is marked as irrigated; TerraTurn assumes rainfed farming."},
+    "pt": {"scenario": "Os controles de cenário ainda não são aplicados: o motor v17 usa apenas dados observados da NASA.",
+           "failed": "A última análise falhou.", "recommended": "Recomendado: {name}. {message}",
+           "no_cycle": "Nenhum ciclo completo da rotação recomendada cabe no horizonte do planejamento; aumente o horizonte.",
+           "irrigated": "Esta fazenda está marcada como irrigada; o TerraTurn considera lavoura de sequeiro."},
+}
+
+
+def _view_lang(language: str | None, study=None) -> str:
+    if language:
+        return "pt" if language.lower().startswith("pt") else "en"
+    return "pt" if study is not None and study.language == "pt" else "en"
+
+
+def plan_from_study(prop: Property, study, scenario=None, language: str | None = None) -> dict:
+    lang = _view_lang(language, study)
+    txt = PLAN_TEXT[lang]
     warnings = []
     if scenario and (scenario.get("rainfall_percent") or scenario.get("temperature_delta_c")):
-        warnings.append("Scenario sliders are not applied yet: engine v17 uses observed NASA data only.")
+        warnings.append(txt["scenario"])
     if study is None:
         return {"status": "not_connected", "cycles": [], "warnings": warnings}
     if study.status in ("queued", "running"):
         return {"status": "processing", "cycles": [], "warnings": warnings}
     if study.status == "failed" or not study.result:
-        return {"status": "not_connected", "cycles": [], "warnings": warnings + [study.error or "The last analysis failed."]}
-    cycles, alvo = _cycles(prop, study.result, study.language)
+        return {"status": "not_connected", "cycles": [], "warnings": warnings + [study.error or txt["failed"]]}
+    cycles, alvo = _cycles(prop, study.result, lang)
     rec = study.result["analysis"]["recommendation"]
-    warnings.append(f"Recommended: {alvo['name']}. {rec['message_to_farmer']}")
+    warnings.append(txt["recommended"].format(name=alvo["name"], message=rec["message_to_farmer"]))
     if not cycles:
-        warnings.append("No full crop cycle of the recommended rotation fits the planning horizon; widen the horizon.")
+        warnings.append(txt["no_cycle"])
     if study.result.get("irrigated_warning"):
-        warnings.append("This farm is marked as irrigated; TerraTurn assumes rainfed farming.")
+        warnings.append(txt["irrigated"])
     warnings.append(study.result["analysis"].get("disclaimer", ""))
     return {"status": "ready", "model_version": study.result.get("engine", "llm_v17"),
             "generated_at": study.result.get("generated_at"), "cycles": cycles, "warnings": [w for w in warnings if w][:50]}
 
 
-def context_for(prop: Property, study: AiStudy | None) -> dict:
+def context_for(prop: Property, study: AiStudy | None, language: str | None = None) -> dict:
     ref = today()
     janela = history_window(ref)
-    base = {"schema_version": "1.0", "farm_id": prop.id, "plan": plan_from_study(prop, study)}
+    base = {"schema_version": "1.0", "farm_id": prop.id, "plan": plan_from_study(prop, study, None, language)}
     nome = _point_name(prop)
     if nome is None:
         _prepare_async(prop.latitude, prop.longitude)

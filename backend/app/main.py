@@ -11,7 +11,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 import httpx
-from fastapi import Depends, FastAPI, HTTPException, Request, Response
+from fastapi import Depends, FastAPI, HTTPException, Query, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
 from sqlalchemy.exc import IntegrityError
@@ -583,13 +583,27 @@ def start_study(db: Session, request: Request, user: User, prop: Property, langu
     return study
 
 
+def pick_study(db: Session, prop: Property, language: str | None) -> AiStudy | None:
+    """Most recent analysis in the viewer's language; otherwise the most recent one."""
+    from app.ia import service
+
+    rows = db.query(AiStudy).filter(AiStudy.property_id == prop.id).order_by(AiStudy.created_at.desc()).limit(30).all()
+    if not rows:
+        return None
+    if language:
+        want = service.motor_language(language)
+        same = next((s for s in rows if s.language == want), None)
+        if same is not None:
+            return same
+    return rows[0]
+
+
 @app.get(BASE + "/farms/{farm_id}/agronomy")
-def farm_agronomy(farm_id: str, user: User = Depends(current_user), db: Session = Depends(get_db)):
+def farm_agronomy(farm_id: str, language: str | None = Query(default=None, max_length=8), user: User = Depends(current_user), db: Session = Depends(get_db)):
     from app.ia import agronomy
 
     prop = owned_farm(db, farm_id, user)
-    latest = db.query(AiStudy).filter(AiStudy.property_id == prop.id).order_by(AiStudy.created_at.desc()).first()
-    return agronomy.context_for(prop, latest)
+    return agronomy.context_for(prop, pick_study(db, prop, language), language)
 
 
 @app.post(BASE + "/farms/{farm_id}/simulations")
@@ -598,7 +612,7 @@ def farm_simulation(farm_id: str, payload: SimulationIn, request: Request, user:
 
     prop = owned_farm(db, farm_id, user)
     study = start_study(db, request, user, prop, payload.language)
-    return agronomy.plan_from_study(prop, study, payload.scenario.model_dump())
+    return agronomy.plan_from_study(prop, study, payload.scenario.model_dump(), payload.language)
 
 
 @app.get(BASE + "/ai/studies/{study_id}")
@@ -610,9 +624,9 @@ def get_study(study_id: str, user: User = Depends(current_user), db: Session = D
 
 
 @app.get(BASE + "/farms/{farm_id}/studies/latest")
-def latest_study(farm_id: str, user: User = Depends(current_user), db: Session = Depends(get_db)):
+def latest_study(farm_id: str, language: str | None = Query(default=None, max_length=8), user: User = Depends(current_user), db: Session = Depends(get_db)):
     prop = owned_farm(db, farm_id, user)
-    s = db.query(AiStudy).filter(AiStudy.property_id == prop.id).order_by(AiStudy.created_at.desc()).first()
+    s = pick_study(db, prop, language)
     if s is None:
         raise HTTPException(status_code=404, detail="No analysis yet")
     return study_output(s)
