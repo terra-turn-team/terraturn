@@ -6,3 +6,33 @@
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}}
 
 @media(max-width:560px){.map-toolbar-leading{width:auto;flex:1}.map-search{flex-shrink:0;min-width:42px;width:42px}.map-search svg{flex-shrink:0}}
+.combobox-field{margin-bottom:14px}
+.combobox-wrap input,.select-trigger{width:100%;height:42px;border:1px solid #dce5da;border-radius:8px;background:#fff;padding:0 32px 0 11px;font-size:12px;color:#1C2B22;outline:0;min-width:0;text-align:left}
+.select-trigger{display:flex;align-items:center;cursor:pointer}
+.select-trigger span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.select-trigger .placeholder,.combobox-wrap input::placeholder{color:#97a497}
+.combobox-wrap input:focus,.select-trigger:focus-visible,.select-trigger[aria-expanded="true"]{border-color:#3E7C4F;box-shadow:0 0 0 3px #e6f1e6;outline:0}
+.combobox-wrap input:disabled,.select-trigger:disabled{background:#f4f6f2;color:#97a497;cursor:not-allowed}
+.combobox-chevron{right:11px}
+.combobox-option{font-size:12px}
+.form-2col .combobox-field{margin-bottom:14px}
+.coordinate-fields{align-items:flex-end}
+.coordinate-fields .input-label{margin-bottom:0}
+.coordinate-fields .input-label>input{height:42px}
+.coordinate-go{height:42px;color:#3E7C4F;border-color:#c9d6c8}
+.coordinate-go svg{color:#3E7C4F}
+@media (max-width:640px){.coordinate-go{width:100%}}
+.priority-choice,.goal-pill{background:#fff;border:1px solid #c9d6c8;color:#1C2B22;font-weight:500;font-size:11px;transition:background .15s,border-color .15s}
+.priority-choice{padding:10px 9px}
+.goal-pill{padding:8px 10px}
+.priority-choice .choice-check{width:16px;height:16px;border:1.5px solid #8fa594;border-radius:50%}
+.priority-choice:hover,.goal-pill:hover{border-color:#8fbf9a;background:#f6f9f5}
+.priority-choice.on,.goal-pill.on{background:#e6f0e7;border:1.5px solid #3E7C4F;color:#2f5d3b;font-weight:600}
+.priority-choice.on .choice-check{border:0;background:#3E7C4F;color:#fff}
+.priority-choice.on .choice-check svg,.goal-pill.on svg{color:#3E7C4F}
+.priority-choice.on .choice-check svg{color:#fff}
+.priority-choice:focus-visible,.goal-pill:focus-visible{outline:3px solid #3E7C4F;outline-offset:2px}
+.base-toggle{display:flex;background:#fff;border:1px solid #e0e7df;border-radius:7px;box-shadow:0 4px 10px #1c2b2219;padding:2px;gap:2px}
+.base-toggle button{border:0;background:transparent;border-radius:5px;padding:6px 9px;font-size:10px;font-weight:700;color:#5d6b61}
+.base-toggle button.active{background:#1C2B22;color:#fff}
+.picker-map .maplibregl-ctrl-attrib{font-size:9px}

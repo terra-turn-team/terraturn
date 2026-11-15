@@ -1,5 +1,5 @@
 import {FlatMapPicker} from './FlatMap'
-import {hasWebGL} from '../lib/mapSupport'
+import {hasWebGL,SATELLITE_TILES,SATELLITE_ATTRIBUTION} from '../lib/mapSupport'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import * as maplibregl from 'maplibre-gl'
 import type { Map as LibreMap, MapMouseEvent } from 'maplibre-gl'
@@ -21,6 +21,8 @@ function MapPickerGL({value,onChange,target}:Props) {
   const [finished,setFinished] = useState(Boolean(value))
   const [mapReady,setMapReady] = useState(false)
   const [error,setError] = useState('')
+  const [base,setBase] = useState<'satellite'|'map'>('satellite')
+  const baseRef=useRef<'satellite'|'map'>('satellite')
   onChangeRef.current = onChange
   const pointRef=useRef(points);pointRef.current=points
   const finishedRef=useRef(finished);finishedRef.current=finished
@@ -48,11 +50,15 @@ function MapPickerGL({value,onChange,target}:Props) {
     }
     map.on('click',handleMapClick)
     map.on('load',()=>{
+      const firstLabel=map.getStyle().layers?.find(l=>l.type==='symbol')?.id
+      map.addSource('satellite',{type:'raster',tiles:[SATELLITE_TILES],tileSize:256,maxzoom:19,attribution:SATELLITE_ATTRIBUTION})
+      map.addLayer({id:'satellite',type:'raster',source:'satellite',paint:{'raster-opacity':1}},firstLabel)
+      map.setLayoutProperty('satellite','visibility',baseRef.current==='satellite'?'visible':'none')
       map.addSource('farm-line',{type:'geojson',data:{type:'FeatureCollection',features:[]}})
-      map.addLayer({id:'farm-fill',type:'fill',source:'farm-line',paint:{'fill-color':'#3E7C4F','fill-opacity':0.19}})
-      map.addLayer({id:'farm-outline',type:'line',source:'farm-line',paint:{'line-color':'#3E7C4F','line-width':3,'line-dasharray':[1.5,1]}})
+      map.addLayer({id:'farm-fill',type:'fill',source:'farm-line',paint:{'fill-color':'#7fd18f','fill-opacity':0.22}})
+      map.addLayer({id:'farm-outline',type:'line',source:'farm-line',paint:{'line-color':'#ffffff','line-width':3,'line-dasharray':[1.5,1]}})
       map.addSource('farm-vertices',{type:'geojson',data:{type:'FeatureCollection',features:[]}})
-      map.addLayer({id:'farm-vertices',type:'circle',source:'farm-vertices',paint:{'circle-radius':6,'circle-color':'#F2EDE4','circle-stroke-color':'#3E7C4F','circle-stroke-width':2.7}})
+      map.addLayer({id:'farm-vertices',type:'circle',source:'farm-vertices',paint:{'circle-radius':6,'circle-color':'#ffffff','circle-stroke-color':'#1C2B22','circle-stroke-width':2.7}})
       setMapReady(true)
     })
     return ()=>{map.off('click',handleMapClick);map.remove();mapRef.current=null}
@@ -87,18 +93,20 @@ function MapPickerGL({value,onChange,target}:Props) {
     return()=>window.removeEventListener('keydown',handler)
   },[close,reset,undo])
 
+  const switchBase=(b:'satellite'|'map')=>{setBase(b);baseRef.current=b;const m=mapRef.current;if(m?.getLayer('satellite'))m.setLayoutProperty('satellite','visibility',b==='satellite'?'visible':'none')}
   const locate=()=>navigator.geolocation?.getCurrentPosition(
     p=>mapRef.current?.flyTo({center:[p.coords.longitude,p.coords.latitude],zoom:15}),
-    ()=>setError('Localização negada. Você pode navegar pelo mapa manualmente.'),
+    ()=>setError(t('Localização negada. Você pode navegar pelo mapa manualmente.')),
     {enableHighAccuracy:false,timeout:10000}
   )
   const area = points.length>=3 && isValidPolygon(points)?polygonDetails(closedPolygon(points)).areaHa:null
   return <div className="picker-shell">
-    <div className="picker-topbar"><span><MapPinned size={16}/> {t('Delimite sua área de cultivo')}</span><span className="map-status">{finished?t('Área selecionada'):`${points.length} ponto(s)`}</span></div>
+    <div className="picker-topbar"><span><MapPinned size={16}/> {t('Delimite sua área de cultivo')}</span><span className="map-status">{finished?t('Área selecionada'):`${points.length} ${t('Ponto(s)').toLowerCase()}`}</span></div>
     <div className="picker-map-wrap">
       <div className="picker-map" ref={divRef} tabIndex={0} aria-label="Mapa de seleção em vista superior. Clique para adicionar vértices; Enter para concluir."/>
       <div className="picker-tools">
-        <button type="button" onClick={locate} className="map-tool" title="Usar minha localização"><LocateFixed size={17}/><span>{t('Localizar')}</span></button>
+        <button type="button" onClick={locate} className="map-tool" title={t('Usar minha localização')}><LocateFixed size={17}/><span>{t('Localizar')}</span></button>
+        <div className="base-toggle" role="group" aria-label={t('Tipo de mapa')}>{(['satellite','map'] as const).map(b=><button key={b} type="button" aria-pressed={base===b} className={base===b?'active':''} onClick={()=>switchBase(b)}>{t(b==='satellite'?'Satélite':'Mapa')}</button>)}</div>
       </div>
       <div className="picker-map-tip">{t('Clique para marcar vértices · Enter para concluir · Backspace desfaz')}</div>
     </div>

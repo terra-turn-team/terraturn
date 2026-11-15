@@ -7,6 +7,13 @@ if (typeof document !== 'undefined') document.documentElement.lang=initial
 export const useLanguage = create<{language:Language;setLanguage:(language:Language)=>void}>((set)=>({language:initial,setLanguage:(language)=>{try{localStorage.setItem('terraturn-language',language)}catch{};document.documentElement.lang=language;set({language})}}))
 // Portuguese keys are the original UX copy. Missing translations transparently fall back to PT-BR.
 const translations:Record<string,[string,string]>={
+'Os dados da propriedade serão acessíveis apenas à sua conta.':['Property data is visible only to your account.','Los datos de la propiedad solo son visibles para su cuenta.'],
+'Localização pelo perímetro':['Location from the boundary','Ubicación por el perímetro'],
+'Localizar um ponto não altera automaticamente o perímetro já desenhado.':['Going to a point does not change the boundary you already drew.','Ir a un punto no cambia el perímetro ya dibujado.'],
+'Coordenadas inválidas. Use latitude entre -90 e 90 e longitude entre -180 e 180.':['Invalid coordinates. Use latitude between -90 and 90 and longitude between -180 and 180.','Coordenadas inválidas. Use latitud entre -90 y 90 y longitud entre -180 y 180.'],
+'Usar minha localização':['Use my location','Usar mi ubicación'],
+'Localização negada. Você pode navegar pelo mapa manualmente.':['Location denied. You can move the map by hand.','Ubicación denegada. Puede mover el mapa manualmente.'],
+'Cobertura do solo':['Ground cover','Cobertura del suelo'],
 'Olá! Pergunte qualquer coisa sobre a sua fazenda: chuva, temperatura, quando plantar ou qual cultura combina com a área. Eu respondo com os dados da NASA desta propriedade.':['Hi! Ask me anything about your farm: rain, temperature, when to sow or which crop fits this field. I answer with NASA data for this property.','¡Hola! Pregunte lo que quiera sobre su finca: lluvia, temperatura, cuándo sembrar o qué cultivo conviene. Respondo con datos de la NASA de esta propiedad.'],
 'Não consegui responder agora. Tente reformular a pergunta.':['I could not answer right now. Try rephrasing the question.','No pude responder ahora. Intente reformular la pregunta.'],
 'O assistente está indisponível no momento.':['The assistant is unavailable right now.','El asistente no está disponible en este momento.'],
