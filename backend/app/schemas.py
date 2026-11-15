@@ -81,3 +81,21 @@ class PublicStatus(BaseModel):
     database: str
     ai_integration: str
     nasa_integration: str
+
+
+class StudyIn(BaseModel):
+    farm_id: str = Field(min_length=1, max_length=64)
+    language: str = Field(default="en", max_length=8)
+    priority: Optional[Literal["water", "soil", "resilience", "yield", "cost"]] = None
+
+
+class ChatTurn(BaseModel):
+    role: Literal["user", "assistant"]
+    content: str = Field(max_length=4000)
+
+
+class ChatIn(BaseModel):
+    message: str = Field(min_length=1, max_length=1500)
+    farm_id: Optional[str] = Field(default=None, max_length=64)
+    language: str = Field(default="en", max_length=8)
+    history: list[ChatTurn] = Field(default_factory=list, max_length=12)

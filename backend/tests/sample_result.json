@@ -1,0 +1,130 @@
+{
+ "rotations": [
+  {
+   "name": "Current: soybean then fallow",
+   "is_current": true,
+   "crops": [
+    "soja"
+   ],
+   "calendar": [
+    {
+     "crop": "soja",
+     "sow_month": 10,
+     "harvest_month": 2
+    }
+   ],
+   "farmer_summary": "Soybean grows in the wet summer, then the field stays empty and loses water through the dry months.",
+   "why": "Your current plan as described: soybean sown in October and harvested around February, then fallow.",
+   "evidence": [
+    "Water balance is positive in every soybean month, from +36.4 mm in February to +124.3 mm in December.",
+    "Water balance is negative in the fallow months, reaching -21.8 mm in July.",
+    "NDVI in February reaches 0.59, showing dense crop cover during soybean."
+   ],
+   "temperature_fit": "Monthly means of 24.1 to 25.1 °C from October to February sit inside the soybean range of 20-30 °C.",
+   "benefits": [
+    "Matches the wet season and uses the summer rain well",
+    "Soybean fixes nitrogen"
+   ],
+   "risks": [
+    "Field stays bare or fallow for about 7 months and loses water",
+    "Soybean has low drought tolerance if the rain fails"
+   ],
+   "general_knowledge": [
+    "Leaving the soil uncovered in the dry season can increase evaporation and erosion."
+   ],
+   "uncertainty": "low",
+   "rotation_name": "Soybean then fallow",
+   "farmer_summary_placeholder": ""
+  },
+  {
+   "name": "Soybean then sorghum",
+   "is_current": false,
+   "crops": [
+    "soja",
+    "sorgo"
+   ],
+   "calendar": [
+    {
+     "crop": "soja",
+     "sow_month": 10,
+     "harvest_month": 2
+    },
+    {
+     "crop": "sorgo",
+     "sow_month": 2,
+     "harvest_month": 6
+    }
+   ],
+   "farmer_summary": "Soybean in summer, then sorghum sown after harvest that tolerates dry weather and uses less water.",
+   "why": "Sorghum is the top-ranked second crop and has high drought tolerance, so it keeps the soil in use after soybean with less water.",
+   "evidence": [
+    "Water balance is -26.0 mm in April and -15.4 mm in May, the main dry-period deficit for sorghum.",
+    "Rain in February totals 160.9 mm, enough to establish sorghum after soybean.",
+    "NDVI in February is 0.59, showing the field is green when sorghum is sown."
+   ],
+   "temperature_fit": "February sowing at 24.1 °C fits the 21-35 °C range, but May at 20.0 °C and June at 19.3 °C fall below ideal during the late cycle.",
+   "benefits": [
+    "High drought tolerance for the dry months",
+    "Covers the soil in the period that is bare in the current plan"
+   ],
+   "risks": [
+    "Late cycle falls into a water deficit and cooler weather",
+    "Sorghum has lower market value than soybean"
+   ],
+   "general_knowledge": [
+    "Sorghum is commonly used for grain or silage in Brazil."
+   ],
+   "uncertainty": "medium",
+   "rotation_name": "Soybean then sorghum",
+   "farmer_summary_placeholder": ""
+  },
+  {
+   "name": "Soybean then cowpea",
+   "is_current": false,
+   "crops": [
+    "soja",
+    "feijao_caupi"
+   ],
+   "calendar": [
+    {
+     "crop": "soja",
+     "sow_month": 10,
+     "harvest_month": 2
+    },
+    {
+     "crop": "feijao_caupi",
+     "sow_month": 2,
+     "harvest_month": 5
+    }
+   ],
+   "farmer_summary": "Soybean in summer, then cowpea sown in February, a short crop that tolerates dry conditions and fixes nitrogen.",
+   "why": "Cowpea is a short-cycle legume with high drought tolerance, so it covers part of the dry season with a low water need.",
+   "evidence": [
+    "Water balance is -26.0 mm in April, the deficit that cowpea must cope with at the end of its cycle.",
+    "Water balance is +36.4 mm in February, a surplus when cowpea is sown.",
+    "NDVI in February is 0.59, showing green cover at sowing."
+   ],
+   "temperature_fit": "February and March means of 24.1 °C sit inside the 22-32 °C range, but May at 20.0 °C is below the ideal minimum.",
+   "benefits": [
+    "Short cycle of about 75 days with high drought tolerance",
+    "Fixes nitrogen and adds organic matter"
+   ],
+   "risks": [
+    "Harvest in May can face cooler, drier weather",
+    "Leaves June to September without cover"
+   ],
+   "general_knowledge": [
+    "Cowpea grain has good local market demand in parts of Brazil."
+   ],
+   "uncertainty": "medium",
+   "rotation_name": "Soybean then cowpea",
+   "farmer_summary_placeholder": ""
+  }
+ ],
+ "recommendation": {
+  "suggested_crop": "sorgo",
+  "rotation_name": "Soybean then sorghum",
+  "message_to_farmer": "Sow sorghum in February, right after the soybean harvest, when the rain is strong, with February rainfall about 160.9 mm. Sorghum tolerates dry weather and uses less water than a second soybean crop. The trade-off is that its late cycle in May and June runs into cooler weather and a water deficit, and sorghum usually earns less than soybean. Your local rain onset is typically around 9 October, so sowing soybean in October fits the usual calendar. Please confirm the dates and yield with a local agronomist before deciding."
+ },
+ "disclaimer": "Based on NASA POWER and MODIS satellite estimates at a 50 km grid, which may differ from your field. Monthly data covers only 2020-2024. The irrigation signal is not detected. Please validate with a local agronomist."
+}

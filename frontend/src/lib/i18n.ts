@@ -6,6 +6,9 @@ if (typeof document !== 'undefined') document.documentElement.lang=initial
 export const useLanguage = create<{language:Language;setLanguage:(language:Language)=>void}>((set)=>({language:initial,setLanguage:(language)=>{try{localStorage.setItem('terraturn-language',language)}catch{};document.documentElement.lang=language;set({language})}}))
 // Portuguese keys are the original UX copy. Missing translations transparently fall back to PT-BR.
 const translations:Record<string,[string,string]>={
+'Olá! Pergunte qualquer coisa sobre a sua fazenda: chuva, temperatura, quando plantar ou qual cultura combina com a área. Eu respondo com os dados da NASA desta propriedade.':['Hi! Ask me anything about your farm: rain, temperature, when to sow or which crop fits this field. I answer with NASA data for this property.','¡Hola! Pregunte lo que quiera sobre su finca: lluvia, temperatura, cuándo sembrar o qué cultivo conviene. Respondo con datos de la NASA de esta propiedad.'],
+'Não consegui responder agora. Tente reformular a pergunta.':['I could not answer right now. Try rephrasing the question.','No pude responder ahora. Intente reformular la pregunta.'],
+'O assistente está indisponível no momento.':['The assistant is unavailable right now.','El asistente no está disponible en este momento.'],
 'MODO PREPARAÇÃO':['PREPARATION MODE','MODO PREPARACIÓN'], 'Idioma':['Language','Idioma'], 'Português':['Portuguese','Portugués'],'Inglês':['English','Inglés'],'Espanhol':['Spanish','Español'],
 'Ativar tema claro':['Switch to light theme','Activar tema claro'],'Ativar tema escuro':['Switch to dark theme','Activar tema oscuro'],'Tipo de mapa':['Map type','Tipo de mapa'],'Visualização 3D':['3D view','Vista 3D'],'MAPA':['MAP','MAPA'],'MODELO':['MODEL','MODELO'],'Não foi possível salvar a preferência de tema.':['Could not save the theme preference.','No se pudo guardar la preferencia de tema.'],
 'GERENCIAMENTO DE PROPRIEDADES':['PROPERTY MANAGEMENT','GESTIÓN DE PROPIEDADES'],
@@ -87,7 +90,7 @@ const translations:Record<string,[string,string]>={
 'Colheita':["Harvest","Cosecha"],
 'Entressafra':["Off-season","Entre cosechas"],
 'Pergunte, altere ou explore a sua propriedade...':["Ask, modify or explore your property...","Pregunte, modifique o explore su propiedad..."],
-'Comandos locais disponíveis · IA científica ainda não conectada':["Local commands available · scientific AI not connected yet","Comandos locales disponibles · IA científica aún no conectada"],
+'Respostas com dados da NASA desta fazenda · valide com um agrônomo local':['Answers use NASA data for this farm · validate with a local agronomist','Respuestas con datos de la NASA de esta finca · valide con un agrónomo local'],
 'Olá! Posso navegar pelo dashboard, mostrar uma camada, avançar a timeline e preparar alterações para sua confirmação. Estudos científicos dependem da futura integração com IA e NASA.':["Hello! I can navigate the dashboard, switch layers, advance the timeline and prepare edits for your approval. Scientific studies require the future NASA/AI integration.","¡Hola! Puedo navegar por el panel, cambiar capas, avanzar la línea de tiempo y preparar cambios para su confirmación. Los estudios científicos requieren la integración futura con NASA/IA."],
 'TerraTurn é uma ferramenta de apoio ao planejamento. Recomendações futuras deverão ser validadas por profissionais habilitados.':["TerraTurn supports planning. Future recommendations must be validated by qualified professionals.","TerraTurn apoya la planificación. Las recomendaciones futuras deben ser validadas por profesionales habilitados."],
 'SEU PRIMEIRO PASSO':["YOUR FIRST STEP","SU PRIMER PASO"],

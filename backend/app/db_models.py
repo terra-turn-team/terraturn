@@ -95,3 +95,31 @@ class GeocodeCache(Base):
     key = Column(String(300), primary_key=True)
     result = Column(JSON, nullable=False)
     updated_at = Column(DateTime(timezone=True), default=_now)
+
+
+class AiStudy(Base):
+    __tablename__ = "ai_studies"
+
+    id = Column(String(36), primary_key=True, default=_uuid)
+    user_id = Column(String(36), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    property_id = Column(String(36), ForeignKey("properties.id", ondelete="CASCADE"), nullable=False, index=True)
+    status = Column(String(20), nullable=False, default="queued")
+    stage = Column(String(40), nullable=False, default="queued")
+    language = Column(String(8), nullable=False, default="en")
+    priority = Column(String(20), nullable=False, default="agua")
+    request_text = Column(Text, nullable=False, default="")
+    result = Column(JSON, nullable=True)
+    error = Column(Text, nullable=True)
+    seconds = Column(Float, nullable=True)
+    tokens_in = Column(Integer, nullable=True)
+    tokens_out = Column(Integer, nullable=True)
+    created_at = Column(DateTime(timezone=True), default=_now, index=True)
+    updated_at = Column(DateTime(timezone=True), default=_now)
+
+
+class IaFileCache(Base):
+    __tablename__ = "ia_file_cache"
+
+    path = Column(String(300), primary_key=True)
+    content = Column(Text, nullable=False)
+    updated_at = Column(DateTime(timezone=True), default=_now)

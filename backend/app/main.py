@@ -19,10 +19,10 @@ from sqlalchemy.orm import Session
 
 from app.config import settings
 from app.database import SessionLocal, get_db, init_db
-from app.db_models import CropHistory, GeocodeCache, Property, ResetToken, User
+from app.db_models import AiStudy, CropHistory, GeocodeCache, Property, ResetToken, User
 from app.emailer import send_password_reset
 from app.geo import analyze_polygon
-from app.schemas import (CropHistoryIn, CropHistoryOut, FarmIn, ForgotIn, LoginIn, PublicStatus,
+from app.schemas import (ChatIn, StudyIn, CropHistoryIn, CropHistoryOut, FarmIn, ForgotIn, LoginIn, PublicStatus,
                          RegisterIn, ResetIn, UserOut)
 from app.security import (COOKIE_NAME, SESSION_HOURS, create_token, current_user, hash_password,
                           normalize_email, purge_expired, rate_limit, verify_password)
@@ -37,6 +37,10 @@ async def lifespan(app: FastAPI):
     init_db()
     with SessionLocal() as db:
         purge_expired(db)
+    from app.ia import service
+
+    service.mark_interrupted()
+    service.EXECUTOR.submit(service.motor)
     yield
 
 
@@ -491,6 +495,75 @@ def delete_account(payload: LoginIn, user: User = Depends(current_user), db: Ses
     return response
 
 
-@app.post(BASE + "/ai/studies", status_code=501)
-def future_ai_contract(user: User = Depends(current_user)):
-    raise HTTPException(status_code=501, detail="AI module not connected yet. Contract in docs/AI_INTEGRATION.md")
+def study_output(s: AiStudy) -> dict:
+    return {
+        "id": s.id,
+        "farm_id": s.property_id,
+        "status": s.status,
+        "stage": s.stage,
+        "language": s.language,
+        "error": s.error,
+        "result": s.result if s.status == "complete" else None,
+        "seconds": s.seconds,
+        "created_at": iso(s.created_at),
+        "updated_at": iso(s.updated_at),
+    }
+
+
+@app.get(BASE + "/ai/status")
+def ai_status():
+    from app.ia.motor import llm_disponivel
+
+    return {"llm": "ready" if llm_disponivel() else "missing_api_key", "engine": "llm_v17", "crop_table": "v2"}
+
+
+@app.post(BASE + "/ai/studies", status_code=202)
+def create_study(payload: StudyIn, request: Request, user: User = Depends(current_user), db: Session = Depends(get_db)):
+    from app.ia import service
+
+    prop = owned_farm(db, payload.farm_id, user)
+    running = db.query(AiStudy).filter(AiStudy.property_id == prop.id, AiStudy.status.in_(["queued", "running"])).first()
+    if running is not None:
+        return study_output(running)
+    rate_limit(db, request, "study", user.id, limit=settings.ai_studies_per_day, minutes=1440)
+    goals = [payload.priority] if payload.priority else (prop.priorities or [])
+    study = AiStudy(user_id=user.id, property_id=prop.id, status="queued", stage="queued",
+                    language=service.motor_language(payload.language), priority=service.priority_from_goals(goals),
+                    created_at=now_utc(), updated_at=now_utc())
+    db.add(study)
+    db.commit()
+    db.refresh(study)
+    service.submit_study(study.id)
+    return study_output(study)
+
+
+@app.get(BASE + "/ai/studies/{study_id}")
+def get_study(study_id: str, user: User = Depends(current_user), db: Session = Depends(get_db)):
+    s = db.query(AiStudy).filter(AiStudy.id == study_id, AiStudy.user_id == user.id).first()
+    if s is None:
+        raise HTTPException(status_code=404, detail="Analysis not found")
+    return study_output(s)
+
+
+@app.get(BASE + "/farms/{farm_id}/studies/latest")
+def latest_study(farm_id: str, user: User = Depends(current_user), db: Session = Depends(get_db)):
+    prop = owned_farm(db, farm_id, user)
+    s = db.query(AiStudy).filter(AiStudy.property_id == prop.id).order_by(AiStudy.created_at.desc()).first()
+    if s is None:
+        raise HTTPException(status_code=404, detail="No analysis yet")
+    return study_output(s)
+
+
+@app.post(BASE + "/ai/chat")
+def ai_chat(payload: ChatIn, request: Request, user: User = Depends(current_user), db: Session = Depends(get_db)):
+    from app.ia import service
+
+    prop = owned_farm(db, payload.farm_id, user) if payload.farm_id else None
+    rate_limit(db, request, "chat", user.id, limit=settings.ai_chat_per_day, minutes=1440)
+    try:
+        return service.chat(prop, payload.message, payload.language, [h.model_dump() for h in payload.history])
+    except RuntimeError as exc:
+        raise HTTPException(status_code=503, detail=str(exc))
+    except Exception:
+        logger.exception("Chat failed")
+        raise HTTPException(status_code=502, detail="The assistant could not answer right now. Please try again.")
