@@ -236,3 +236,13 @@ html,body{overscroll-behavior:none;-webkit-tap-highlight-color:transparent}
 .workspace-map:has(.ai-chat:not(.min)),.workspace-map:has(.ai-sheet){z-index:80}
 .ai-chat.min{bottom:76px}
 }
+/* Editor do contorno no celular: mapa maior e controles fora do polígono */
+@media (max-width:760px){
+.picker-map-wrap{height:62vh;display:flex;flex-direction:column}
+.picker-map{flex:1;min-height:0}
+.picker-map-tip{position:static;max-width:none;border-radius:0;order:2}
+.picker-tools{top:10px;left:10px;grid-auto-flow:column;gap:6px}
+.picker-tools .map-tool span{display:none}
+.picker-map-wrap .maplibregl-ctrl-group{display:none}
+#root .terra-workspace .picker-map-wrap .maplibregl-ctrl-attrib :is(a,div,span){font-size:11px;line-height:1.3}
+}

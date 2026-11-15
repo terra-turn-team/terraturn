@@ -166,6 +166,8 @@ const translations:Record<string,[string,string]>={
 'Cultivo':["Crop","Cultivo"],
 'Solo':["Soil","Suelo"],
 'Clima':["Climate","Clima"],
+'Arraste os pontos para ajustar o contorno · puxe os pontos verdes para criar novos':["Drag the points to adjust the outline · pull the green points to add new ones","Arrastre los puntos para ajustar el contorno · tire de los puntos verdes para crear nuevos"],
+'Esse ajuste deixa a área inválida. Tente outra posição.':["That change makes the area invalid. Try another position.","Ese ajuste deja el área inválida. Pruebe otra posición."],
 'Resumo':["Overview","Resumen"],
 'Plano':["Plan","Plan"],
 'IA':["AI","IA"],
