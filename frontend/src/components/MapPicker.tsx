@@ -72,12 +72,17 @@ function MapPickerGL({value,onChange,target}:Props) {
         const idx=insert?i+1:i
         map.getCanvas().style.cursor='grabbing'
         const move=(e:MapMouseEvent|maplibregl.MapTouchEvent)=>{pts=pts.map((p,k)=>k===idx?[Number(e.lngLat.lng.toFixed(7)),Number(e.lngLat.lat.toFixed(7))]:p);setPoints(pts)}
+        let ended=false
         const end=()=>{
+          if(ended)return
+          ended=true
+          window.removeEventListener('mouseup',end);window.removeEventListener('touchend',end);window.removeEventListener('touchcancel',end)
           map.off('mousemove',move);map.off('touchmove',move);map.getCanvas().style.cursor=''
           if(isValidPolygon(pts)){setPoints(pts);onChangeRef.current(closedPolygon(pts));setError('')}
           else{setPoints(before);setError(t('Esse ajuste deixa a área inválida. Tente outra posição.'))}
         }
-        map.on('mousemove',move);map.on('touchmove',move);map.once('mouseup',end);map.once('touchend',end)
+        // Soltar fora do mapa também encerra o arraste.
+        map.on('mousemove',move);map.on('touchmove',move);window.addEventListener('mouseup',end);window.addEventListener('touchend',end);window.addEventListener('touchcancel',end)
       }
       for(const [layer,insert] of [['farm-vertices',false],['farm-mids',true]] as const){
         map.on('mousedown',layer,e=>startDrag(e,insert))
