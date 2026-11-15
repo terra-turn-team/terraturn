@@ -7,6 +7,15 @@ if (typeof document !== 'undefined') document.documentElement.lang=initial
 export const useLanguage = create<{language:Language;setLanguage:(language:Language)=>void}>((set)=>({language:initial,setLanguage:(language)=>{try{localStorage.setItem('terraturn-language',language)}catch{};document.documentElement.lang=language;set({language})}}))
 // Portuguese keys are the original UX copy. Missing translations transparently fall back to PT-BR.
 const translations:Record<string,[string,string]>={
+"IA da TerraTurn":["TerraTurn AI", "IA de TerraTurn"],
+"Analisando com dados da NASA…":["Analyzing with NASA data…", "Analizando con datos de la NASA…"],
+"A IA recomenda":["AI recommends", "La IA recomienda"],
+"Ver análise":["View analysis", "Ver análisis"],
+"Analisar esta fazenda com IA":["Analyze this farm with AI", "Analizar esta finca con IA"],
+"Análise de rotação com IA":["AI rotation analysis", "Análisis de rotación con IA"],
+"Fechar":["Close", "Cerrar"],
+"Pergunte à IA da TerraTurn":["Ask TerraTurn AI", "Pregunte a la IA de TerraTurn"],
+"Pergunte à IA":["Ask AI", "Pregunte a la IA"],
 'ou':['or','o'],'Explorar a demonstração sem conta':['Explore the demo without an account','Explorar la demostración sin cuenta'],
 'Assistente':['Assistant','Asistente'],
 "Em 3 passos você chega à primeira recomendação de rotação.":["In 3 steps you get your first rotation recommendation.", "En 3 pasos llega a su primera recomendación de rotación."],
