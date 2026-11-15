@@ -37,10 +37,10 @@ async function open(profile, { language = 'en', path = '/demo' } = {}) {
   await ctx.addInitScript(l => { try { localStorage.setItem('terraturn-language', l) } catch {} }, language)
   const page = await ctx.newPage()
   const errors = []
-  page.on('pageerror', e => errors.push(e.message))
   // O WebKit registra como "access control checks" uma requisição do próprio site cancelada por mudança de página
   // (por exemplo, ao sair da conta); isso não é erro da aplicação.
   const cancelled = t => /due to access control checks/.test(t) && t.includes(new URL(BASE).host)
+  page.on('pageerror', e => { if (!cancelled(e.message)) errors.push(e.message) })
   page.on('console', m => { if (m.type() === 'error' && !cancelled(m.text()) && !/Failed to load resource|net::ERR|404|403|blocked|arcgisonline|opentopomap|mapterhorn|gibs\.earthdata/i.test(m.text())) errors.push(m.text()) })
   // Mapa base e imagens de satélite externos ficam fora do teste; a IA é simulada.
   await page.route(/tiles\.openfreemap\.org/, r => r.fulfill({ json: STYLE }))
