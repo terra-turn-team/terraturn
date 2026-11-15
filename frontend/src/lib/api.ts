@@ -6,22 +6,34 @@ export class ApiError extends Error {
   constructor(public status: number, message: string) { super(message) }
 }
 const BASE = import.meta.env.VITE_API_BASE_URL || '/api/v1'
+// O Render grátis dorme sem uso; ao acordar (~50 s) responde 502/503 ou uma página HTML no lugar da API.
+// Nesses casos a chamada é repetida algumas vezes antes de mostrar erro.
+const WAKE_DELAYS = [3000, 6000, 10000, 15000, 20000]
+const sleep = (ms: number) => new Promise(r => setTimeout(r, ms))
 export async function api<T>(url: string, options: RequestInit = {}): Promise<T> {
-  let res: Response
-  try {
-    res = await fetch(`${BASE}${url}`, {
-      ...options,
-      credentials: 'include',
-      signal:options.signal??AbortSignal.timeout(url.includes('/simulations')?125000:url.includes('/agronomy')||url.includes('/ai/chat')?65000:15000),
-      headers: { ...((options.body && !(options.body instanceof FormData)) ? { 'Content-Type': 'application/json' } : {}), ...(options.headers || {}) },
-    })
-  } catch { throw new ApiError(0, 'Cannot reach the server. Check your connection and try again.') }
-  if (!res.ok) {
-    const body = await res.json().catch(() => ({}))
-    throw new ApiError(res.status, typeof body.detail === 'string' ? body.detail : 'Something went wrong. Please try again.')
+  for (let attempt = 0; ; attempt++) {
+    let res: Response
+    try {
+      res = await fetch(`${BASE}${url}`, {
+        ...options,
+        credentials: 'include',
+        signal:options.signal??AbortSignal.timeout(url.includes('/simulations')?125000:url.includes('/agronomy')||url.includes('/ai/chat')?65000:15000),
+        headers: { ...((options.body && !(options.body instanceof FormData)) ? { 'Content-Type': 'application/json' } : {}), ...(options.headers || {}) },
+      })
+    } catch {
+      if (attempt < WAKE_DELAYS.length && !options.signal) { await sleep(WAKE_DELAYS[attempt]); continue }
+      throw new ApiError(0, 'Cannot reach the server. Check your connection and try again.')
+    }
+    const isJson = (res.headers.get('content-type') || '').includes('application/json')
+    const waking = [502, 503, 504].includes(res.status) || (!isJson && res.status !== 204 && !res.ok)
+    if (waking && attempt < WAKE_DELAYS.length) { await sleep(WAKE_DELAYS[attempt]); continue }
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}))
+      throw new ApiError(res.status, typeof body.detail === 'string' ? body.detail : 'The server is starting up. Please try again in a minute.')
+    }
+    if (res.status === 204) return undefined as T
+    return res.json()
   }
-  if (res.status === 204) return undefined as T
-  return res.json()
 }
 export const sessionApi = {
   me: () => api<User>('/auth/me'),
