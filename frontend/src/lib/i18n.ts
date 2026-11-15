@@ -7,6 +7,14 @@ if (typeof document !== 'undefined') document.documentElement.lang=initial
 export const useLanguage = create<{language:Language;setLanguage:(language:Language)=>void}>((set)=>({language:initial,setLanguage:(language)=>{try{localStorage.setItem('terraturn-language',language)}catch{};document.documentElement.lang=language;set({language})}}))
 // Portuguese keys are the original UX copy. Missing translations transparently fall back to PT-BR.
 const translations:Record<string,[string,string]>={
+'Sequência proposta pela IA · revise as justificativas no planejamento.':['Sequence proposed by the AI · review the reasoning in Planning.','Secuencia propuesta por la IA · revise la justificación en Planificación.'],
+"Demonstração":["Demo", "Demostración"],
+"fazendas fictícias, dados reais da NASA":["fictional farms, real NASA data", "fincas ficticias, datos reales de la NASA"],
+"Criar conta grátis":["Create free account", "Crear cuenta gratis"],
+"Entrar":["Sign in", "Entrar"],
+"Na demonstração as fazendas são fixas. Crie uma conta gratuita para cadastrar a sua.":["Demo farms are fixed. Create a free account to add your own farm.", "Las fincas de la demo son fijas. Cree una cuenta gratis para registrar la suya."],
+"Demonstração com fazendas fictícias e dados reais da NASA.":["Demo with fictional farms and real NASA data.", "Demo con fincas ficticias y datos reales de la NASA."],
+"DEMONSTRAÇÃO":["DEMO", "DEMOSTRACIÓN"],
 "IA da TerraTurn":["TerraTurn AI", "IA de TerraTurn"],
 "Analisando com dados da NASA…":["Analyzing with NASA data…", "Analizando con datos de la NASA…"],
 "A IA recomenda":["AI recommends", "La IA recomienda"],

@@ -5,6 +5,7 @@ import Brand from '../components/Brand'
 import LanguagePicker from '../components/LanguagePicker'
 import {useI18n} from '../lib/i18n'
 import { useAuth } from '../components/AuthProvider'
+import { isDemoUser } from '../lib/demo'
 import { ApiError, sessionApi } from '../lib/api'
 
 type Mode = 'login'|'register'|'forgot'|'reset'
@@ -20,7 +21,7 @@ export function AuthPage({mode}:{mode:Mode}) {
   const [busy,setBusy]=useState(false)
   const [message,setMessage]=useState('')
   const [error,setError]=useState('')
-  if (user && (mode==='login'||mode==='register')) return <Navigate to="/app" replace />
+  if (user && !isDemoUser(user) && (mode==='login'||mode==='register')) return <Navigate to="/app" replace />
   const submit = async(e:FormEvent)=>{
     e.preventDefault();setError('');setMessage('');setBusy(true)
     try {

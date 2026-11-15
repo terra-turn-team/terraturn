@@ -1,7 +1,10 @@
 import type{Farm,FarmInput}from'../types'
 import{polygonDetails}from'./geo'
 import{DEFAULT_INDICATORS,defaultPlanning,normalizeFarm}from'./planning'
-export const IS_DEMO=window.location.pathname.startsWith('/demo')||import.meta.env.VITE_PREVIEW_MODE==='true'
+export const LOCAL_DEMO=import.meta.env.VITE_PREVIEW_MODE==='true'
+export const IS_DEMO=window.location.pathname.startsWith('/demo')||LOCAL_DEMO
+export const DEMO_EMAIL='demo@terraturn.work'
+export const isDemoUser=(u?:{email?:string}|null)=>LOCAL_DEMO||u?.email===DEMO_EMAIL
 const key='terraturn-demo-v03'
 function example():Farm{const geometry:Farm['geometry']={type:'Polygon',coordinates:[[[-47.9062,-19.6155],[-47.8978,-19.6182],[-47.9011,-19.6260],[-47.9094,-19.6234],[-47.9062,-19.6155]]]},geo=polygonDetails(geometry);return{id:'demo-boa-vista',name:'Fazenda Boa Vista',country:'Brasil',state:'Minas Gerais',municipality:'Uberaba',locality:'Área rural',crop:'Soja',previous_crop:'Milho',planting_month:null,soil:{texture:'clayey',ph:5.8,organic_matter_percent:3.2,irrigation:'rainfed'},planning:{...defaultPlanning(),crop_status:'established'},indicators:DEFAULT_INDICATORS,goals:['soil','water','diversity'],notes:'Propriedade fictícia para explorar a interface. Valores declarados são exemplos; nenhum dado NASA foi simulado.',geometry,area_ha:geo.areaHa,centroid:geo.centroid,created_at:new Date().toISOString(),updated_at:new Date().toISOString()}}
 export const demoFarms={list:async():Promise<Farm[]>=>{try{const raw=localStorage.getItem(key);return(raw?JSON.parse(raw):[example()]).map(normalizeFarm)}catch{return[example()]}},save:async(data:FarmInput,id?:string)=>{const fs=await demoFarms.list(),old=fs.find(f=>f.id===id),geo=polygonDetails(data.geometry);const saved:Farm={...data,id:id??crypto.randomUUID(),area_ha:geo.areaHa,centroid:geo.centroid,created_at:old?.created_at??new Date().toISOString(),updated_at:new Date().toISOString()};localStorage.setItem(key,JSON.stringify([saved,...fs.filter(f=>f.id!==id)]));return saved},remove:async(id:string)=>localStorage.setItem(key,JSON.stringify((await demoFarms.list()).filter(f=>f.id!==id)))}

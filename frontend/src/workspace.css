@@ -132,3 +132,23 @@
 @media (max-width:760px){.ai-sheet{inset:0;border-radius:0;position:fixed;z-index:200}.ai-chat{position:fixed;inset:0;width:auto;height:auto;border-radius:0;z-index:200}.ai-pill{top:70px}.ai-fab{bottom:84px;right:12px}}
 .ai-chat-body .assistant-panel{display:flex;flex-direction:column;height:100%;min-height:0;padding:12px}
 .ai-chat-body .chat-messages{flex:1;min-height:0;max-height:none;height:auto;overflow-y:auto}
+.demo-bar{position:absolute;top:0;left:0;right:0;z-index:12;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 18px;background:#1C2B22;color:#F2EDE4;font-size:12px}
+.demo-bar strong{color:#9fd3a9;letter-spacing:.06em;text-transform:uppercase;font-size:11px}
+.demo-bar>div{display:flex;gap:8px;flex-shrink:0}
+.demo-bar .btn{text-decoration:none;padding:7px 12px}
+.demo-bar-primary{background:#3E7C4F;color:#fff}
+.demo-bar-primary:hover{background:#316540}
+.demo-bar-ghost{background:transparent;color:#F2EDE4;border:1px solid #f2ede44d}
+.workspace-map.demo-mode .map-toolbar{top:64px}
+.workspace-map.demo-mode .ai-pill{top:124px}
+@media (max-width:760px){.demo-bar{flex-direction:column;align-items:flex-start;gap:6px}.workspace-map.demo-mode .map-toolbar{top:96px}.workspace-map.demo-mode .ai-pill{top:150px}}
+.study-progress{flex-direction:column;align-items:stretch;gap:8px}
+.study-progress-row{display:flex;align-items:center;gap:10px}
+.study-progress-note{margin:0;font-size:12px;line-height:1.5;color:#3f4d43;font-weight:400}
+.progress-track{height:8px;border-radius:999px;background:#dfe8de;overflow:hidden}
+.progress-track i{display:block;height:100%;background:linear-gradient(90deg,#3E7C4F,#5fa36f);border-radius:999px;transition:width 1s linear}
+.progress-meta{display:flex;justify-content:space-between;font-size:11px;color:#5d6b61;font-weight:500}
+.brand-lockup{height:30px;width:auto;display:block}
+.brand.compact .brand-lockup{height:26px}
+.workspace-map.demo-mode .map-view-switch{top:119px}
+@media (max-width:760px){.workspace-map.demo-mode .map-view-switch{top:151px}}
