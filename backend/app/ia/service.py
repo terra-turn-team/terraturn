@@ -219,6 +219,12 @@ def point_overview(nome: str) -> dict:
     }
 
 
+def crop_traits() -> dict:
+    """Características da tabela oficial de culturas usadas na comparação visual das rotações."""
+    return {c: {"drought": t.get("tolera_seca"), "cycle_days": t.get("ciclo_dias"), "market": t.get("mercado"),
+                "fixes_n": t.get("fixa_n"), "cover": t.get("cobertura")} for c, t in motor().TABELA.items()}
+
+
 def crop_names() -> dict:
     return {c: (t.get("nomes") or {}) for c, t in motor().TABELA.items()}
 

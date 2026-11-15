@@ -314,3 +314,115 @@ html,body{overscroll-behavior:none;-webkit-tap-highlight-color:transparent}
 .typing-dots i:nth-child(3){animation-delay:.4s}
 @keyframes typing-dot{0%,80%,100%{opacity:.3;transform:translateY(0)}40%{opacity:1;transform:translateY(-3px)}}
 @media (prefers-reduced-motion:reduce){.typing-dots i{animation:none;opacity:.7}}
+/* Análise da IA em formato de insight (veredito + comparação) */
+.ai-sheet-body .study-panel{max-width:1320px}
+.study-insight{display:grid;gap:28px;color:#1C2B22;font-size:15px;container-type:inline-size}
+.study-insight h2,.study-insight h3,.study-insight p{margin:0}
+.si-label{display:block;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.si-top{display:grid;grid-template-columns:minmax(0,1.9fr) minmax(300px,1fr);gap:20px}
+.si-verdict{background:#1C2B22;color:#fff;border-radius:22px;padding:34px 40px 26px;display:grid;grid-template-columns:minmax(0,1.25fr) minmax(200px,.75fr);column-gap:36px}
+.si-kicker{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.si-kicker span{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#9fd3a9}
+.si-kicker em{font-style:normal;font-size:12px;font-weight:600;background:#ffffff1f;border-radius:999px;padding:4px 10px}
+#root .study-insight .si-verdict h2{font-size:clamp(40px,5vw,64px);line-height:1.02;font-weight:800;letter-spacing:-.02em;margin-top:14px;color:#fff}
+.si-after{font-size:24px;color:#cfe3d3;margin-top:2px}
+.si-sow{margin:20px 0 18px}
+.si-sow span{display:inline-flex;align-items:center;gap:10px;background:#fff;color:#1C2B22;border-radius:12px;padding:12px 20px;font-size:22px;font-weight:700}
+.si-sow svg{color:#3E7C4F}
+.si-message{font-size:17px;line-height:1.6;color:#e7eee8}
+.si-verdict-why{border-left:1px solid #ffffff26;padding-left:32px;display:flex;flex-direction:column;justify-content:center;gap:22px}
+.si-verdict-why .si-label{color:#c9b089}
+.si-verdict-why b{display:block;font-size:clamp(36px,4vw,52px);line-height:1;font-weight:800;letter-spacing:-.02em}
+.si-verdict-why p{font-size:15px;color:#d4ddd6;margin-top:8px;line-height:1.4}
+.si-tradeoff{grid-column:1/-1;border-top:1px solid #ffffff26;margin-top:26px;padding-top:18px;display:flex;gap:16px;align-items:baseline}
+.si-tradeoff span{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#d9a46f;flex-shrink:0}
+.si-tradeoff p{font-size:17px;line-height:1.5}
+.si-indicators{background:#EEE8DC;border-radius:22px;padding:26px 24px;display:flex;flex-direction:column;gap:6px}
+.si-indicators .si-label{color:#5d6b61}
+.si-indicators>p{font-size:15px;line-height:1.45;margin-bottom:10px}
+.si-ind-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;flex:1}
+.si-ind-grid>div{background:#fff;border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:4px;min-width:0}
+.si-ind-grid small{font-size:14px;color:#5d6b61;line-height:1.3}
+.si-ind-grid b{font-size:30px;font-weight:800;line-height:1.1;letter-spacing:-.01em;overflow-wrap:anywhere}
+.si-ind-grid em{font-style:normal;font-size:13px;color:#7a867d}
+.si-src{font-size:13px;color:#5d6b61;margin-top:10px}
+.si-compare{display:grid}
+.si-row{display:grid;grid-template-columns:minmax(150px,190px) repeat(var(--cols,3),minmax(0,1fr));border-top:1px solid #e3ded2}
+.si-row-head{border-top:0}
+.si-rowlabel{padding:22px 18px 22px 0;display:flex;flex-direction:column;gap:4px}
+.si-rowlabel strong{font-size:16px}
+.si-rowlabel h3{font-size:24px;line-height:1.15;font-weight:800}
+.si-rowlabel small{font-size:13px;color:#6b776f;line-height:1.35}
+.si-cell{padding:22px 18px;min-width:0;display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+.si-cell.rec{background:#EEF4EE;border-left:2px solid #3E7C4F;border-right:2px solid #3E7C4F}
+.si-row-head .si-cell.rec{border-top:2px solid #3E7C4F;border-radius:18px 18px 0 0}
+.si-row-evi .si-cell.rec{border-bottom:2px solid #3E7C4F;border-radius:0 0 18px 18px}
+.si-tags{display:flex;gap:8px;flex-wrap:wrap}
+.si-tag{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;background:#EEE8DC;border-radius:999px;padding:5px 11px}
+.si-tag.rec{background:#3E7C4F;color:#fff;text-transform:none;letter-spacing:0;font-size:13px}
+.si-cell h3,.si-card h3{font-size:26px;line-height:1.15;font-weight:800;margin-top:10px}
+.si-cell>p,.si-card>p{font-size:15px;line-height:1.5;color:#3d4a41}
+.si-mlabel{display:none}
+.si-pips{display:flex;gap:6px}
+.si-pips i{width:34px;height:8px;border-radius:99px;background:#e3ddd0}
+.si-pips i.on{background:#1C2B22}
+.si-pips.is-empty i{background:transparent;border:1.5px dashed #b9b2a3}
+.si-val{font-size:18px;font-weight:700}
+.si-note{font-size:14px;color:#6b776f}
+.si-big{font-size:16px;color:#3d4a41}
+.si-big b{font-size:36px;font-weight:800;color:#1C2B22;letter-spacing:-.02em}
+.si-meter{width:100%;height:8px;border-radius:99px;background:#e3ddd0;overflow:hidden}
+.si-meter i{display:block;height:100%;background:#1C2B22;border-radius:99px}
+.si-cal{width:100%;display:grid;gap:6px}
+.si-cal-row{display:grid;grid-template-columns:repeat(12,1fr);gap:3px}
+.si-cal-row span{height:26px;border-radius:4px}
+.si-cal-row span.empty{background:#ece7dc}
+.si-cal-row span.bare{background:repeating-linear-gradient(135deg,#ece7dc 0 4px,#c9c1b1 4px 6px)}
+.si-cal-months{display:grid;grid-template-columns:repeat(12,1fr);gap:3px;text-align:center;font-size:13px;color:#6b776f}
+.si-cal-months span.deficit{background:#f2e1cf;color:#8a5a2b;font-weight:700;border-radius:4px}
+.si-cal-legend{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:14px;color:#3d4a41}
+.si-cal-legend span{display:inline-flex;align-items:center;gap:6px}
+.si-cal-legend i{width:12px;height:12px;border-radius:3px;display:inline-block}
+.si-cal-legend i.bare{background:repeating-linear-gradient(135deg,#ece7dc 0 3px,#a99f8d 3px 5px)}
+.si-cal-verdict{font-size:15px;margin-top:4px}
+.si-list{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+.si-list li{display:flex;gap:8px;font-size:15px;line-height:1.45}
+.si-list svg{flex-shrink:0;margin-top:3px}
+.si-list.ok svg{color:#3E7C4F}
+.si-list.warn svg{color:#B5835A}
+.si-evidence{width:100%}
+.si-evidence-btn{display:inline-flex;white-space:nowrap;align-items:center;gap:8px;min-height:44px;padding:0 16px;border:1px solid #c9d6c8;border-radius:12px;background:#fff;color:#2f5d3b;font-weight:600;font-size:15px;cursor:pointer}
+.si-evidence-btn .flip{transform:rotate(180deg)}
+.si-evidence-body{margin-top:12px;display:grid;gap:8px;font-size:14px;line-height:1.5;color:#3d4a41}
+.si-evidence-body ul{margin:0;padding-left:18px}
+.si-general{color:#6b776f}
+.si-mobile{display:none}
+@container (max-width:1180px){.si-top{grid-template-columns:1fr}.si-ind-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@container (max-width:820px){.si-ind-grid{grid-template-columns:1fr 1fr}.si-verdict{grid-template-columns:1fr}.si-verdict-why{border-left:0;padding-left:0;margin-top:22px;flex-direction:row;flex-wrap:wrap;gap:28px}}
+@container (max-width:780px){
+.si-compare{display:none}
+.si-mobile{display:grid;gap:14px}
+.si-card{background:#fff;border:1px solid #e3ded2;border-radius:18px;padding:18px;display:grid;gap:10px}
+.si-card.rec{border:2px solid #3E7C4F;background:#EEF4EE}
+.si-card-row{border-top:1px solid #e3ded2;padding-top:12px;display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+.si-card .si-mlabel{display:block;font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#6b776f}
+}
+@media (max-width:760px){
+.si-verdict{padding:24px 20px;border-radius:18px}
+.si-after{font-size:20px}
+.si-sow span{font-size:18px;padding:10px 16px}
+.si-message,.si-tradeoff p{font-size:16px}
+.si-tradeoff{flex-direction:column;gap:6px}
+.si-indicators{padding:20px 16px;border-radius:18px}
+.si-ind-grid b{font-size:24px}
+}
+/* Números de destaque da análise acima da regra geral de 16px do celular */
+#root .terra-workspace .study-insight .si-verdict-why b{font-size:40px;line-height:1}
+#root .terra-workspace .study-insight .si-ind-grid b{font-size:26px;line-height:1.1}
+#root .terra-workspace .study-insight .si-big b{font-size:32px}
+#root .terra-workspace .study-insight .si-after{font-size:20px}
+#root .terra-workspace .study-insight .si-sow span{font-size:18px}
+#root .terra-workspace .study-insight :is(.si-card h3){font-size:24px}
+#root .terra-workspace .study-insight :is(.si-kicker span,.si-kicker em,.si-label,.si-tag,.si-tradeoff span,.si-card .si-mlabel){font-size:13px}
+#root .terra-workspace .study-insight :is(.si-cal-months span,.si-cal-legend span){font-size:13px}
+@container (max-width:520px){.si-verdict-why{flex-direction:column;gap:18px}}
