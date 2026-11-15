@@ -12,6 +12,7 @@ class Settings(BaseSettings):
     smtp_password: str = ""
     email_from: str = "TerraTurn <no-reply@localhost>"
     password_reset_enabled: bool = True
+    resend_api_key: str = ""  # com a chave, o e-mail sai pela API do Resend; sem ela, por SMTP
     reverse_geocoding_enabled: bool = True
     ai_studies_per_day: int = 15
     ai_chat_per_day: int = 40
