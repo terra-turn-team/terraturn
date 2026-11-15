@@ -23,7 +23,6 @@ const translations:Record<string,[string,string]>={
 "Análise de rotação com IA":["AI rotation analysis", "Análisis de rotación con IA"],
 "Fechar":["Close", "Cerrar"],
 "Maximizar":["Maximize", "Maximizar"],
-"Minimizar":["Minimize", "Minimizar"],
 "Restaurar tamanho":["Restore size", "Restaurar tamaño"],
 "Pergunte à IA da TerraTurn":["Ask TerraTurn AI", "Pregunte a la IA de TerraTurn"],
 "Pergunte à IA":["Ask AI", "Pregunte a la IA"],
