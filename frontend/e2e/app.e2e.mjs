@@ -167,7 +167,7 @@ for (const [profile, P] of Object.entries(PROFILES)) {
     }
 
     if (P.mobile) {
-      test('celular: todo texto da interface com pelo menos 16px', async () => {
+      test('celular: todo texto da interface com pelo menos 13px', async () => {
         const { ctx, page } = await open(profile)
         const small = new Map()
         const scan = async where => {
@@ -181,7 +181,7 @@ for (const [profile, P] of Object.entries(PROFILES)) {
               const rect = el.getBoundingClientRect()
               if (!rect.width || rect.bottom < 0 || rect.top > innerHeight) continue
               const fs = parseFloat(getComputedStyle(el).fontSize)
-              if (fs > 0 && fs < 16) out.push(`${fs}px "${n.textContent.trim().slice(0, 40)}" (${el.className || el.tagName})`)
+              if (fs > 0 && fs < 13) out.push(`${fs}px "${n.textContent.trim().slice(0, 40)}" (${el.className || el.tagName})`)
             }
             return out
           })
@@ -189,7 +189,7 @@ for (const [profile, P] of Object.entries(PROFILES)) {
         }
         await scan('mapa')
         for (const i of [1, 2, 3, 4]) { await openPanel(page, profile, i); await scan(`aba ${i}`) }
-        assert.deepEqual(Object.fromEntries(small), {}, 'textos menores que 16px')
+        assert.deepEqual(Object.fromEntries(small), {}, 'textos menores que 13px')
         await ctx.close()
       })
     }

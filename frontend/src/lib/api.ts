@@ -12,7 +12,7 @@ export async function api<T>(url: string, options: RequestInit = {}): Promise<T>
     res = await fetch(`${BASE}${url}`, {
       ...options,
       credentials: 'include',
-      signal:options.signal??AbortSignal.timeout(url.includes('/simulations')?125000:url.includes('/agronomy')?65000:15000),
+      signal:options.signal??AbortSignal.timeout(url.includes('/simulations')?125000:url.includes('/agronomy')||url.includes('/ai/chat')?65000:15000),
       headers: { ...((options.body && !(options.body instanceof FormData)) ? { 'Content-Type': 'application/json' } : {}), ...(options.headers || {}) },
     })
   } catch { throw new ApiError(0, 'Cannot reach the server. Check your connection and try again.') }

@@ -260,6 +260,44 @@ html,body{overscroll-behavior:none;-webkit-tap-highlight-color:transparent}
 .ai-fab,.workspace-map:has(.map-timeline) .ai-fab{bottom:52px}
 .map-timeline,.parcel-inspector{bottom:112px}
 }
+
+/* Celular (≤ 760px): card da fazenda no mapa, resumo, resultado da IA e chat */
+.mobile-farm-card{display:none}
+@media (max-width:760px){
+.mobile-farm-card{position:absolute;left:12px;right:12px;bottom:52px;z-index:7;display:flex;align-items:center;gap:10px;padding:10px 10px 10px 14px;background:#fff;border-radius:16px;box-shadow:0 8px 24px #1c2b2224}
+.mobile-farm-info{flex:1;min-width:0;display:flex;align-items:center;gap:10px;border:0;background:transparent;padding:0;text-align:left;color:#1C2B22;min-height:44px}
+.mobile-farm-info>svg{flex-shrink:0;color:#3E7C4F;background:#3E7C4F1a;border-radius:10px;padding:8px;width:36px;height:36px}
+.mobile-farm-info>span{min-width:0;display:grid;gap:2px}
+#root .terra-workspace .mobile-farm-info strong{font-size:16px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#root .terra-workspace .mobile-farm-info small{font-size:13px;color:#5d6b61;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mobile-farm-cta{flex-shrink:0;min-height:44px;padding:0 16px;border:0;border-radius:12px;background:#3E7C4F;color:#fff;font-weight:600}
+.workspace-map:has(.mobile-farm-card) .map-bottom-tools,.workspace-map:has(.mobile-farm-card) .ai-fab{bottom:132px}
+.workspace-map:has(.mobile-farm-card) .map-timeline{bottom:192px}
+/* menos opções no celular: visualização 3D fica só no desktop */
+.map-view-switch button:nth-child(n+4){display:none}
+/* resumo: número em destaque e fonte numa linha curta */
+.indicator-grid{gap:10px;grid-template-columns:repeat(2,minmax(0,1fr))}
+.indicator-card{min-width:0}
+.indicator-card{border-radius:16px;min-height:0;padding:14px}
+#root .terra-workspace .indicator-card>span{font-size:13px}
+#root .terra-workspace .indicator-card>strong{font-size:24px;margin:8px 0 4px;overflow-wrap:anywhere}
+#root .terra-workspace .indicator-card>strong>small{font-size:13px;display:inline-block;white-space:nowrap}
+#root .terra-workspace .indicator-card p{font-size:13px}
+.indicator-card .metric-provenance{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:4px}
+#root .terra-workspace .indicator-card .metric-provenance{font-size:13px;color:#7a867d}
+/* resultado da IA: fatos em 2 colunas, menos rolagem até as rotações */
+.ai-sheet-body{padding:12px}
+.study-facts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.study-facts>div{border-radius:12px;padding:10px;align-items:flex-start}
+#root .terra-workspace .study-facts small{font-size:13px;line-height:1.3}
+#root .terra-workspace .study-facts strong{font-size:16px}
+.rotation-grid{gap:12px}
+.rotation-more{min-height:44px}
+/* chat em tela cheia acompanhando o teclado */
+.ai-chat{top:var(--chat-top,0);bottom:auto;height:var(--chat-h,100dvh)}
+.ai-chat .ai-sheet-head{padding-top:calc(10px + env(safe-area-inset-top))}
+.ai-chat-body .assistant-panel{padding:12px 12px calc(12px + env(safe-area-inset-bottom))}
+}
 /* Camadas: valor real da fazenda e grupo "Em breve" */
 .workspace-layer .layer-value{display:block;font-size:14px;font-weight:700;color:#1C2B22;margin:2px 0}
 .layer-soon{margin-top:4px;border-top:1px solid var(--ws-line);padding-top:10px}

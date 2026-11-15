@@ -24,6 +24,14 @@ export default function AiLayer({ farm, sheetOpen, setSheetOpen, hideFab, onEdit
     window.addEventListener('keydown', fn); return () => window.removeEventListener('keydown', fn)
   }, [sheetOpen, setSheetOpen])
   useEffect(() => { if (hideFab) setChatOpen(false) }, [hideFab])
+  // Celular: o chat acompanha a área visível, para o campo de texto ficar acima do teclado.
+  useEffect(() => {
+    const vv = window.visualViewport
+    if (!chatOpen || !vv) return
+    const fit = () => { document.documentElement.style.setProperty('--chat-h', `${vv.height}px`); document.documentElement.style.setProperty('--chat-top', `${vv.offsetTop}px`) }
+    fit(); vv.addEventListener('resize', fit); vv.addEventListener('scroll', fit)
+    return () => { vv.removeEventListener('resize', fit); vv.removeEventListener('scroll', fit); document.documentElement.style.removeProperty('--chat-h'); document.documentElement.style.removeProperty('--chat-top') }
+  }, [chatOpen])
   const rec = study?.status === 'complete' ? study.result?.analysis.recommendation : null
   const run = () => { start.mutate(language); setSheetOpen(true) }
   return <>
