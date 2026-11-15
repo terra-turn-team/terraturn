@@ -115,22 +115,23 @@ function FarmFacts({ result }: { result: StudyResult }) {
   </div>
 }
 
-export default function StudyPanel({ farm }: { farm: Farm }) {
+export default function StudyPanel({ farm, compact = false }: { farm: Farm; compact?: boolean }) {
   const { x, language } = useTxt()
   const { study, loading, start, isRunning } = useStudy(farm.id)
   const result = study?.status === 'complete' ? study.result : null
   const startError = start.error instanceof ApiError ? start.error.message : start.error ? x('failed') : ''
   const rec = result?.analysis.recommendation
   const recIndex = result ? result.analysis.rotations.findIndex(r => r.name === rec?.rotation_name) : -1
+  if (compact && !study && !isRunning) return null
   const stage = isRunning ? (study?.stage && TXT[study.stage] ? study.stage : 'queued') : ''
-  return <section className="study-panel" aria-live="polite">
+  return <section className={`study-panel ${compact ? 'compact' : ''}`} aria-live="polite">
     <div className="study-top">
       <div><span className="eyebrow">{x('eyebrow')}</span><h2>{x('title')}</h2>{!result && !isRunning && <p>{x('intro')}</p>}</div>
-      {!isRunning && !loading && <button type="button" className={`btn ${result ? 'btn-outline btn-small' : 'btn-primary'}`} onClick={() => start.mutate(language)}>
+      {!compact && !isRunning && !loading && <button type="button" className={`btn ${result ? 'btn-outline btn-small' : 'btn-primary'}`} onClick={() => start.mutate(language)}>
         {result ? <><RefreshCw size={15} /> {x('again')}</> : <><Sparkles size={17} /> {x('analyze')}</>}
       </button>}
     </div>
-    {!result && !isRunning && !loading && <p className="study-hint">{x('timeNew')}</p>}
+    {!compact && !result && !isRunning && !loading && <p className="study-hint">{x('timeNew')}</p>}
     {isRunning && <div className="study-progress"><Loader2 size={18} className="spin" /><span>{x(stage)}</span></div>}
     {startError && <p className="form-error" role="alert">{startError}</p>}
     {study?.status === 'failed' && !isRunning && <p className="form-error" role="alert">{x('failed')} {study.error}</p>}

@@ -22,7 +22,7 @@ from app.database import SessionLocal, get_db, init_db
 from app.db_models import AiStudy, CropHistory, GeocodeCache, Property, ResetToken, User
 from app.emailer import send_password_reset
 from app.geo import analyze_polygon
-from app.schemas import (ChatIn, StudyIn, CropHistoryIn, CropHistoryOut, FarmIn, ForgotIn, LoginIn, PublicStatus,
+from app.schemas import (DEFAULT_INDICATORS, ChatIn, PlanningDetails, SimulationIn, StudyIn, CropHistoryIn, CropHistoryOut, FarmIn, ForgotIn, LoginIn, PublicStatus,
                          RegisterIn, ResetIn, UserOut)
 from app.security import (COOKIE_NAME, SESSION_HOURS, create_token, current_user, hash_password,
                           normalize_email, purge_expired, rate_limit, verify_password)
@@ -121,6 +121,8 @@ def farm_output(prop: Property) -> dict:
         "planting_month": prop.planting_month,
         "soil": prop.soil or {},
         "goals": prop.priorities or [],
+        "indicators": prop.indicators if prop.indicators is not None else list(DEFAULT_INDICATORS),
+        "planning": prop.planning or PlanningDetails().model_dump(),
         "notes": prop.notes,
         "geometry": prop.geometry,
         "area_ha": prop.tamanho_hectares,
@@ -144,6 +146,8 @@ def apply_farm(prop: Property, payload: FarmIn) -> None:
     prop.soil = data["soil"]
     prop.tipo_solo = data["soil"]["texture"]
     prop.priorities = data["goals"]
+    prop.indicators = data["indicators"]
+    prop.planning = data["planning"]
     prop.notes = data["notes"]
     prop.geometry = data["geometry"]
     prop.tamanho_hectares = area
@@ -519,22 +523,43 @@ def ai_status():
 
 @app.post(BASE + "/ai/studies", status_code=202)
 def create_study(payload: StudyIn, request: Request, user: User = Depends(current_user), db: Session = Depends(get_db)):
+    prop = owned_farm(db, payload.farm_id, user)
+    return study_output(start_study(db, request, user, prop, payload.language, [payload.priority] if payload.priority else None))
+
+
+def start_study(db: Session, request: Request, user: User, prop: Property, language: str, goals=None) -> AiStudy:
     from app.ia import service
 
-    prop = owned_farm(db, payload.farm_id, user)
     running = db.query(AiStudy).filter(AiStudy.property_id == prop.id, AiStudy.status.in_(["queued", "running"])).first()
     if running is not None:
-        return study_output(running)
+        return running
     rate_limit(db, request, "study", user.id, limit=settings.ai_studies_per_day, minutes=1440)
-    goals = [payload.priority] if payload.priority else (prop.priorities or [])
     study = AiStudy(user_id=user.id, property_id=prop.id, status="queued", stage="queued",
-                    language=service.motor_language(payload.language), priority=service.priority_from_goals(goals),
+                    language=service.motor_language(language), priority=service.priority_from_goals(goals or prop.priorities or []),
                     created_at=now_utc(), updated_at=now_utc())
     db.add(study)
     db.commit()
     db.refresh(study)
     service.submit_study(study.id)
-    return study_output(study)
+    return study
+
+
+@app.get(BASE + "/farms/{farm_id}/agronomy")
+def farm_agronomy(farm_id: str, user: User = Depends(current_user), db: Session = Depends(get_db)):
+    from app.ia import agronomy
+
+    prop = owned_farm(db, farm_id, user)
+    latest = db.query(AiStudy).filter(AiStudy.property_id == prop.id).order_by(AiStudy.created_at.desc()).first()
+    return agronomy.context_for(prop, latest)
+
+
+@app.post(BASE + "/farms/{farm_id}/simulations")
+def farm_simulation(farm_id: str, payload: SimulationIn, request: Request, user: User = Depends(current_user), db: Session = Depends(get_db)):
+    from app.ia import agronomy
+
+    prop = owned_farm(db, farm_id, user)
+    study = start_study(db, request, user, prop, payload.language)
+    return agronomy.plan_from_study(prop, study, payload.scenario.model_dump())
 
 
 @app.get(BASE + "/ai/studies/{study_id}")

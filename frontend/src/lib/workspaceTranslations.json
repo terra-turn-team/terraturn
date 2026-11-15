@@ -1,0 +1,706 @@
+{
+  "Visão geral": [
+    "Overview",
+    "Vista general"
+  ],
+  "Cada detalhe da sua terra, em perspectiva.": [
+    "Every detail of your land, in perspective.",
+    "Cada detalle de su tierra, en perspectiva."
+  ],
+  "Organize suas áreas de cultivo.": [
+    "Organize your growing areas.",
+    "Organice sus áreas de cultivo."
+  ],
+  "Planejamento": [
+    "Planning",
+    "Planificación"
+  ],
+  "Escolhas de hoje. Próximas safras.": [
+    "Today's choices. Future harvests.",
+    "Decisiones de hoy. Próximas cosechas."
+  ],
+  "Clima e histórico": [
+    "Climate and history",
+    "Clima e historial"
+  ],
+  "O passado ajuda a planejar o futuro.": [
+    "The past helps plan the future.",
+    "El pasado ayuda a planificar el futuro."
+  ],
+  "Explore o que compõe sua área.": [
+    "Explore the layers of your land.",
+    "Explore los componentes de su área."
+  ],
+  "Seu ponto de apoio no campo.": [
+    "Your support in the field.",
+    "Su apoyo en el campo."
+  ],
+  "A IA deverá propor a cultura inicial e a sequência de cultivos com base no clima, no solo e nas restrições informadas. A disponibilidade da área deverá ser validada.": [
+    "AI will propose the initial crop and crop sequence using climate, soil and declared constraints. Field availability must be validated.",
+    "La IA propondrá el cultivo inicial y la secuencia según el clima, el suelo y las restricciones. Se deberá validar la disponibilidad del área."
+  ],
+  "A IA irá propor a cultura inicial.": [
+    "AI will propose the initial crop.",
+    "La IA propondrá el cultivo inicial."
+  ],
+  "A definir pela IA": [
+    "To be proposed by AI",
+    "Por definir con IA"
+  ],
+  "A seleção personaliza a visualização. Indicadores dependem da disponibilidade de dados e modelos.": [
+    "Your selection personalizes the dashboard. Indicators depend on available data and models.",
+    "La selección personaliza el panel. Los indicadores dependen de los datos y modelos disponibles."
+  ],
+  "Abrir painel": [
+    "Open panel",
+    "Abrir panel"
+  ],
+  "Aguardando dados": [
+    "Awaiting data",
+    "Esperando datos"
+  ],
+  "Aguardando dados climáticos observados.": [
+    "Awaiting observed climate data.",
+    "Esperando datos climáticos observados."
+  ],
+  "Ainda não definida": [
+    "Not yet defined",
+    "Aún no definida"
+  ],
+  "Ambiente demonstrativo. Alterações ficam neste navegador.": [
+    "Demo workspace. Changes stay in this browser.",
+    "Entorno de demostración. Los cambios quedan en este navegador."
+  ],
+  "As camadas exibem a disponibilidade e a origem dos dados. Valores ausentes não são substituídos por zero.": [
+    "Layers show data availability and sources. Missing values are not replaced with zero.",
+    "Las capas muestran la disponibilidad y el origen de los datos. Los valores ausentes no se sustituyen por cero."
+  ],
+  "Atualizar dados": [
+    "Refresh data",
+    "Actualizar datos"
+  ],
+  "Base climática": [
+    "Climate baseline",
+    "Base climática"
+  ],
+  "Base histórica: últimos 5 anos": [
+    "Historical baseline: past 5 years",
+    "Base histórica: últimos 5 años"
+  ],
+  "Buscar camada": [
+    "Find a layer",
+    "Buscar capa"
+  ],
+  "Buscar propriedade": [
+    "Find a property",
+    "Buscar propiedad"
+  ],
+  "CONDIÇÕES DECLARADAS": [
+    "DECLARED CONDITIONS",
+    "CONDICIONES DECLARADAS"
+  ],
+  "Calendário de cultivos": [
+    "Crop calendar",
+    "Calendario de cultivos"
+  ],
+  "Carregando terreno...": [
+    "Loading terrain...",
+    "Cargando terreno..."
+  ],
+  "Carregando...": [
+    "Loading...",
+    "Cargando..."
+  ],
+  "Cinco anos ajudam a caracterizar a sazonalidade. O histórico não garante as condições futuras. pH e matéria orgânica dependem de análise local do solo.": [
+    "Five years help characterize seasonality. History does not guarantee future conditions. pH and organic matter require local soil analysis.",
+    "Cinco años ayudan a caracterizar la estacionalidad. El historial no garantiza las condiciones futuras. El pH y la materia orgánica requieren análisis local del suelo."
+  ],
+  "Cinco anos de histórico": [
+    "Five years of history",
+    "Cinco años de historial"
+  ],
+  "Cobertura recebida": [
+    "Received coverage",
+    "Cobertura recibida"
+  ],
+  "Colheita ou encerramento previsto. Informe se conhecido.": [
+    "Expected harvest or end of the crop. Enter if known.",
+    "Cosecha o finalización prevista. Indique si se conoce."
+  ],
+  "Conecte o histórico da sua terra às próximas escolhas de cultivo.": [
+    "Connect your land's history with your next crop decisions.",
+    "Conecte el historial de su tierra con las próximas decisiones de cultivo."
+  ],
+  "Configurar planejamento": [
+    "Configure planning",
+    "Configurar planificación"
+  ],
+  "Configurações": [
+    "Settings",
+    "Configuración"
+  ],
+  "Conta e preferências": [
+    "Account and preferences",
+    "Cuenta y preferencias"
+  ],
+  "Cultivo perene ou semiperene: preservar a cultura e avaliar manejo ou renovação, sem substituição automática.": [
+    "Perennial or semi-perennial crop: preserve the crop and evaluate management or renewal, without automatic replacement.",
+    "Cultivo perenne o semiperenne: conservar el cultivo y evaluar el manejo o la renovación, sin sustitución automática."
+  ],
+  "Cultura a definir pela IA": [
+    "Crop to be proposed by AI",
+    "Cultivo por definir con IA"
+  ],
+  "Cultura inicial / atual": [
+    "Initial / current crop",
+    "Cultivo inicial / actual"
+  ],
+  "Cultura inicial ou atual": [
+    "Initial or current crop",
+    "Cultivo inicial o actual"
+  ],
+  "Defina o ponto de partida e os objetivos da rotação.": [
+    "Define the starting point and rotation goals.",
+    "Defina el punto de partida y los objetivos de la rotación."
+  ],
+  "Deixar a IA propor": [
+    "Let AI propose",
+    "Dejar que la IA proponga"
+  ],
+  "Desenhe sua área e prepare seu planejamento.": [
+    "Draw your field and prepare your plan.",
+    "Dibuje su área y prepare su planificación."
+  ],
+  "Editar contexto agrícola": [
+    "Edit agricultural context",
+    "Editar contexto agrícola"
+  ],
+  "Encontre sua propriedade": [
+    "Find your property",
+    "Encuentre su propiedad"
+  ],
+  "Escolha os dados que você deseja acompanhar.": [
+    "Choose the data you want to track.",
+    "Elija los datos que desea seguir."
+  ],
+  "Esta ação remove a propriedade e seu planejamento.": [
+    "This removes the property and its plan.",
+    "Esta acción elimina la propiedad y su planificación."
+  ],
+  "Explorar um cenário hipotético": [
+    "Explore a hypothetical scenario",
+    "Explorar un escenario hipotético"
+  ],
+  "Exportar": [
+    "Export",
+    "Exportar"
+  ],
+  "Exportar configuração": [
+    "Export configuration",
+    "Exportar configuración"
+  ],
+  "Exportação dos seus dados concluída": [
+    "Data export completed",
+    "Exportación de datos completada"
+  ],
+  "Fechar": [
+    "Close",
+    "Cerrar"
+  ],
+  "Fechar detalhes": [
+    "Close details",
+    "Cerrar detalles"
+  ],
+  "Fonte": [
+    "Source",
+    "Fuente"
+  ],
+  "HORIZONTE DE SIMULAÇÃO": [
+    "SIMULATION HORIZON",
+    "HORIZONTE DE SIMULACIÓN"
+  ],
+  "Hipóteses para comparação, não uma previsão meteorológica de 24 meses.": [
+    "Assumptions for comparison, not a 24-month weather forecast.",
+    "Supuestos para comparar, no un pronóstico meteorológico de 24 meses."
+  ],
+  "Histórico climático": [
+    "Climate history",
+    "Historial climático"
+  ],
+  "Horizonte de planejamento": [
+    "Planning horizon",
+    "Horizonte de planificación"
+  ],
+  "Horizonte em meses": [
+    "Horizon in months",
+    "Horizonte en meses"
+  ],
+  "INDICADORES DA ÁREA": [
+    "FIELD INDICATORS",
+    "INDICADORES DEL ÁREA"
+  ],
+  "INTELIGÊNCIA PARA O SOLO": [
+    "INTELLIGENCE FOR THE SOIL",
+    "INTELIGENCIA PARA EL SUELO"
+  ],
+  "Indicadores no painel": [
+    "Dashboard indicators",
+    "Indicadores del panel"
+  ],
+  "Informe a liberação da área para planejar a sucessão.": [
+    "Enter the field release date to plan the next crop.",
+    "Indique la liberación del área para planificar la sucesión."
+  ],
+  "Início do cultivo (opcional)": [
+    "Crop start (optional)",
+    "Inicio del cultivo (opcional)"
+  ],
+  "Já implantado": [
+    "Already established",
+    "Ya implantado"
+  ],
+  "Liberação da área para o próximo cultivo": [
+    "Field release for the next crop",
+    "Liberación del área para el próximo cultivo"
+  ],
+  "Matéria orgânica": [
+    "Organic matter",
+    "Materia orgánica"
+  ],
+  "Matéria orgânica (%)": [
+    "Organic matter (%)",
+    "Materia orgánica (%)"
+  ],
+  "Navegação principal": [
+    "Main navigation",
+    "Navegación principal"
+  ],
+  "Nome do cultivo": [
+    "Crop name",
+    "Nombre del cultivo"
+  ],
+  "Notas técnicas e restrições": [
+    "Technical notes and constraints",
+    "Notas técnicas y restricciones"
+  ],
+  "Não foi possível carregar as propriedades.": [
+    "Unable to load properties.",
+    "No se pudieron cargar las propiedades."
+  ],
+  "Não foi possível consultar a integração.": [
+    "Unable to contact the integration.",
+    "No se pudo consultar la integración."
+  ],
+  "Número de meses": [
+    "Number of months",
+    "Número de meses"
+  ],
+  "O histórico alimenta cenários de rotação; não é uma previsão meteorológica para os próximos 24 meses.": [
+    "History informs rotation scenarios; it is not a weather forecast for the next 24 months.",
+    "El historial alimenta escenarios de rotación; no es un pronóstico meteorológico para los próximos 24 meses."
+  ],
+  "O planejamento será calculado quando o histórico e o motor agronômico estiverem disponíveis.": [
+    "The plan will be calculated when history and the agronomic engine are available.",
+    "La planificación se calculará cuando el historial y el motor agronómico estén disponibles."
+  ],
+  "Observações anteriores ao início do planejamento, recebidas pela integração da equipe.": [
+    "Historical observations received through the team's integration.",
+    "Observaciones históricas recibidas mediante la integración del equipo."
+  ],
+  "Olhe além da próxima safra.": [
+    "Look beyond the next harvest.",
+    "Mire más allá de la próxima cosecha."
+  ],
+  "Opcional": [
+    "Optional",
+    "Opcional"
+  ],
+  "PLANEJAMENTO INTELIGENTE": [
+    "INTELLIGENT PLANNING",
+    "PLANIFICACIÓN INTELIGENTE"
+  ],
+  "Personalizar": [
+    "Customize",
+    "Personalizar"
+  ],
+  "Perímetro cadastrado": [
+    "Registered boundary",
+    "Perímetro registrado"
+  ],
+  "Período": [
+    "Period",
+    "Período"
+  ],
+  "Período da simulação": [
+    "Simulation period",
+    "Período de simulación"
+  ],
+  "Planejamento com IA": [
+    "Planning with AI",
+    "Planificación con IA"
+  ],
+  "Planeje a safra atual e os próximos cultivos": [
+    "Plan the current season and upcoming crops",
+    "Planifique la temporada actual y los próximos cultivos"
+  ],
+  "Plantio planejado": [
+    "Planned planting",
+    "Siembra planificada"
+  ],
+  "Ponto de partida": [
+    "Starting point",
+    "Punto de partida"
+  ],
+  "Pragas ou nematoides, restrições, culturas a evitar, análise de solo...": [
+    "Pests or nematodes, restrictions, crops to avoid, soil analysis...",
+    "Plagas o nematodos, restricciones, cultivos que evitar, análisis del suelo..."
+  ],
+  "Prioridades da propriedade": [
+    "Property priorities",
+    "Prioridades de la propiedad"
+  ],
+  "Prioridades do planejamento": [
+    "Planning priorities",
+    "Prioridades de planificación"
+  ],
+  "Propriedade removida": [
+    "Property removed",
+    "Propiedad eliminada"
+  ],
+  "Propriedade salva com sucesso": [
+    "Property saved successfully",
+    "Propiedad guardada correctamente"
+  ],
+  "Próximos cultivos": [
+    "Next crops",
+    "Próximos cultivos"
+  ],
+  "Quais resultados são mais importantes para esta propriedade?": [
+    "Which outcomes matter most for this property?",
+    "¿Qué resultados son más importantes para esta propiedad?"
+  ],
+  "Recolher painel": [
+    "Collapse panel",
+    "Contraer panel"
+  ],
+  "Reiniciar no mês atual": [
+    "Restart in the current month",
+    "Reiniciar en el mes actual"
+  ],
+  "Resolução espacial": [
+    "Spatial resolution",
+    "Resolución espacial"
+  ],
+  "SEQUÊNCIA PROPOSTA": [
+    "PROPOSED SEQUENCE",
+    "SECUENCIA PROPUESTA"
+  ],
+  "Sair": [
+    "Sign out",
+    "Salir"
+  ],
+  "Sazonalidade, disponibilidade de água e condições da área.": [
+    "Seasonality, water availability and field conditions.",
+    "Estacionalidad, disponibilidad de agua y condiciones del área."
+  ],
+  "Selecione os indicadores que deseja acompanhar.": [
+    "Select the indicators you want to track.",
+    "Seleccione los indicadores que desea seguir."
+  ],
+  "Sequência com janelas, justificativas e incertezas para revisão agronômica.": [
+    "A sequence with windows, rationale and uncertainty for agronomic review.",
+    "Secuencia con ventanas, justificaciones e incertidumbres para revisión agronómica."
+  ],
+  "Seu navegador não oferece aceleração 3D.": [
+    "Your browser does not support 3D acceleration.",
+    "Su navegador no ofrece aceleración 3D."
+  ],
+  "Simular rotação": [
+    "Simulate rotation",
+    "Simular rotación"
+  ],
+  "Situação do cultivo": [
+    "Crop status",
+    "Estado del cultivo"
+  ],
+  "Sua próxima safra começa aqui.": [
+    "Your next harvest starts here.",
+    "Su próxima cosecha empieza aquí."
+  ],
+  "Sua série começa aqui.": [
+    "Your series starts here.",
+    "Su serie empieza aquí."
+  ],
+  "Temperatura média": [
+    "Average temperature",
+    "Temperatura media"
+  ],
+  "Tentar novamente": [
+    "Try again",
+    "Reintentar"
+  ],
+  "anos": [
+    "years",
+    "años"
+  ],
+  "conteúdo": [
+    "content",
+    "contenido"
+  ],
+  "meses": [
+    "months",
+    "meses"
+  ],
+  "meses de possibilidades": [
+    "months of possibilities",
+    "meses de posibilidades"
+  ],
+  "pH do solo": [
+    "Soil pH",
+    "pH del suelo"
+  ],
+  "pH do solo (opcional)": [
+    "Soil pH (optional)",
+    "pH del suelo (opcional)"
+  ],
+  "pH e matéria orgânica vêm de análise local. Dados orbitais complementam a avaliação do solo.": [
+    "pH and organic matter come from local analysis. Orbital data complement soil assessment.",
+    "El pH y la materia orgánica provienen de análisis locales. Los datos orbitales complementan la evaluación del suelo."
+  ],
+  "Última observação": [
+    "Last observation",
+    "Última observación"
+  ],
+  "Análise local declarada": [
+    "Declared local analysis",
+    "Análisis local declarado"
+  ],
+  "Estimativa": [
+    "Estimate",
+    "Estimación"
+  ],
+  "Observado": [
+    "Observed",
+    "Observado"
+  ],
+  "Histórico disponível para o planejamento.": [
+    "History available for planning.",
+    "Historial disponible para planificación."
+  ],
+  "Histórico NASA aguardando integração.": [
+    "NASA history awaiting integration.",
+    "Historial NASA pendiente de integración."
+  ],
+  "Cultivo atual": [
+    "Current crop",
+    "Cultivo actual"
+  ],
+  "Cultivo inicial": [
+    "Initial crop",
+    "Cultivo inicial"
+  ],
+  "Simulação em processamento": [
+    "Simulation processing",
+    "Simulación en proceso"
+  ],
+  "Aguardando a integração de IA": [
+    "Awaiting AI integration",
+    "Esperando la integración de IA"
+  ],
+  "Cobertura": [
+    "Cover crop",
+    "Cobertura"
+  ],
+  "Comercial": [
+    "Commercial",
+    "Comercial"
+  ],
+  "Variação de chuva": [
+    "Rainfall variation",
+    "Variación de lluvia"
+  ],
+  "Restaurar hipóteses": [
+    "Reset assumptions",
+    "Restablecer supuestos"
+  ],
+  "Aguardando": [
+    "Pending",
+    "Pendiente"
+  ],
+  "DEMONSTRAÇÃO · DADOS LOCAIS": [
+    "DEMO · LOCAL DATA",
+    "DEMOSTRACIÓN · DATOS LOCALES"
+  ],
+  "ÁREA DE TRABALHO PRIVADA": [
+    "PRIVATE WORKSPACE",
+    "ESPACIO DE TRABAJO PRIVADO"
+  ],
+  "Sequência disponível para revisão.": [
+    "Sequence available for review.",
+    "Secuencia disponible para revisión."
+  ],
+  "Histórico e recomendações aguardando integração.": [
+    "History and recommendations awaiting integration.",
+    "Historial y recomendaciones pendientes de integración."
+  ],
+  "Visualização ilustrativa": [
+    "Illustrative view",
+    "Vista ilustrativa"
+  ],
+  "Ocultar calendário": [
+    "Hide calendar",
+    "Ocultar calendario"
+  ],
+  "Mostrar calendário": [
+    "Show calendar",
+    "Mostrar calendario"
+  ],
+  "Modelo 3D ilustrativo · relevo e plantas não são medições.": [
+    "Illustrative 3D model · terrain and plants are not measurements.",
+    "Modelo 3D ilustrativo · el relieve y las plantas no son mediciones."
+  ],
+  "Perímetro cadastrado · imagem de referência cartográfica.": [
+    "Registered boundary · cartographic reference image.",
+    "Perímetro registrado · imagen de referencia cartográfica."
+  ],
+  "Calendário configurado · a sequência de rotação aguarda a IA.": [
+    "Calendar configured · run the AI analysis in Planning.",
+    "Calendario configurado · ejecute el análisis de IA en Planificación."
+  ],
+  "Fertilidade e ciclagem": [
+    "Fertility and nutrient cycling",
+    "Fertilidad y reciclaje de nutrientes"
+  ],
+  "Cobertura e erosão": [
+    "Cover and erosion",
+    "Cobertura y erosión"
+  ],
+  "Riscos fitossanitários": [
+    "Plant health risks",
+    "Riesgos fitosanitarios"
+  ],
+  "Diversificação": [
+    "Diversification",
+    "Diversificación"
+  ],
+  "Retorno econômico": [
+    "Economic return",
+    "Retorno económico"
+  ],
+  "Resiliência climática": [
+    "Climate resilience",
+    "Resiliencia climática"
+  ],
+  "Reduzir custos": [
+    "Reduce costs",
+    "Reducir costos"
+  ],
+  "Estrutura, atividade biológica e matéria orgânica": [
+    "Structure, biological activity and organic matter",
+    "Estructura, actividad biológica y materia orgánica"
+  ],
+  "Uso eficiente e retenção de água": [
+    "Water use efficiency and retention",
+    "Uso eficiente y retención de agua"
+  ],
+  "Reduzir vulnerabilidade a eventos extremos": [
+    "Reduce vulnerability to extreme events",
+    "Reducir vulnerabilidad a eventos extremos"
+  ],
+  "Potencial produtivo da sequência de cultivos": [
+    "Production potential of the crop sequence",
+    "Potencial productivo de la secuencia de cultivos"
+  ],
+  "Insumos e operações ao longo da rotação": [
+    "Inputs and operations across the rotation",
+    "Insumos y operaciones durante la rotación"
+  ],
+  "Nutrientes e contribuição das culturas de cobertura": [
+    "Nutrients and contributions of cover crops",
+    "Nutrientes y contribución de los cultivos de cobertura"
+  ],
+  "Manter o solo protegido entre safras": [
+    "Keep soil protected between seasons",
+    "Mantener el suelo protegido entre temporadas"
+  ],
+  "Pragas, doenças e nematoides locais": [
+    "Local pests, diseases and nematodes",
+    "Plagas, enfermedades y nematodos locales"
+  ],
+  "Alternar espécies e famílias botânicas": [
+    "Alternate species and botanical families",
+    "Alternar especies y familias botánicas"
+  ],
+  "Margem da rotação; depende de preços e custos locais": [
+    "Rotation margin; depends on local prices and costs",
+    "Margen de la rotación; depende de precios y costos locales"
+  ],
+  "Clima e água": [
+    "Climate and water",
+    "Clima y agua"
+  ],
+  "Solo e vegetação": [
+    "Soil and vegetation",
+    "Suelo y vegetación"
+  ],
+  "Produção e economia": [
+    "Production and economics",
+    "Producción y economía"
+  ],
+  "Balanço hídrico": [
+    "Water balance",
+    "Balance hídrico"
+  ],
+  "Vigor vegetal · NDVI": [
+    "Vegetation vigor · NDVI",
+    "Vigor vegetal · NDVI"
+  ],
+  "Risco fitossanitário": [
+    "Plant health risk",
+    "Riesgo fitosanitario"
+  ],
+  "Risco de erosão": [
+    "Erosion risk",
+    "Riesgo de erosión"
+  ],
+  "Produtividade estimada": [
+    "Estimated yield",
+    "Productividad estimada"
+  ],
+  "Custo estimado": [
+    "Estimated cost",
+    "Costo estimado"
+  ],
+  "Margem estimada": [
+    "Estimated margin",
+    "Margen estimado"
+  ],
+  "Braquiária": [
+    "Brachiaria",
+    "Braquiaria"
+  ],
+  "Sorgo": [
+    "Sorghum",
+    "Sorgo"
+  ],
+  "Milheto": [
+    "Pearl millet",
+    "Mijo perla"
+  ],
+  "Crotalária": [
+    "Sunn hemp",
+    "Crotalaria"
+  ],
+  "Aveia": [
+    "Oats",
+    "Avena"
+  ],
+  "Outra cultura": [
+    "Other crop",
+    "Otro cultivo"
+  ],
+  "Gere a rotação recomendada pela IA com dados da NASA.": [
+    "Generate the AI-recommended rotation from NASA data.",
+    "Genere la rotación recomendada por la IA con datos de la NASA."
+  ]
+}

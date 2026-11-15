@@ -12,7 +12,8 @@ from app.ia.motor import WORKDIR, motor
 logger = logging.getLogger("terraturn.ia")
 EXECUTOR = ThreadPoolExecutor(max_workers=2, thread_name_prefix="ia")
 
-GOAL_TO_PRIORITY = {"water": "agua", "soil": "solo", "yield": "renda", "cost": "renda", "resilience": "risco"}
+GOAL_TO_PRIORITY = {"water": "agua", "soil": "solo", "yield": "renda", "cost": "renda", "resilience": "risco",
+                    "fertility": "solo", "erosion": "solo", "diversity": "solo", "phytosanitary": "risco", "margin": "renda"}
 PRIORITY_TO_GOAL = {"agua": "water", "solo": "soil", "renda": "yield", "risco": "resilience"}
 MONTHS_EN = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 MONTHS_PT = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"]
@@ -61,6 +62,9 @@ def describe_rotation(prop: Property, idioma: str) -> str:
     crop = "" if crop.lower() in VAZIOS else crop
     prev = "" if prev.lower() in VAZIOS else prev
     month = prop.planting_month
+    inicio = (prop.planning or {}).get("crop_start_month")
+    if not month and inicio:
+        month = int(inicio[5:7])
     if idioma == "pt":
         partes = []
         if crop:
