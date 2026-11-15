@@ -46,7 +46,7 @@ export default function AiLayer({ farm, sheetOpen, setSheetOpen, hideFab, onEdit
           <button type="button" className="icon-btn" title={t('Fechar')} aria-label={t('Fechar')} onClick={() => { setChatOpen(false); setChatSize('normal') }}><X size={18} /></button></div></div>
         <div className="ai-chat-body"><Assistant key={farm.id} farm={farm} onEdit={onEdit} onNew={onNew} onChangeCrop={onChangeCrop} /></div>
       </div>}
-      <button type="button" className={`ai-fab ${chatOpen ? 'open' : ''}`} onClick={() => { setChatOpen(!chatOpen); setChatSize('normal') }} aria-expanded={chatOpen}><Sparkles size={18} /><span>{t('Pergunte à IA')}</span></button>
+      <button type="button" className={`ai-fab ${chatOpen ? 'open' : ''}`} onClick={() => { setChatOpen(!chatOpen); setChatSize('normal') }} aria-expanded={chatOpen} aria-label={t('Pergunte à IA')} title={t('Pergunte à IA')}><Sparkles size={18} /><span>{t('Pergunte à IA')}</span></button>
     </>}
   </>
 }
