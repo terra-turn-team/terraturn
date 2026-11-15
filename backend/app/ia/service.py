@@ -38,7 +38,8 @@ question using ONLY the data returned by the tool `analisar_fazenda` and what Te
 9. Answer in the language given in <answer_language> (Portuguese with correct accents). Short and plain: about 150 words at
    most, no jargon. When the answer supports a decision, recommend a local agronomist."""
 CHAT_MAX_TOKENS = 4000
-CHAT_MAX_STEPS = 6
+CHAT_MAX_STEPS = 4
+CHAT_DEADLINE_S = 50  # tempo total do chat; o front espera até 65 s
 
 
 MSG_AI_UNAVAILABLE = "AI is temporarily unavailable. Please try again later."
@@ -321,9 +322,15 @@ def chat(prop: Property | None, question: str, language: str, history=None) -> d
     msgs.append({"role": "user", "content": _chat_context(nome, prop, idioma, question)})
     client = m.CLIENTES["anthropic"]
     t0, tin, tout, retentou = time.time(), 0, 0, False
-    for _ in range(CHAT_MAX_STEPS):
-        r = client.chat.completions.create(model=m.MODELOS_TESTE[0], messages=msgs, tools=[m.TOOLS[0]], tool_choice="auto",
-                                           max_tokens=CHAT_MAX_TOKENS)
+    for passo in range(CHAT_MAX_STEPS):
+        resta = CHAT_DEADLINE_S - (time.time() - t0)
+        ultimo = passo == CHAT_MAX_STEPS - 1 or resta < 20
+        if resta < 5:
+            break
+        # Perto do limite de tempo, pede a resposta final sem novas consultas.
+        extra = {"tools": [m.TOOLS[0]], "tool_choice": "none" if ultimo else "auto"}
+        r = client.chat.completions.create(model=m.MODELOS_TESTE[0], messages=msgs, max_tokens=CHAT_MAX_TOKENS,
+                                           timeout=max(resta, 5), **extra)
         u = getattr(r, "usage", None)
         if u:
             tin += u.prompt_tokens or 0
