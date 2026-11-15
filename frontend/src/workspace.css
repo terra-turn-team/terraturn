@@ -426,3 +426,18 @@ html,body{overscroll-behavior:none;-webkit-tap-highlight-color:transparent}
 #root .terra-workspace .study-insight :is(.si-kicker span,.si-kicker em,.si-label,.si-tag,.si-tradeoff span,.si-card .si-mlabel){font-size:13px}
 #root .terra-workspace .study-insight :is(.si-cal-months span,.si-cal-legend span){font-size:13px}
 @container (max-width:520px){.si-verdict-why{flex-direction:column;gap:18px}}
+/* Análise em tela inteira: sem moldura interna */
+.ai-sheet{position:fixed;inset:0;z-index:200;border-radius:0;box-shadow:none;background:#FBFAF6}
+.ai-sheet-head{padding:14px 28px}
+.ai-sheet-body{padding:28px 40px 48px}
+.ai-sheet-body .study-panel{max-width:none;margin:0;background:transparent;border:0;border-radius:0;padding:0}
+.ai-sheet-body .study-panel .study-top h2{font-size:28px}
+#root .study-insight .si-verdict h2{line-height:1.08;padding-bottom:4px}
+.si-after{margin-top:6px}
+.si-ind-grid{flex:0 0 auto;align-content:start}
+.si-indicators .si-src{margin-top:auto;padding-top:14px}
+@media (max-width:760px){.ai-sheet-head{padding:12px 16px}.ai-sheet-body{padding:16px 14px 32px}.ai-sheet-body .study-panel .study-top h2{font-size:22px}}
+.si-message p{font-size:17px;line-height:1.6;color:#e7eee8}
+.si-more{margin-top:10px;display:inline-flex;align-items:center;gap:6px;background:transparent;border:0;padding:0;color:#9fd3a9;font-weight:600;font-size:15px;cursor:pointer;min-height:32px}
+.si-more .flip{transform:rotate(180deg)}
+.si-verdict-why{justify-content:flex-start;padding-top:40px}
