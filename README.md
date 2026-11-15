@@ -4,7 +4,7 @@
 TerraTurn is a mobile-first web app (PWA) that turns NASA climate and satellite data about a farmer's own field into a
 crop-rotation and cover-crop plan they can read in a minute. Built for the NASA Space Apps Challenge 2026 (Field Shift).
 
-**Live demo:** https://terraturn.work — opens a demo with 9 farms (Brazil, Argentina and the United States), no login needed.
+**Live demo:** https://www.terraturn.work — opens a demo with 9 farms (Brazil, Argentina and the United States), no login needed.
 
 ## What it does
 
@@ -94,4 +94,4 @@ press `Ctrl+C` and run `docker compose down`.
 
 TerraTurn é um PWA que usa dados da NASA (POWER e MODIS) sobre o talhão do produtor para sugerir rotação de culturas e
 plantas de cobertura, com análise e chat de IA fundamentados nos dados da área. Demo aberta em
-https://terraturn.work. Para rodar localmente, veja a seção *Run locally* acima.
+https://www.terraturn.work. Para rodar localmente, veja a seção *Run locally* acima.
