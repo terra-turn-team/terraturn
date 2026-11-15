@@ -166,6 +166,10 @@ const translations:Record<string,[string,string]>={
 'Cultivo':["Crop","Cultivo"],
 'Solo':["Soil","Suelo"],
 'Clima':["Climate","Clima"],
+'Resumo':["Overview","Resumen"],
+'Plano':["Plan","Plan"],
+'IA':["AI","IA"],
+'Propriedades':["Properties","Propiedades"],
 'Manejo':["Management","Manejo"],
 }
 export function tr(key:string,language:Language){const pair=(workspaceTranslations as Record<string,string[]>)[key]??translations[key];return !pair||language==='pt-BR'?key:pair[language==='en'?0:1]}
