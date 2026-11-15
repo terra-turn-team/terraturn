@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react'
+import { useEffect, useState, type FormEvent } from 'react'
 import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { ArrowRight, Eye, EyeOff, LockKeyhole, Mail, ShieldCheck } from 'lucide-react'
 import Brand from '../components/Brand'
@@ -7,6 +7,21 @@ import {useI18n} from '../lib/i18n'
 import { useAuth } from '../components/AuthProvider'
 import { isDemoUser } from '../lib/demo'
 import { ApiError, sessionApi } from '../lib/api'
+
+function AuthVideo(){
+  const [show,setShow]=useState(false)
+  useEffect(()=>{
+    const mq=window.matchMedia('(min-width: 751px) and (prefers-reduced-motion: no-preference)')
+    const update=()=>setShow(mq.matches)
+    update();mq.addEventListener('change',update)
+    return()=>mq.removeEventListener('change',update)
+  },[])
+  if(!show)return null
+  return <video className="auth-video" autoPlay muted playsInline preload="auto" poster="/login/farm-to-orbit-poster.jpg" aria-hidden="true" tabIndex={-1}>
+    <source src="/login/farm-to-orbit.webm" type="video/webm"/>
+    <source src="/login/farm-to-orbit.mp4" type="video/mp4"/>
+  </video>
+}
 
 type Mode = 'login'|'register'|'forgot'|'reset'
 export function AuthPage({mode}:{mode:Mode}) {
@@ -38,10 +53,10 @@ export function AuthPage({mode}:{mode:Mode}) {
   }
   const title = {login:'Bem-vindo de volta.',register:'Comece pela sua terra.',forgot:'Recupere seu acesso.',reset:'Defina uma nova senha.'}[mode]
   return <div className="auth-layout">
-    <div className="auth-side" style={{backgroundImage:'url(/auth-satellite.jpg)'}}>
+    <div className="auth-side" style={{backgroundImage:'url(/login/farm-to-orbit-poster.jpg)'}}><AuthVideo/>
       <div className="auth-side-top"><Brand onDark/><span className="eyebrow">NASA SPACE APPS 2026 / FIELD SHIFT</span></div>
       <div className="auth-intro"><span className="auth-line"/><h1>{t('O futuro da')}<br/>{t('sua terra começa')}<br/><em>{t('com uma escolha.')}</em></h1><p>{t('Dados geoespaciais, planejamento agrícola e decisões mais conscientes — em um só lugar.')}</p></div>
-      <div className="auth-side-footer"><span>{t('20 ANOS DE DADOS NASA · 31 CULTURAS')}</span></div>
+      <div className="auth-side-footer"><span>{t('20 ANOS DE DADOS NASA · 31 CULTURAS')}</span><span className="auth-ai-tag">{t('Vídeo gerado por IA')}</span></div>
     </div>
     <main className="auth-panel"><div className="auth-language-row"><LanguagePicker/></div>
       <div className="auth-mobile-brand"><Brand /></div>

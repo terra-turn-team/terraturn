@@ -7,6 +7,7 @@ if (typeof document !== 'undefined') document.documentElement.lang=initial
 export const useLanguage = create<{language:Language;setLanguage:(language:Language)=>void}>((set)=>({language:initial,setLanguage:(language)=>{try{localStorage.setItem('terraturn-language',language)}catch{};document.documentElement.lang=language;set({language})}}))
 // Portuguese keys are the original UX copy. Missing translations transparently fall back to PT-BR.
 const translations:Record<string,[string,string]>={
+'Vídeo gerado por IA':['AI-generated video','Video generado por IA'],
 'Sequência proposta pela IA · revise as justificativas no planejamento.':['Sequence proposed by the AI · review the reasoning in Planning.','Secuencia propuesta por la IA · revise la justificación en Planificación.'],
 "Demonstração":["Demo", "Demostración"],
 "fazendas fictícias, dados reais da NASA":["fictional farms, real NASA data", "fincas ficticias, datos reales de la NASA"],

@@ -260,3 +260,6 @@ html,body{overscroll-behavior:none;-webkit-tap-highlight-color:transparent}
 .ai-fab,.workspace-map:has(.map-timeline) .ai-fab{bottom:52px}
 .map-timeline,.parcel-inspector{bottom:112px}
 }
+.auth-video{position:absolute;inset:-12px;width:calc(100% + 24px);height:calc(100% + 24px);object-fit:cover;z-index:0;filter:blur(3px) saturate(.9);pointer-events:none}
+.auth-side:before{background:linear-gradient(180deg,#1c2b22c7 0%,#1c2b22a6 35%,#1c2b22b8 60%,#1c2b22eb 100%)}
+.auth-ai-tag{font-size:9px;letter-spacing:.08em;color:#c9d6cc;opacity:.75;text-transform:uppercase}
