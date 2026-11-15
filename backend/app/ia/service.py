@@ -41,6 +41,52 @@ CHAT_MAX_TOKENS = 4000
 CHAT_MAX_STEPS = 6
 
 
+MSG_AI_UNAVAILABLE = "AI is temporarily unavailable. Please try again later."
+MSG_AI_BUSY = "The AI service is busy right now. Please try again in a minute."
+MSG_NASA = "Could not download NASA data for this area. Please try again later."
+MSG_GENERIC = "The analysis could not be completed. Please try again."
+
+
+def user_message(exc: Exception) -> str:
+    import openai
+    import requests
+
+    if isinstance(exc, (openai.AuthenticationError, openai.PermissionDeniedError)):
+        return MSG_AI_UNAVAILABLE
+    if isinstance(exc, RuntimeError) and "ANTHROPIC_API_KEY" in str(exc):
+        return MSG_AI_UNAVAILABLE
+    if isinstance(exc, (openai.RateLimitError, openai.InternalServerError, openai.APIConnectionError)):
+        return MSG_AI_BUSY
+    if isinstance(exc, requests.RequestException):
+        return MSG_NASA
+    return MSG_GENERIC
+
+
+_STATUS_CACHE = {"at": 0.0, "value": None}
+
+
+def llm_status() -> str:
+    import openai
+
+    m = motor()
+    if "anthropic" not in m.CLIENTES:
+        return "missing_api_key"
+    ttl = 600 if _STATUS_CACHE["value"] == "ready" else 60
+    if _STATUS_CACHE["value"] and time.time() - _STATUS_CACHE["at"] < ttl:
+        return _STATUS_CACHE["value"]
+    try:
+        m.CLIENTES["anthropic"].chat.completions.create(model=m.MODELOS_TESTE[0], max_tokens=1,
+                                                        messages=[{"role": "user", "content": "ping"}])
+        value = "ready"
+    except (openai.AuthenticationError, openai.PermissionDeniedError):
+        value = "invalid_api_key"
+    except Exception:
+        logger.exception("AI status check failed")
+        value = "unreachable"
+    _STATUS_CACHE.update(at=time.time(), value=value)
+    return value
+
+
 def now_utc():
     return datetime.now(timezone.utc)
 
@@ -209,7 +255,7 @@ def run_study(study_id: str) -> None:
              tokens_in=tin, tokens_out=tout)
     except Exception as exc:
         logger.exception("Study %s failed", study_id)
-        _set(study_id, status="failed", stage="failed", error=str(exc)[:500] or type(exc).__name__,
+        _set(study_id, status="failed", stage="failed", error=user_message(exc),
              seconds=round(time.time() - t0, 1))
 
 

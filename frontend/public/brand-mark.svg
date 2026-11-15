@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="TerraTurn">
+  <defs>
+    <clipPath id="tt-top"><polygon points="50,50 -10,34.7 -10,-10 110,-10 110,34.7"/></clipPath>
+    <clipPath id="tt-bottom"><polygon points="50,50 -10,65.3 -10,110 110,110 110,65.3"/></clipPath>
+  </defs>
+  <circle cx="50" cy="50" r="34.25" fill="none" stroke="#3E7C4F" stroke-width="19.5" clip-path="url(#tt-top)"/>
+  <circle cx="50" cy="50" r="34.25" fill="none" stroke="#B5835A" stroke-width="19.5" clip-path="url(#tt-bottom)"/>
+  <circle cx="50" cy="50" r="9.4" fill="#1C2B22"/>
+</svg>
