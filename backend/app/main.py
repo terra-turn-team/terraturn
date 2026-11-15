@@ -224,11 +224,23 @@ def deny_demo(user: User, edit: bool = False) -> None:
         raise HTTPException(status_code=403, detail="This is a read-only demo. Create a free account to save your own farm.")
 
 
+DEMO_LOGINS_PER_15_MIN = 1000
+
+
 @app.post(BASE + "/auth/demo", response_model=UserOut)
 def demo_login(request: Request, response: Response, db: Session = Depends(get_db)):
     from app.demo import DEMO_EMAIL, seed
 
-    rate_limit(db, request, "demo", "all", limit=60, minutes=15)
+    # Quem já está na demo reaproveita a sessão e não conta no limite.
+    try:
+        atual = current_user(request.cookies.get(COOKIE_NAME), db)
+        if atual.email == DEMO_EMAIL:
+            return output_user(atual)
+    except HTTPException:
+        pass
+    # Atrás do Worker do Cloudflare, vários visitantes podem chegar com o mesmo IP: o limite é por IP e alto o
+    # bastante para não barrar visitantes de verdade (entrar na demo não grava nada além da sessão).
+    rate_limit(db, request, "demo", "all", limit=DEMO_LOGINS_PER_15_MIN, minutes=15)
     user = db.query(User).filter(User.email == DEMO_EMAIL).first()
     if user is None:
         seed()
