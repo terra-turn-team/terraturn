@@ -91,3 +91,55 @@ def test_concurrent_demo_logins_do_not_fail():
         with ThreadPoolExecutor(6) as ex:
             codes = list(ex.map(lambda _: c.post("/api/v1/auth/demo", headers=ORIGIN).status_code, range(12)))
     assert all(code == 200 for code in codes), codes
+
+
+def test_demo_study_follows_viewer_language(client, monkeypatch):
+    import time
+    from app.ia.motor import motor
+    from tests.test_ia import SAMPLE
+
+    m = motor()
+    langs = []
+    monkeypatch.setattr(m, "CLIENTES", {"anthropic": object()})
+    monkeypatch.setattr(m, "rodar", lambda *a, **k: langs.append(1) or (SAMPLE, "tool", [], 1.0, 1, 1, 0.0, 0, []))
+    demo_login(client)
+    farm = client.get("/api/v1/farms").json()[1]
+    ids = {}
+    for lang in ("en", "pt-BR"):
+        ids[lang] = client.post("/api/v1/ai/studies", json={"farm_id": farm["id"], "language": lang}, headers=ORIGIN).json()["id"]
+        end = time.time() + 30
+        while client.get(f"/api/v1/ai/studies/{ids[lang]}").json()["status"] not in ("complete", "failed") and time.time() < end:
+            time.sleep(0.2)
+    assert client.get(f"/api/v1/farms/{farm['id']}/studies/latest?language=en").json()["id"] == ids["en"]
+    assert client.get(f"/api/v1/farms/{farm['id']}/studies/latest?language=pt-BR").json()["id"] == ids["pt-BR"]
+    assert client.get(f"/api/v1/farms/{farm['id']}/studies/latest?language=es").json()["id"] == ids["en"]
+    plan_pt = client.get(f"/api/v1/farms/{farm['id']}/agronomy?language=pt-BR").json()["plan"]
+    plan_en = client.get(f"/api/v1/farms/{farm['id']}/agronomy?language=en").json()["plan"]
+    assert any(w.startswith("Recomendado:") for w in plan_pt["warnings"])
+    assert any(w.startswith("Recommended:") for w in plan_en["warnings"])
+
+
+def test_demo_autogenerate_queues_both_languages(monkeypatch):
+    from app import demo
+    from app.database import SessionLocal
+    from app.db_models import AiStudy, Property, User
+    from app.ia import service
+    from app.ia.motor import motor
+
+    demo.seed()
+    monkeypatch.setattr(motor(), "CLIENTES", {"anthropic": object()})
+    queued = []
+    monkeypatch.setattr(service, "run_study", lambda sid: queued.append(sid))
+    monkeypatch.setattr(demo.time, "sleep", lambda s: None)
+    with SessionLocal() as db:
+        user = db.query(User).filter(User.email == demo.DEMO_EMAIL).first()
+        db.query(AiStudy).filter(AiStudy.user_id == user.id).delete()
+        db.commit()
+        farms = db.query(Property).filter(Property.user_id == user.id).count()
+    demo.generate_missing_studies()
+    with SessionLocal() as db:
+        rows = db.query(AiStudy).filter(AiStudy.id.in_(queued)).all()
+        assert len(rows) == farms * 2
+        assert {r.language for r in rows} == {"en", "pt"}
+        db.query(AiStudy).filter(AiStudy.id.in_(queued)).delete()
+        db.commit()

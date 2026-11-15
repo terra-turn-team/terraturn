@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { api, ApiError } from './api'
-import type { Language } from './i18n'
+import { useLanguage, type Language } from './i18n'
 
 export type CalendarItem = { crop: string; sow_month: number; harvest_month: number }
 export type Rotation = {
@@ -45,7 +45,7 @@ export type Study = {
 export const aiApi = {
   start: (farm_id: string, language: Language) => api<Study>('/ai/studies', { method: 'POST', body: JSON.stringify({ farm_id, language }) }),
   get: (id: string) => api<Study>(`/ai/studies/${id}`),
-  latest: (farmId: string) => api<Study>(`/farms/${farmId}/studies/latest`),
+  latest: (farmId: string, language: Language) => api<Study>(`/farms/${farmId}/studies/latest?language=${encodeURIComponent(language)}`),
   chat: (message: string, farm_id: string | undefined, language: Language, history: { role: 'user' | 'assistant'; content: string }[]) =>
     api<{ answer: string; farm_data: boolean }>('/ai/chat', { method: 'POST', body: JSON.stringify({ message, farm_id, language, history }) }),
 }
@@ -54,12 +54,13 @@ const running = (s?: Study | null) => !!s && (s.status === 'queued' || s.status 
 
 export function useStudy(farmId: string | undefined) {
   const queryClient = useQueryClient()
-  const key = ['study', farmId]
+  const language = useLanguage(s => s.language)
+  const key = ['study', farmId, language]
   const query = useQuery({
     queryKey: key,
     enabled: !!farmId,
     queryFn: async () => {
-      try { return await aiApi.latest(farmId!) } catch (e) { if (e instanceof ApiError && e.status === 404) return null; throw e }
+      try { return await aiApi.latest(farmId!, language) } catch (e) { if (e instanceof ApiError && e.status === 404) return null; throw e }
     },
     refetchInterval: q => running(q.state.data as Study | null) ? 2500 : false,
   })
