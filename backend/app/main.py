@@ -537,6 +537,14 @@ def delete_account(payload: LoginIn, user: User = Depends(current_user), db: Ses
     return response
 
 
+def _clean_result(s: AiStudy):
+    from app.ia import service
+
+    if not s.result:
+        return s.result
+    return {**s.result, "analysis": service.clean_text(s.result.get("analysis"), s.language)}
+
+
 def study_output(s: AiStudy) -> dict:
     return {
         "id": s.id,
@@ -545,7 +553,7 @@ def study_output(s: AiStudy) -> dict:
         "stage": s.stage,
         "language": s.language,
         "error": s.error,
-        "result": s.result if s.status == "complete" else None,
+        "result": _clean_result(s) if s.status == "complete" else None,
         "seconds": s.seconds,
         "created_at": iso(s.created_at),
         "updated_at": iso(s.updated_at),

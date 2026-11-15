@@ -246,3 +246,11 @@ def test_ai_status_reports_key_state(client, motor, monkeypatch):
     monkeypatch.setattr(motor, "CLIENTES", {"anthropic": SimpleNamespace(chat=SimpleNamespace(completions=FakeCompletions()))})
     assert client.get("/api/v1/ai/status").json()["llm"] == "ready"
     service._STATUS_CACHE.update(at=0.0, value=None)
+
+
+def test_clean_text_removes_engine_field_names():
+    from app.ia.service import clean_text
+
+    assert clean_text("Soja tolera pouco a seca (tolera_seca baixa).", "pt") == "Soja tolera pouco a seca."
+    out = clean_text({"risks": ["tolera_seca is low", 3]}, "en")
+    assert out == {"risks": ["drought tolerance is low", 3]}
