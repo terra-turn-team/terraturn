@@ -426,3 +426,59 @@ html,body{overscroll-behavior:none;-webkit-tap-highlight-color:transparent}
 #root .terra-workspace .study-insight :is(.si-kicker span,.si-kicker em,.si-label,.si-tag,.si-tradeoff span,.si-card .si-mlabel){font-size:13px}
 #root .terra-workspace .study-insight :is(.si-cal-months span,.si-cal-legend span){font-size:13px}
 @container (max-width:520px){.si-verdict-why{flex-direction:column;gap:18px}}
+/* Chat da IA: visual limpo (respostas sem balão, cápsula do usuário, compositor em cartão, tela inicial com dados) */
+.ai-chat{background:#fff;border:1px solid #e6e2d9;border-radius:20px;box-shadow:0 24px 60px #1c2b2229}
+.ai-chat-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 12px 10px 16px;border-bottom:1px solid #efece5;background:#fff}
+.ai-chat-head .ai-chat-title{color:#1C2B22;gap:10px}
+.ai-chat-head .ai-chat-title img{width:26px;height:26px}
+.ai-chat-head .ai-chat-title>span{display:flex;flex-direction:column;line-height:1.15;min-width:0}
+#root .terra-workspace .ai-chat-head .ai-chat-title strong{font-size:14px;font-weight:600}
+#root .terra-workspace .ai-chat-head .ai-chat-title small{font-size:11px;color:#7a847c;font-weight:400;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ai-chat-head .icon-btn{color:#1C2B22;background:transparent;border:0;width:34px;height:34px;border-radius:10px;display:grid;place-items:center}
+.ai-chat-head .icon-btn:hover{background:#F2EDE4}
+.ai-chat-body .assistant-panel.tt-chat{padding:0}
+.tt-chat{background:#fff}
+.tt-chat .chat-messages{padding:18px 18px 8px;gap:16px}
+#root .terra-workspace .tt-chat :is(p,li,span,strong,small,em,button,input,h3,b,code){line-height:1.5}
+#root .terra-workspace .tt-chat .chat-row.assistant .md :is(p,li){font-size:13.5px;color:#1C2B22}
+.tt-chat .chat-row{max-width:100%}
+.tt-chat .chat-row.assistant{align-self:stretch;display:block}
+.tt-chat .chat-row.user{align-self:flex-end;max-width:82%;display:block}
+#root .terra-workspace .tt-chat .chat-user{margin:0;background:#F2EDE4;color:#1C2B22;border-radius:16px 16px 4px 16px;padding:8px 13px;font-size:13.5px}
+.tt-chat .chat-row .md p{margin:0 0 8px}
+.tt-chat .chat-row .md ul,.tt-chat .chat-row .md ol{margin:0 0 8px;padding-left:18px}
+.tt-chat .chat-row .md li::marker{color:#3E7C4F}
+.tt-chat .chat-row .md strong{color:#1C2B22;font-weight:700}
+.chat-source{display:inline-flex;align-items:center;gap:5px;margin-top:6px;padding:3px 8px;border-radius:999px;background:#3E7C4F14;color:#3E7C4F}
+#root .terra-workspace .tt-chat .chat-source{font-size:11px;font-weight:600}
+/* tela inicial */
+.chat-empty{margin:auto 0;display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px;padding:12px 4px}
+.chat-empty-mark{width:40px;height:40px;margin-bottom:4px}
+#root .terra-workspace .tt-chat .chat-empty h3{margin:0;font-family:Georgia,'Times New Roman',serif;font-weight:400;font-size:24px;color:#1C2B22}
+#root .terra-workspace .tt-chat .chat-empty>p{margin:0;font-size:12.5px;color:#6f7a72;max-width:280px}
+.chat-facts{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;width:100%;margin-top:10px}
+.chat-facts>div{border:1px solid #ece8df;border-radius:12px;padding:8px 6px;display:flex;flex-direction:column;gap:2px;background:#fcfbf8}
+#root .terra-workspace .tt-chat .chat-facts small{font-size:10.5px;color:#7a847c;text-transform:uppercase;letter-spacing:.04em}
+#root .terra-workspace .tt-chat .chat-facts strong{font-size:15px;color:#1C2B22;font-weight:700}
+#root .terra-workspace .tt-chat .chat-facts em{font-size:10.5px;font-style:normal;color:#7a847c;margin-left:2px;font-weight:500}
+.chat-suggestions{display:flex;flex-direction:column;gap:6px;width:100%;margin-top:8px}
+.chat-suggestions button{border:1px solid #e6e2d9;background:#fff;border-radius:12px;padding:9px 12px;text-align:left;color:#1C2B22;cursor:pointer}
+#root .terra-workspace .tt-chat .chat-suggestions button{font-size:12.5px}
+.chat-suggestions button:hover{border-color:#3E7C4F;background:#3E7C4F0d}
+/* pensando */
+.tt-chat .chat-typing{display:inline-flex;align-items:center;gap:8px;color:#7a847c}
+#root .terra-workspace .tt-chat .chat-typing span:last-child{font-size:12.5px}
+.tt-chat .typing-dots i{width:6px;height:6px}
+/* compositor */
+.tt-chat .chat-compose{margin:4px 12px 0;display:flex;flex-direction:column;align-items:stretch;gap:6px;padding:10px 10px 8px 14px;border:1px solid #e6e2d9;border-radius:18px;background:#fff;box-shadow:0 6px 18px #1c2b220f}
+.tt-chat .chat-compose input{border:0;outline:0;background:transparent;padding:4px 0;color:#1C2B22;min-width:0}
+#root .terra-workspace .tt-chat .chat-compose input{font-size:16px}
+.chat-compose-bar{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.chat-compose-farm{display:inline-flex;align-items:center;gap:5px;color:#7a847c;border:1px solid #ece8df;border-radius:999px;padding:3px 9px;max-width:70%;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+#root .terra-workspace .tt-chat .chat-compose-farm{font-size:11px}
+.tt-chat .chat-send{width:34px;height:34px;border-radius:50%;border:0;background:#1C2B22;color:#fff;display:grid;place-items:center;flex-shrink:0}
+.tt-chat .chat-send:disabled{background:#d9d6cf;opacity:1}
+#root .terra-workspace .tt-chat .chat-disclaimer{font-size:10.5px;color:#9aa49c;margin:6px 12px 10px;text-align:center}
+@media (max-width:760px){.ai-chat{border:0;border-radius:0}.ai-chat .ai-chat-head{padding-top:calc(10px + env(safe-area-inset-top))}#root .terra-workspace .tt-chat .chat-row.assistant .md :is(p,li),#root .terra-workspace .tt-chat .chat-user{font-size:14.5px}.tt-chat .chat-compose{margin:4px 10px calc(4px + env(safe-area-inset-bottom))}}
+@media (min-width:761px){.ai-chat:not(.max){height:min(560px,calc(100% - 280px))}}
+@media (min-width:761px){.ai-chat:not(.max) .chat-empty{gap:6px;padding:0}.ai-chat:not(.max) .chat-empty-mark{width:30px;height:30px;margin:0}.ai-chat:not(.max) .chat-facts{margin-top:4px}.ai-chat:not(.max) .chat-suggestions{margin-top:4px;gap:5px}.ai-chat:not(.max) .chat-suggestions button{padding:7px 11px}#root .terra-workspace .ai-chat:not(.max) .tt-chat .chat-empty h3{font-size:21px}}

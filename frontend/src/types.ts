@@ -7,7 +7,7 @@ export type Planning={start_month:string;horizon_months:number;crop_status:'esta
 export type FarmInput={name:string;locality:string;municipality:string;state:string;country:string;crop:string;previous_crop:string;planting_month:number|null;soil:Soil;goals:Goal[];indicators:Indicator[];planning:Planning;notes:string;geometry:GeoPolygon}
 export type Farm=FarmInput&{id:string;area_ha:number;centroid:number[];created_at:string;updated_at:string}
 export type {WeatherLayer} from './lib/layers'
-export type ChatItem={id:string;role:'assistant'|'user';text:string;time:string}
+export type ChatItem={id:string;role:'assistant'|'user';text:string;time:string;data?:boolean}
 export type AgronomyMetric={id:Indicator;value:number|null;unit:string;source:string;kind:'observed'|'estimated';date:string;resolution?:string;uncertainty?:string}
 export type ClimateMonth={month:string;precipitation_mm:number|null;temperature_c:number|null}
 export type RotationCycle={crop:string;kind:'commercial'|'cover';start_month:string;end_month:string;rationale:string;uncertainty:string}

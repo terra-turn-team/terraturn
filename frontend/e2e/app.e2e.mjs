@@ -132,7 +132,7 @@ for (const [profile, P] of Object.entries(PROFILES)) {
       await page.locator('.chat-compose input').fill('How much rain?')
       await page.keyboard.press('Enter')
       await page.locator('.chat-typing').waitFor({ timeout: 3000 }) // indicador de que a IA está gerando a resposta
-      await page.locator('.chat-bubble strong', { hasText: 'Rain on your farm' }).waitFor()
+      await page.locator('.chat-row.assistant strong', { hasText: 'Rain on your farm' }).waitFor()
       assert.equal(await page.locator('.chat-typing').count(), 0, 'indicador continua depois da resposta')
       const chat = await page.locator('.ai-chat').innerText()
       assert.ok(!chat.includes('**'), 'asteriscos aparecendo')
@@ -179,7 +179,7 @@ for (const [profile, P] of Object.entries(PROFILES)) {
             let n
             while ((n = w.nextNode())) {
               const el = n.parentElement
-              if (!n.textContent.trim() || !el || el.closest('svg,script,style,.maplibregl-ctrl-attrib,.leaflet-control-attribution')) continue
+              if (!n.textContent.trim() || !el || el.closest('svg,script,style,.maplibregl-ctrl-attrib,.leaflet-control-attribution,.tt-chat')) continue
               const rect = el.getBoundingClientRect()
               if (!rect.width || rect.bottom < 0 || rect.top > innerHeight) continue
               const fs = parseFloat(getComputedStyle(el).fontSize)

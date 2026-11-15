@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { Loader2, Maximize2, MessageSquare, Minimize2, Sparkles, X } from 'lucide-react'
+import { Loader2, Maximize2, Minimize2, Sparkles, X } from 'lucide-react'
 import type { Farm } from '../types'
 import { useI18n } from '../lib/i18n'
 import { cropLabel, useStudy } from '../lib/ai'
@@ -47,7 +47,7 @@ export default function AiLayer({ farm, sheetOpen, setSheetOpen, hideFab, onEdit
     </div>}
     {!hideFab && <>
       {chatOpen && <div className={`ai-chat ${chatSize}`} role="dialog" aria-label={t('Assistente')}>
-        <div className="ai-sheet-head"><span className="ai-chat-title"><MessageSquare size={16} /> {t('Pergunte à IA da TerraTurn')}</span><div className="ai-chat-actions">
+        <div className="ai-chat-head"><span className="ai-chat-title"><img src="/brand/logomark.svg" alt="" /><span><strong>{t('IA da TerraTurn')}</strong><small>{farm.name}</small></span></span><div className="ai-chat-actions">
           <button type="button" className="icon-btn ai-chat-max" title={t(chatSize === 'max' ? 'Restaurar tamanho' : 'Maximizar')} aria-label={t(chatSize === 'max' ? 'Restaurar tamanho' : 'Maximizar')} onClick={() => setChatSize(chatSize === 'max' ? 'normal' : 'max')}>{chatSize === 'max' ? <Minimize2 size={16} /> : <Maximize2 size={16} />}</button>
           <button type="button" className="icon-btn" title={t('Fechar')} aria-label={t('Fechar')} onClick={() => setChatOpen(false)}><X size={18} /></button></div></div>
         <div className="ai-chat-body"><Assistant key={farm.id} farm={farm} onEdit={onEdit} onNew={onNew} onChangeCrop={onChangeCrop} /></div>
