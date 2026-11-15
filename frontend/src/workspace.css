@@ -96,3 +96,15 @@
 .ghost-row b{flex:1;height:9px;border-radius:4px;background:#e9eee7}
 .function-rail button.needs-farm{opacity:.55}
 .function-rail button.needs-farm::after{content:'';position:absolute;right:6px;top:6px;width:6px;height:6px;border-radius:50%;background:#B5835A}
+.auth-side{background-color:#1C2B22;background-size:cover;background-position:center;position:relative}
+.auth-side:before{content:'';position:absolute;inset:0;background:linear-gradient(180deg,#1c2b22b8,#1c2b228c 40%,#1c2b22e0);z-index:1}
+.auth-side>*{position:relative;z-index:2}
+.auth-side .auth-decor{position:absolute;z-index:1;opacity:.28}
+.auth-intro h1{color:#F2EDE4}
+.auth-steps{display:inline-flex;align-items:center;gap:8px}
+.auth-steps i{width:7px;height:7px;border-radius:50%;background:#ffffff40}
+.auth-steps i.on{background:#5fa36f}
+.auth-divider{display:flex;align-items:center;gap:12px;margin:18px 0 14px;color:#8a948b;font-size:12px}
+.auth-divider:before,.auth-divider:after{content:'';flex:1;height:1px;background:#e3e7df}
+.auth-demo{color:#3E7C4F;border-color:#c9d6c8;text-decoration:none}
+.auth-demo:hover{background:#f6f9f5}

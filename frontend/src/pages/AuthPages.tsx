@@ -37,10 +37,10 @@ export function AuthPage({mode}:{mode:Mode}) {
   }
   const title = {login:'Bem-vindo de volta.',register:'Comece pela sua terra.',forgot:'Recupere seu acesso.',reset:'Defina uma nova senha.'}[mode]
   return <div className="auth-layout">
-    <div className="auth-side">
+    <div className="auth-side" style={{backgroundImage:'url(/auth-satellite.jpg)'}}>
       <div className="auth-side-top"><Brand onDark/><span className="eyebrow">NASA SPACE APPS 2026 / FIELD SHIFT</span></div>
       <div className="auth-intro"><span className="auth-line"/><h1>{t('O futuro da')}<br/>{t('sua terra começa')}<br/><em>{t('com uma escolha.')}</em></h1><p>{t('Dados geoespaciais, planejamento agrícola e decisões mais conscientes — em um só lugar.')}</p></div>
-      <div className="auth-side-footer"><span>01 / 03</span><span>{t('OBSERVE · PLANEJE · TRANSFORME')}</span></div>
+      <div className="auth-side-footer"><span className="auth-steps">01 / 03 <i className="on"/><i/><i/></span><span>{t('OBSERVE · PLANEJE · TRANSFORME')}</span></div>
       <div className="auth-decor" aria-hidden="true"><div/><div/><div/><div/></div>
     </div>
     <main className="auth-panel"><div className="auth-language-row"><LanguagePicker/></div>
@@ -60,6 +60,7 @@ export function AuthPage({mode}:{mode:Mode}) {
           {message&&<p className="form-success" role="status">{message}</p>}
           <button className="btn btn-primary btn-wide" type="submit" disabled={busy}>{t(busy?'Processando...':{login:'Entrar na plataforma',register:'Criar minha conta',forgot:'Enviar link de recuperação',reset:'Redefinir senha'}[mode])} <ArrowRight size={17}/></button>
         </form>
+        {(mode==='login'||mode==='register')&&<><div className="auth-divider"><span>{t('ou')}</span></div><a className="btn btn-outline btn-wide auth-demo" href="/demo">{t('Explorar a demonstração sem conta')} <ArrowRight size={16}/></a></>}
         <div className="auth-switch">{mode==='login'?<>{t('Ainda não tem conta?')} <Link to="/register">{t('Cadastre-se')}</Link></>:mode==='register'?<>{t('Já tem conta?')} <Link to="/login">{t('Fazer login')}</Link></>:<>{t('Lembrou sua senha?')} <Link to="/login">{t('Voltar ao login')}</Link></>}</div>
         <p className="security-foot"><ShieldCheck size={15}/> {t('Seus dados são privados e acessíveis apenas à sua conta.')}</p>
       </div>

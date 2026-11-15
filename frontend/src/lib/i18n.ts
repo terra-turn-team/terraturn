@@ -7,6 +7,7 @@ if (typeof document !== 'undefined') document.documentElement.lang=initial
 export const useLanguage = create<{language:Language;setLanguage:(language:Language)=>void}>((set)=>({language:initial,setLanguage:(language)=>{try{localStorage.setItem('terraturn-language',language)}catch{};document.documentElement.lang=language;set({language})}}))
 // Portuguese keys are the original UX copy. Missing translations transparently fall back to PT-BR.
 const translations:Record<string,[string,string]>={
+'ou':['or','o'],'Explorar a demonstração sem conta':['Explore the demo without an account','Explorar la demostración sin cuenta'],
 'Assistente':['Assistant','Asistente'],
 "Em 3 passos você chega à primeira recomendação de rotação.":["In 3 steps you get your first rotation recommendation.", "En 3 pasos llega a su primera recomendación de rotación."],
 "Usa NASA POWER, MODIS NDVI e evapotranspiração e uma tabela de 31 culturas.":["Uses NASA POWER, MODIS NDVI and evapotranspiration, and a table of 31 crops.", "Usa NASA POWER, MODIS NDVI y evapotranspiración, y una tabla de 31 cultivos."],
