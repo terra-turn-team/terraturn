@@ -1,5 +1,6 @@
 import json
 import logging
+import re
 import time
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
@@ -46,6 +47,26 @@ MSG_AI_UNAVAILABLE = "AI is temporarily unavailable. Please try again later."
 MSG_AI_BUSY = "The AI service is busy right now. Please try again in a minute."
 MSG_NASA = "Could not download NASA data for this area. Please try again later."
 MSG_GENERIC = "The analysis could not be completed. Please try again."
+
+
+# Nomes de campos internos do motor que a IA às vezes copia no texto ("tolera_seca baixa").
+_CAMPOS = {"tolera_seca": ("drought tolerance", "tolerância à seca"), "ciclo_dias": ("cycle length", "duração do ciclo"),
+           "temp_ideal_c": ("ideal temperature", "temperatura ideal"), "fixa_n": ("nitrogen fixation", "fixação de nitrogênio")}
+_PAREN = re.compile(r"\s*\((?:" + "|".join(_CAMPOS) + r")[ _:=]*[^)]*\)")
+
+
+def clean_text(value, idioma: str = "en"):
+    """Remove nomes de campos internos do motor do texto mostrado ao usuário."""
+    if isinstance(value, dict):
+        return {k: clean_text(v, idioma) for k, v in value.items()}
+    if isinstance(value, list):
+        return [clean_text(v, idioma) for v in value]
+    if not isinstance(value, str):
+        return value
+    value = _PAREN.sub("", value)
+    for campo, (en, pt) in _CAMPOS.items():
+        value = value.replace(campo, pt if idioma == "pt" else en)
+    return value
 
 
 def user_message(exc: Exception) -> str:
