@@ -5,6 +5,7 @@ import type { Farm } from '../types'
 import { useI18n } from '../lib/i18n'
 import { cropLabel, useStudy } from '../lib/ai'
 import StudyPanel from './StudyPanel'
+import { useViewStore } from '../lib/viewStore'
 import { Assistant } from './Assistant'
 
 type Props = { farm: Farm; sheetOpen: boolean; setSheetOpen: (v: boolean) => void; hideFab: boolean; onEdit: () => void; onNew: () => void; onChangeCrop: (crop: string) => Promise<void> }
@@ -12,6 +13,9 @@ type Props = { farm: Farm; sheetOpen: boolean; setSheetOpen: (v: boolean) => voi
 export default function AiLayer({ farm, sheetOpen, setSheetOpen, hideFab, onEdit, onNew, onChangeCrop }: Props) {
   const { t, language } = useI18n()
   const { study, isRunning, start } = useStudy(farm.id)
+  const setAiBusy = useViewStore(st => st.setAiBusy)
+  // O mapa usa este sinal para dar zoom na área e fazer o contorno brilhar enquanto a IA gera.
+  useEffect(() => { setAiBusy(isRunning || start.isPending); return () => setAiBusy(false) }, [isRunning, start.isPending, setAiBusy])
   const [chatOpen, setChatOpen] = useState(false)
   const [chatSize, setChatSize] = useState<'normal' | 'max'>('normal')
   const prev = useRef<string | undefined>(undefined)

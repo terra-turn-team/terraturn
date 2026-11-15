@@ -57,8 +57,8 @@ const noHorizontalScroll = page => page.evaluate(() => document.documentElement.
 const farms = page => page.evaluate(() => fetch('/api/v1/farms').then(r => r.json()))
 
 async function openPanel(page, profile, index) {
-  // desktop: 0 visão geral, 1 propriedades, 2 planejamento, 3 clima, 4 camadas, 5 assistente
-  // celular: 0 mapa, 1 resumo, 2 plano, 3 clima, 4 IA
+  // desktop: 0 visão geral, 1 propriedades, 2 planejamento, 3 clima, 4 camadas
+  // celular: 0 mapa, 1 resumo, 2 plano, 3 clima (o chat da IA fica no botão flutuante)
   const btn = page.locator('.function-rail .rail-functions button:visible').nth(index)
   if (await btn.getAttribute('aria-expanded') === 'true') return
   await btn.click()
@@ -109,14 +109,14 @@ for (const [profile, P] of Object.entries(PROFILES)) {
       const { ctx, page } = await open(profile)
       const visible = await page.locator('.function-rail .rail-functions button:visible').count()
       if (!P.mobile) {
-        assert.equal(visible, 6, 'barra lateral com 6 itens')
+        assert.equal(visible, 5, 'barra lateral com 5 itens')
         assert.equal(await page.locator('.rail-short:visible, .map-account:visible').count(), 0, 'itens do celular aparecendo no desktop')
       } else {
-        assert.deepEqual(await page.locator('.function-rail .rail-short:visible').allInnerTexts(), ['Map', 'Overview', 'Plan', 'Climate', 'AI'])
+        assert.deepEqual(await page.locator('.function-rail .rail-short:visible').allInnerTexts(), ['Map', 'Overview', 'Plan', 'Climate'])
         const nav = await page.locator('.function-rail').boundingBox()
         assert.ok(nav.y + nav.height >= P.opts.viewport.height - 2, 'barra de navegação não está no rodapé')
       }
-      const panels = !P.mobile ? [0, 1, 2, 3, 4, 5] : [1, 2, 3, 4]
+      const panels = !P.mobile ? [0, 1, 2, 3, 4] : [1, 2, 3]
       for (const i of panels) {
         await openPanel(page, profile, i)
         assert.ok(await page.locator('.workspace-panel h1').isVisible(), `painel ${i} não abriu`)
@@ -157,7 +157,7 @@ for (const [profile, P] of Object.entries(PROFILES)) {
         const found = new Map()
         const scan = async where => { for (const t of await portugueseTexts(page, ignore)) if (!found.has(t)) found.set(t, where) }
         await scan('mapa')
-        const panels = !P.mobile ? [0, 1, 2, 3, 4, 5] : [1, 2, 3, 4]
+        const panels = !P.mobile ? [0, 1, 2, 3, 4] : [1, 2, 3]
         for (const i of panels) {
           await openPanel(page, profile, i)
           await page.locator('.workspace-panel-scroll').evaluate(e => e.scrollTo(0, e.scrollHeight)).catch(() => {})
@@ -190,7 +190,7 @@ for (const [profile, P] of Object.entries(PROFILES)) {
           for (const t of r) if (!small.has(t)) small.set(t, where)
         }
         await scan('mapa')
-        for (const i of [1, 2, 3, 4]) { await openPanel(page, profile, i); await scan(`aba ${i}`) }
+        for (const i of [1, 2, 3]) { await openPanel(page, profile, i); await scan(`aba ${i}`) }
         assert.deepEqual(Object.fromEntries(small), {}, 'textos menores que 13px')
         await ctx.close()
       })

@@ -4,6 +4,7 @@ import {useEffect,useRef,useState} from 'react'
 import * as maplibregl from 'maplibre-gl'
 import type {Farm} from '../types'
 import {useI18n} from '../lib/i18n'
+import {useViewStore} from '../lib/viewStore'
 export type ViewMode='map'|'relief'|'satellite'|'3d'|'hybrid'
 const BASE='https://tiles.openfreemap.org/styles/liberty'
 const DEM='https://tiles.mapterhorn.com/tilejson.json'
@@ -12,6 +13,7 @@ function TerrainMapGL({farm,mode,onInspect}:{farm:Farm;mode:Exclude<ViewMode,'3d
  const container=useRef<HTMLDivElement>(null)
  const mapRef=useRef<maplibregl.Map|null>(null)
  const [error,setError]=useState('')
+ const [ready,setReady]=useState(0)
  const {t}=useI18n()
  useEffect(()=>{
   if(!container.current)return
@@ -23,6 +25,7 @@ function TerrainMapGL({farm,mode,onInspect}:{farm:Farm;mode:Exclude<ViewMode,'3d
    m.on('click','parcel-fill',()=>onInspect?.())
    m.addSource('parcel',{type:'geojson',data:geo as any})
    m.addLayer({id:'parcel-fill',type:'fill',source:'parcel',paint:{'fill-color':'#3E7C4F','fill-opacity':.19}})
+   m.addLayer({id:'parcel-glow',type:'line',source:'parcel',layout:{visibility:'none'},paint:{'line-color':'#ffffff','line-width':16,'line-blur':10,'line-opacity':0}})
    m.addLayer({id:'parcel-outline',type:'line',source:'parcel',paint:{'line-color':'#3E7C4F','line-width':3}})
    try{
      m.addSource('dem',{type:'raster-dem',url:DEM,tileSize:256,encoding:'terrarium'});
@@ -34,6 +37,7 @@ function TerrainMapGL({farm,mode,onInspect}:{farm:Farm;mode:Exclude<ViewMode,'3d
    const pts=farm.geometry.coordinates[0]
    const west=Math.min(...pts.map(p=>p[0])),east=Math.max(...pts.map(p=>p[0])),south=Math.min(...pts.map(p=>p[1])),north=Math.max(...pts.map(p=>p[1]))
    m.fitBounds([[west,south],[east,north]],{padding:{top:120,bottom:185,left:40,right:Math.min(255,m.getContainer().clientWidth*.3)},maxZoom:16,duration:0})
+   setReady(r=>r+1)
   })
   const ob=new ResizeObserver(()=>m.resize());ob.observe(container.current);return()=>{ob.disconnect();m.remove();mapRef.current=null}
  },[farm.id,farm.updated_at])
@@ -49,6 +53,40 @@ function TerrainMapGL({farm,mode,onInspect}:{farm:Farm;mode:Exclude<ViewMode,'3d
   }
   if(m.isStyleLoaded())apply();else m.once('load',apply)
  },[mode,farm.id,farm.updated_at])
+ // Análise da IA: com o painel lateral aberto, centraliza a área à esquerda dele; enquanto gera, o contorno brilha.
+ const sheetOpen=useViewStore(s=>s.aiSheetOpen),busy=useViewStore(s=>s.aiBusy)
+ useEffect(()=>{
+  const m=mapRef.current
+  if(!m||!ready)return
+  const fit=()=>{
+   const pts=farm.geometry.coordinates[0],w=m.getContainer().clientWidth
+   const west=Math.min(...pts.map(p=>p[0])),east=Math.max(...pts.map(p=>p[0])),south=Math.min(...pts.map(p=>p[1])),north=Math.max(...pts.map(p=>p[1]))
+   const panel=sheetOpen&&window.innerWidth>760?Math.min(560,window.innerWidth*.46):0
+   m.fitBounds([[west,south],[east,north]],{padding:{top:120,bottom:sheetOpen?120:185,left:40,right:sheetOpen?panel+60:Math.min(255,w*.3)},maxZoom:sheetOpen?17.5:16,duration:900})
+  }
+  if(!ready)return
+  fit()
+ },[sheetOpen,ready])
+ useEffect(()=>{
+  const m=mapRef.current
+  if(!m)return
+  let raf=0
+  const start=()=>{
+   if(!m.getLayer('parcel-glow'))return
+   m.setLayoutProperty('parcel-glow','visibility',busy?'visible':'none')
+   if(!busy){m.setPaintProperty('parcel-fill','fill-color','#3E7C4F');m.setPaintProperty('parcel-fill','fill-opacity',.19);m.setPaintProperty('parcel-outline','line-color','#3E7C4F');return}
+   m.setPaintProperty('parcel-outline','line-color','#ffffff')
+   if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){m.setPaintProperty('parcel-glow','line-opacity',.8);m.setPaintProperty('parcel-fill','fill-color','#ffffff');m.setPaintProperty('parcel-fill','fill-opacity',.3);return}
+   const t0=performance.now()
+   const tick=(now:number)=>{const k=(Math.sin((now-t0)/450)+1)/2
+    m.setPaintProperty('parcel-glow','line-opacity',.35+.55*k)
+    m.setPaintProperty('parcel-fill','fill-color','#ffffff');m.setPaintProperty('parcel-fill','fill-opacity',.12+.28*k)
+    raf=requestAnimationFrame(tick)}
+   raf=requestAnimationFrame(tick)
+  }
+  if(ready)start()
+  return()=>cancelAnimationFrame(raf)
+ },[busy,ready])
  return <div className="terrain-map-holder"><div ref={container} className="terrain-map-canvas"/>{error&&<div className="map-data-note map-data-error">{t(error)}</div>}</div>
 }
 
