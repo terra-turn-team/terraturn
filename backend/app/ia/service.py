@@ -31,6 +31,33 @@ MONTHS_EN = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct
 MONTHS_PT = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"]
 VAZIOS = {"", "não informado", "nao informado", "outra cultura", "not informed"}
 
+# Regras que corrigem falhas vistas na auditoria (chuva subestimada, safra x safrinha, área perene, coberturas altas).
+# O SYSTEM do motor v17 é congelado: estas regras vão no pedido da análise e no prompt do chat.
+AGRONOMY_RULES = """<agronomy_rules>
+A. Rainfall data: rain comes from NASA POWER (PRECTOTCORR), a satellite/model estimate on a ~50 km grid. In Southeast and
+   Center-West Brazil it can underestimate summer convective rain (October-March) compared with local rain gauges. Treat
+   those numbers as a conservative lower bound: do not call the area dry or rule out a crop for water reasons because of a
+   small summer margin, and say that the local gauge may record more rain. Never adjust, scale or invent rain numbers.
+B. Keep the two seasons separate:
+   - The rain onset date (start of the rainy season, e.g. 09/10) refers ONLY to the start of the farming year: sowing the
+     main summer crop (soybean, first-season maize) and desiccating/managing the previous cover crop.
+   - A succession, second-season or cover crop sown in February-April must be justified ONLY by the autumn water balance
+     (February-April) and by its drought tolerance through the deficit months that follow (for example April-August).
+     Never say that a February-April sowing coincides with, follows or depends on the October rain onset.
+C. If <land_use_check> is present, add one short caveat (in 'why' or in the risks) asking the farmer to confirm whether
+   the field is already a perennial or semi-perennial use (sugarcane, perennial pasture, citrus or forestry) or is
+   cropped all year, before assuming an annual grain crop with fallow. Do not assume the land use; ask.
+D. When you recommend a tall or long-cycle cover/legume (pigeon pea / guandu, crotalaria / sunn hemp, or similar), add the
+   practical management that avoids woody stems at the next sowing: a dwarf cultivar, intercropping with Brachiaria
+   ruziziensis, or mowing/desiccating at full flowering (typically June-July for a February-March sowing) so no-till
+   sowing in October is easy. Mark it as general agronomic knowledge, not NASA data, and do not add numbers to it.
+</agronomy_rules>"""
+LAND_USE_COVER_PCT = 90  # meses com NDVI >= 0,30 acima disso, sem mês de solo descoberto: suspeita de cultura perene
+LAND_USE_NOTE = ("NDVI stayed at or above 0.30 in {cover}% of the months (2020-2024) and no month is bare on average. "
+                 "Annual grain fields with fallow usually show bare months; this pattern is typical of perennial or "
+                 "semi-perennial use (sugarcane, perennial pasture, citrus or forestry) or of year-round double cropping "
+                 "(summer crop plus winter crop or cover). Confirm the land use with the farmer.")
+
 CHAT_SYSTEM = """You are TerraTurn's agronomic assistant (NASA Space Apps 2026) inside the farmer's app. You answer the farmer's
 question using ONLY the data returned by the tool `analisar_fazenda` and what TerraTurn gives you in <farm_profile>,
 <farm_phases> and <crop_table>.
@@ -48,7 +75,9 @@ question using ONLY the data returned by the tool `analisar_fazenda` and what Te
 8. When suggesting crops, use only crops from <crop_table> and their sow_months; never suggest a crop listed in
    <not_suitable_here> for this farm.
 9. Answer in the language given in <answer_language> (Portuguese with correct accents). Short and plain: about 150 words at
-   most, no jargon. When the answer supports a decision, recommend a local agronomist."""
+   most, no jargon. When the answer supports a decision, recommend a local agronomist.
+10. Follow <agronomy_rules> below.
+""" + AGRONOMY_RULES
 CHAT_MAX_TOKENS = 4000
 CHAT_MAX_STEPS = 4
 CHAT_DEADLINE_S = 50  # tempo total do chat; o front espera até 65 s
@@ -143,6 +172,19 @@ def priorities_from_goals(goals, first: str | None = None) -> list[str]:
         if p and p not in out:
             out.append(p)
     return (out or ["agua"])[:MAX_PRIORIDADES]
+
+
+def land_use_check(nome: str) -> dict | None:
+    """Cobertura histórica > 90% (NDVI >= 0,30) e nenhum mês médio de solo descoberto: possível área perene."""
+    m = motor()
+    ndvi = m.DADOS[nome]["ndvi"].dropna()
+    if ndvi.empty:
+        return None
+    cover = round(float((ndvi >= 0.30).mean() * 100), 1)
+    por_mes = ndvi.groupby(ndvi.index.month).mean()
+    if cover <= LAND_USE_COVER_PCT or bool((por_mes < 0.30).any()):
+        return None
+    return {"cover_pct": cover, "bare_months": 0, "note": LAND_USE_NOTE.format(cover=cover)}
 
 
 def regional_ranking(nome: str, prio) -> list[str]:
@@ -321,7 +363,10 @@ def run_study(study_id: str) -> None:
         janelas = m.JANELAS[nome][0]
         fatos = m.fatos_agro(nome)
         pedido = apply_regional_ranking(m.montar_pedido(pedido_txt, prio, nome, idioma), nome, prio)
-        pedido += REGRA_ALTERNATIVAS.format(prios=", ".join(prio))
+        pedido += REGRA_ALTERNATIVAS.format(prios=", ".join(prio)) + "\n" + AGRONOMY_RULES
+        uso = land_use_check(nome)
+        if uso:
+            pedido += f"\n<land_use_check>\n{json.dumps(uso, ensure_ascii=False)}\n</land_use_check>"
         texto, via, chamadas, seg, tin, tout, _, corr, _ = m.rodar(
             "anthropic", m.MODELOS_TESTE[0], pedido, prio, descobertos, janelas, fatos, idioma)
         if not texto:
@@ -335,6 +380,7 @@ def run_study(study_id: str) -> None:
             "priorities": [PRIORITY_TO_GOAL.get(p, p) for p in prio],
             "language": idioma,
             "irrigated_warning": irrigated,
+            "land_use_warning": land_use_check(nome),
             "crop_names": crop_names(),
             "validation": {"passed": not erros, "corrections": corr, "remaining_issues": erros},
             "model": m.MODELOS_TESTE[0],
@@ -375,6 +421,9 @@ def _chat_context(nome, prop: Property, idioma: str, question: str) -> str:
         partes.append(f"<crop_table>\n{json.dumps(linhas, ensure_ascii=False)}\n</crop_table>")
         if fora:
             partes.append(f"<not_suitable_here>\n{json.dumps(fora, ensure_ascii=False)}\n</not_suitable_here>")
+        uso = land_use_check(nome)
+        if uso:
+            partes.append(f"<land_use_check>\n{json.dumps(uso, ensure_ascii=False)}\n</land_use_check>")
     partes.append(f"<answer_language>{m.NOME_IDIOMA[idioma]}</answer_language>")
     partes.append(f"<farmer_question>\n{question}\n</farmer_question>")
     return "\n".join(partes)

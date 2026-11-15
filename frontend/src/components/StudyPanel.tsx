@@ -37,6 +37,7 @@ const TXT: Dict = {
   deficit: ['Water-deficit months', 'Meses com déficit hídrico', 'Meses con déficit hídrico'],
   bare: ['Bare-soil months (NDVI)', 'Meses de solo descoberto (NDVI)', 'Meses de suelo desnudo (NDVI)'],
   none: ['none', 'nenhum', 'ninguno'],
+  landUse: ['The field stayed green almost all year in the satellite data (NDVI). Check whether it is already sugarcane, perennial pasture, citrus, forestry or cropped all year before following an annual grain rotation.', 'A área ficou verde quase o ano todo nos dados de satélite (NDVI). Confirme se ela já é cana, pastagem perene, citros, silvicultura ou cultivada o ano inteiro antes de seguir uma rotação de grãos anual.', 'El área se mantuvo verde casi todo el año en los datos satelitales (NDVI). Confirme si ya es caña, pastura perenne, cítricos, silvicultura o cultivo todo el año antes de seguir una rotación de granos anual.'],
   irrigated: ['You marked this farm as irrigated. TerraTurn assumes rainfed farming, so treat this analysis as a rainfed reference.', 'Você marcou esta fazenda como irrigada. O TerraTurn considera lavoura de sequeiro; use esta análise como referência de sequeiro.', 'Marcó esta finca como regada. TerraTurn asume secano; use este análisis como referencia de secano.'],
   otherLang: ['This analysis was generated in another language. Run it again to see it in English.', 'Esta análise foi gerada em outro idioma. Analise de novo para ver em português.', 'Este análisis se generó en otro idioma. Analice de nuevo para verlo en inglés.'],
   disclaimerLocal: ['Decision support only. Validate with a local agronomist before deciding.', 'Apoio à decisão. Valide com um agrônomo local antes de decidir.', 'Apoyo a la decisión. Valide con un agrónomo local antes de decidir.'],
@@ -108,6 +109,7 @@ export default function StudyPanel({ farm, compact = false }: { farm: Farm; comp
     {result && rec && <>
       {study && study.language !== (language.startsWith('pt') ? 'pt' : 'en') && <p className="study-warning"><AlertTriangle size={15} /> {x('otherLang')} <button type="button" className="btn btn-outline btn-small" disabled={start.isPending} onClick={() => start.mutate(language)}><RefreshCw size={14} /> {x('again')}</button></p>}
       {result.irrigated_warning && <p className="study-warning"><AlertTriangle size={15} /> {x('irrigated')}</p>}
+      {result.land_use_warning && <p className="study-warning"><AlertTriangle size={15} /> {x('landUse')}</p>}
       <StudyInsight result={result} />
       <p className="study-disclaimer">{result.analysis.disclaimer} {x('disclaimerLocal')}</p>
       <p className="study-sources">{x('sources')}: {result.farm_data.sources.join(' · ')} · {result.engine}{language === 'es' ? ` · ${x('langNote')}` : ''}</p>

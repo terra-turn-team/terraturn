@@ -95,6 +95,8 @@ def test_study_complete_with_mocked_llm(client, motor, monkeypatch):
     assert res["priority"] == "water" and res["language"] == "pt"
     assert chamado["prio"] == ["agua"] and chamado["idioma"] == "pt"
     assert "<alternatives_rule>" in chamado["pedido"]
+    assert "<agronomy_rules>" in chamado["pedido"] and "<land_use_check>" in chamado["pedido"]
+    assert res["land_use_warning"]["cover_pct"] > 90
     assert "<farm_phases>" in chamado["pedido"] and "<pre_ranked_crops>" in chamado["pedido"]
     assert "Soja" in chamado["pedido"] and "out" in chamado["pedido"]
     latest = client.get(f"/api/v1/farms/{farm['id']}/studies/latest").json()
@@ -286,3 +288,21 @@ def test_crop_traits_from_official_table():
 
     t = crop_traits()
     assert t["soja"] == {"drought": "baixa", "cycle_days": 120, "market": "alto", "fixes_n": True, "cover": False}
+
+
+def test_land_use_check_flags_only_always_green_fields():
+    from app.ia import service
+    from app.ia.motor import motor
+
+    motor()
+    itirapina = service.land_use_check("fazenda_da_toca_sudeste")
+    assert itirapina and itirapina["cover_pct"] > 90 and itirapina["bare_months"] == 0
+    assert service.land_use_check("uberaba_fazenda_agronelli") is None
+
+
+def test_agronomy_rules_cover_audit_points():
+    from app.ia import service
+
+    for regra in ("~50 km grid", "rain onset", "February-April", "<land_use_check>", "Brachiaria"):
+        assert regra in service.AGRONOMY_RULES
+    assert service.AGRONOMY_RULES in service.CHAT_SYSTEM
