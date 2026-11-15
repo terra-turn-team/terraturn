@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
 
@@ -5,6 +7,8 @@ from app.config import settings
 
 
 def _normalize(url: str) -> str:
+    if url.startswith("sqlite:///") and not url.startswith("sqlite:////") and ":memory:" not in url:
+        return "sqlite:///" + str(Path(url[len("sqlite:///"):]).resolve())
     if url.startswith("postgres://"):
         return "postgresql+psycopg://" + url[len("postgres://"):]
     if url.startswith("postgresql://"):

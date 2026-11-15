@@ -11,6 +11,7 @@ import {useI18n} from '../lib/i18n'
 import {LAYERS,getLayer} from '../lib/layers'
 import { Timeline, monthName } from '../components/Timeline'
 import { Assistant } from '../components/Assistant'
+import StudyPanel from '../components/StudyPanel'
 import { useAuth } from '../components/AuthProvider'
 import { api, farmApi, ApiError } from '../lib/api'
 import { formatCoord, formatHa } from '../lib/geo'
@@ -78,6 +79,7 @@ export default function Dashboard(){
         {!farm && <div className="empty-home"><div className="empty-orbit"/><span className="eyebrow">{t('SEU PRIMEIRO PASSO')}</span><h2>{t('Transforme uma área em possibilidades.')}</h2><p>{t('Comece traçando sua área de cultivo no mapa. Depois você poderá acompanhar o terreno, organizar seu calendário e preparar análises com dados da NASA.')}</p><button className="btn btn-primary" onClick={newFarm}>{t('Cadastrar propriedade')} <ArrowRight size={17}/></button></div>}
         {farm && <>
           <div className="stats-grid"><div className="mini-stat"><div><span>{t('ÁREA DE CULTIVO')}</span><Ruler size={17}/></div><strong>{formatHa(farm.area_ha)}</strong><small>{t('Calculada pelo contorno')}</small></div><div className="mini-stat"><div><span>{t('CULTURA PRINCIPAL')}</span><Sprout size={17}/></div><strong>{farm.crop}</strong><small>{t('Informada no cadastro')}</small></div><div className="mini-stat"><div><span>{t('TEXTURA DO SOLO')}</span><Layers3 size={17}/></div><strong>{textureNames[farm.soil.texture]}</strong><small>{t('Informação declarada')}</small></div><div className="mini-stat"><div><span>{t('DADOS CLIMÁTICOS')}</span><Cloud size={17}/></div><strong className="pending-title">{t('Aguardando')}</strong><small>{t('Integração NASA pendente')}</small></div></div>
+          <StudyPanel farm={farm}/>
           <section className="model-card"><div className="model-toolbar"><div><span className="eyebrow">{t('GÊMEO DIGITAL · ÁREA SELECIONADA')}</span><h2>{t('Visão do terreno')} <span className="model-crop-chip">{farm.crop}</span></h2></div><div className="model-actions"><span className="model-chip"><span className="live-indicator"/> {t('SIMULAÇÃO VISUAL')}</span><button className="btn btn-outline btn-small" onClick={editFarm}><Edit3 size={14}/> {t('Ajustar terreno')}</button></div></div>
             <div className="model-viewbar" aria-label={t('VISUALIZAÇÃO')}>
               <div className="view-modes">

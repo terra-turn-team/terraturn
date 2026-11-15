@@ -13,3 +13,7 @@ data/
 saidas/
 .wrangler/
 .DS_Store
+!backend/app/ia/cache_demo/data/
+!backend/app/ia/cache_demo/saidas/
+backend/app/ia/cache_demo/saidas/mesclado_mensal_ponto_*
+backend/app/ia/cache_demo/data/t_*

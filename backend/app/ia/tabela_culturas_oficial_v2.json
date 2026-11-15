@@ -1,0 +1,795 @@
+[
+  {
+    "cultura": "soja",
+    "nomes": {
+      "pt": "soja",
+      "en": "soybean",
+      "es": "soja"
+    },
+    "papel": "principal_verao",
+    "perene": false,
+    "agua": "media",
+    "tolera_seca": "baixa",
+    "ciclo_dias": 120,
+    "plantio_rel": [
+      0,
+      2
+    ],
+    "temp_ideal_c": "20-30",
+    "fixa_n": true,
+    "cobertura": false,
+    "forragem": false,
+    "mercado": "alto",
+    "geada_sensivel": true,
+    "fonte": "Referência aproximada (FAO ECOCROP para a faixa térmica; Embrapa/ZARC e calendários agrícolas FAO, USDA e MAFF para ciclo e janela), calibrada na simulação do TerraTurn. Revisar com agrônomo.",
+    "versao": 1
+  },
+  {
+    "cultura": "milho_verao",
+    "nomes": {
+      "pt": "milho (safra de verão)",
+      "en": "corn (main season)",
+      "es": "maíz de primera"
+    },
+    "papel": "principal_verao",
+    "perene": false,
+    "agua": "media",
+    "tolera_seca": "baixa",
+    "ciclo_dias": 140,
+    "plantio_rel": [
+      0,
+      2
+    ],
+    "temp_ideal_c": "18-30",
+    "fixa_n": false,
+    "cobertura": false,
+    "forragem": true,
+    "mercado": "alto",
+    "geada_sensivel": true,
+    "fonte": "Referência aproximada (FAO ECOCROP para a faixa térmica; Embrapa/ZARC e calendários agrícolas FAO, USDA e MAFF para ciclo e janela), calibrada na simulação do TerraTurn. Revisar com agrônomo.",
+    "versao": 1
+  },
+  {
+    "cultura": "arroz",
+    "nomes": {
+      "pt": "arroz",
+      "en": "rice",
+      "es": "arroz"
+    },
+    "papel": "principal_verao",
+    "perene": false,
+    "agua": "alta",
+    "tolera_seca": "baixa",
+    "ciclo_dias": 120,
+    "plantio_rel": [
+      0,
+      2
+    ],
+    "temp_ideal_c": "20-30",
+    "fixa_n": false,
+    "cobertura": false,
+    "forragem": false,
+    "mercado": "alto",
+    "geada_sensivel": true,
+    "notas": "Vale para arroz irrigado/inundado (RS, Japão) e de sequeiro (Norte, cerrado). Ciclo contado do plantio ou transplante.",
+    "fonte": "Referência aproximada (FAO ECOCROP para a faixa térmica; Embrapa/ZARC e calendários agrícolas FAO, USDA e MAFF para ciclo e janela), calibrada na simulação do TerraTurn. Revisar com agrônomo.",
+    "versao": 1
+  },
+  {
+    "cultura": "milho_safrinha",
+    "nomes": {
+      "pt": "milho safrinha",
+      "en": "second-crop corn",
+      "es": "maíz de segunda"
+    },
+    "papel": "segunda_safra",
+    "perene": false,
+    "agua": "media",
+    "tolera_seca": "media",
+    "ciclo_dias": 130,
+    "plantio_rel": [
+      3,
+      5
+    ],
+    "temp_ideal_c": "21-30",
+    "fixa_n": false,
+    "cobertura": false,
+    "forragem": true,
+    "mercado": "alto",
+    "geada_sensivel": true,
+    "fonte": "Referência aproximada (FAO ECOCROP para a faixa térmica; Embrapa/ZARC e calendários agrícolas FAO, USDA e MAFF para ciclo e janela), calibrada na simulação do TerraTurn. Revisar com agrônomo.",
+    "versao": 1
+  },
+  {
+    "cultura": "sorgo",
+    "nomes": {
+      "pt": "sorgo",
+      "en": "sorghum",
+      "es": "sorgo"
+    },
+    "papel": "segunda_safra",
+    "perene": false,
+    "agua": "baixa",
+    "tolera_seca": "alta",
+    "ciclo_dias": 110,
+    "plantio_rel": [
+      0,
+      5
+    ],
+    "temp_ideal_c": "21-35",
+    "fixa_n": false,
+    "cobertura": false,
+    "forragem": true,
+    "mercado": "medio",
+    "geada_sensivel": true,
+    "fonte": "Referência aproximada (FAO ECOCROP para a faixa térmica; Embrapa/ZARC e calendários agrícolas FAO, USDA e MAFF para ciclo e janela), calibrada na simulação do TerraTurn. Revisar com agrônomo.",
+    "versao": 1
+  },
+  {
+    "cultura": "algodao",
+    "nomes": {
+      "pt": "algodão",
+      "en": "cotton",
+      "es": "algodón"
+    },
+    "papel": "segunda_safra",
+    "perene": false,
+    "agua": "media",
+    "tolera_seca": "media",
+    "ciclo_dias": 180,
+    "plantio_rel": [
+      0,
+      4
+    ],
+    "temp_ideal_c": "22-32",
+    "fixa_n": false,
+    "cobertura": false,
+    "forragem": false,
+    "mercado": "alto",
+    "geada_sensivel": true,
+    "notas": "Janela inclui out-nov (1ª safra, EUA, Austrália) e jan-fev (2ª safra no cerrado).",
+    "fonte": "Referência aproximada (FAO ECOCROP para a faixa térmica; Embrapa/ZARC e calendários agrícolas FAO, USDA e MAFF para ciclo e janela), calibrada na simulação do TerraTurn. Revisar com agrônomo.",
+    "versao": 2
+  },
+  {
+    "cultura": "girassol",
+    "nomes": {
+      "pt": "girassol",
+      "en": "sunflower",
+      "es": "girasol"
+    },
+    "papel": "segunda_safra",
+    "perene": false,
+    "agua": "media",
+    "tolera_seca": "media",
+    "ciclo_dias": 110,
+    "plantio_rel": [
+      0,
+      5
+    ],
+    "temp_ideal_c": "18-28",
+    "fixa_n": false,
+    "cobertura": false,
+    "forragem": false,
+    "mercado": "medio",
+    "geada_sensivel": true,
+    "fonte": "Referência aproximada (FAO ECOCROP para a faixa térmica; Embrapa/ZARC e calendários agrícolas FAO, USDA e MAFF para ciclo e janela), calibrada na simulação do TerraTurn. Revisar com agrônomo.",
+    "versao": 1
+  },
+  {
+    "cultura": "feijao",
+    "nomes": {
+      "pt": "feijão",
+      "en": "common bean",
+      "es": "poroto"
+    },
+    "papel": "segunda_safra",
+    "perene": false,
+    "agua": "media",
+    "tolera_seca": "baixa",
+    "ciclo_dias": 90,
+    "plantio_rel": [
+      0,
+      5
+    ],
+    "temp_ideal_c": "18-28",
+    "fixa_n": true,
+    "cobertura": false,
+    "forragem": false,
+    "mercado": "alto",
+    "geada_sensivel": true,
+    "notas": "Phaseolus vulgaris. A janela cobre o feijão das águas (0-1) e o da seca (4-5).",
+    "fonte": "Referência aproximada (FAO ECOCROP para a faixa térmica; Embrapa/ZARC e calendários agrícolas FAO, USDA e MAFF para ciclo e janela), calibrada na simulação do TerraTurn. Revisar com agrônomo.",
+    "versao": 1
+  },
+  {
+    "cultura": "feijao_caupi",
+    "nomes": {
+      "pt": "feijão-caupi",
+      "en": "cowpea",
+      "es": "caupí"
+    },
+    "papel": "segunda_safra",
+    "perene": false,
+    "agua": "baixa",
+    "tolera_seca": "alta",
+    "ciclo_dias": 75,
+    "plantio_rel": [
+      0,
+      6
+    ],
+    "temp_ideal_c": "22-32",
+    "fixa_n": true,
+    "cobertura": true,
+    "forragem": true,
+    "mercado": "medio",
+    "geada_sensivel": true,
+    "notas": "Vigna unguiculata (feijão-de-corda). Importante no Norte e no Nordeste.",
+    "fonte": "Referência aproximada (FAO ECOCROP para a faixa térmica; Embrapa/ZARC e calendários agrícolas FAO, USDA e MAFF para ciclo e janela), calibrada na simulação do TerraTurn. Revisar com agrônomo.",
+    "versao": 1
+  },
+  {
+    "cultura": "amendoim",
+    "nomes": {
+      "pt": "amendoim",
+      "en": "peanut",
+      "es": "maní"
+    },
+    "papel": "segunda_safra",
+    "perene": false,
+    "agua": "media",
+    "tolera_seca": "media",
+    "ciclo_dias": 120,
+    "plantio_rel": [
+      0,
+      5
+    ],
+    "temp_ideal_c": "22-30",
+    "fixa_n": true,
+    "cobertura": false,
+    "forragem": false,
+    "mercado": "medio",
+    "geada_sensivel": true,
+    "notas": "Muito usado na reforma do canavial.",
+    "fonte": "Referência aproximada (FAO ECOCROP para a faixa térmica; Embrapa/ZARC e calendários agrícolas FAO, USDA e MAFF para ciclo e janela), calibrada na simulação do TerraTurn. Revisar com agrônomo.",
+    "versao": 1
+  },
+  {
+    "cultura": "trigo_mourisco",
+    "nomes": {
+      "pt": "trigo-mourisco",
+      "en": "buckwheat",
+      "es": "trigo sarraceno"
+    },
+    "papel": "segunda_safra",
+    "perene": false,
+    "agua": "media",
+    "tolera_seca": "baixa",
+    "ciclo_dias": 80,
+    "plantio_rel": [
+      2,
+      5
+    ],
+    "temp_ideal_c": "15-23",
+    "fixa_n": false,
+    "cobertura": true,
+    "forragem": false,
+    "mercado": "medio",
+    "geada_sensivel": true,
+    "notas": "Ciclo curto: grão (soba no Japão) e cobertura que recicla fósforo.",
+    "fonte": "Referência aproximada (FAO ECOCROP para a faixa térmica; Embrapa/ZARC e calendários agrícolas FAO, USDA e MAFF para ciclo e janela), calibrada na simulação do TerraTurn. Revisar com agrônomo.",
+    "versao": 1
+  },
+  {
+    "cultura": "trigo",
+    "nomes": {
+      "pt": "trigo",
+      "en": "spring wheat",
+      "es": "trigo"
+    },
+    "papel": "inverno",
+    "perene": false,
+    "agua": "media",
+    "tolera_seca": "media",
+    "ciclo_dias": 130,
+    "plantio_rel": [
+      4,
+      11
+    ],
+    "temp_ideal_c": "12-22",
+    "fixa_n": false,
+    "cobertura": false,
+    "forragem": false,
+    "mercado": "alto",
+    "geada_sensivel": false,
+    "notas": "Trigo de ciclo curto, sem vernalização (Brasil, Argentina e trigo tropical do cerrado). Janela larga: a temperatura escolhe os meses. Janela [4, 11] cobre a semeadura de outono/inverno (Brasil, Argentina, Austrália) e a de primavera (Canadá, EUA, Cazaquistão, norte da China); a temperatura escolhe os meses.",
+    "fonte": "Referência aproximada (FAO ECOCROP para a faixa térmica; Embrapa/ZARC e calendários agrícolas FAO, USDA e MAFF para ciclo e janela), calibrada na simulação do TerraTurn. Revisar com agrônomo.",
+    "versao": 2
+  },
+  {
+    "cultura": "trigo_inverno",
+    "nomes": {
+      "pt": "trigo de inverno (ciclo longo)",
+      "en": "winter wheat",
+      "es": "trigo de invierno"
+    },
+    "papel": "inverno",
+    "perene": false,
+    "agua": "media",
+    "tolera_seca": "media",
+    "ciclo_dias": 240,
+    "plantio_rel": [
+      3,
+      8
+    ],
+    "temp_ideal_c": "2-12",
+    "fixa_n": false,
+    "cobertura": false,
+    "forragem": false,
+    "mercado": "alto",
+    "geada_sensivel": false,
+    "notas": "Semeado no outono e colhido no início do verão, passa o inverno no campo (Japão, EUA, Europa). Só fica apto onde o inverno é frio.",
+    "fonte": "Referência aproximada (FAO ECOCROP para a faixa térmica; Embrapa/ZARC e calendários agrícolas FAO, USDA e MAFF para ciclo e janela), calibrada na simulação do TerraTurn. Revisar com agrônomo.",
+    "versao": 2
+  },
+  {
+    "cultura": "cevada",
+    "nomes": {
+      "pt": "cevada",
+      "en": "spring barley",
+      "es": "cebada"
+    },
+    "papel": "inverno",
+    "perene": false,
+    "agua": "media",
+    "tolera_seca": "media",
+    "ciclo_dias": 130,
+    "plantio_rel": [
+      4,
+      11
+    ],
+    "temp_ideal_c": "12-20",
+    "fixa_n": false,
+    "cobertura": false,
+    "forragem": false,
+    "mercado": "medio",
+    "geada_sensivel": false,
+    "fonte": "Referência aproximada (FAO ECOCROP para a faixa térmica; Embrapa/ZARC e calendários agrícolas FAO, USDA e MAFF para ciclo e janela), calibrada na simulação do TerraTurn. Revisar com agrônomo.",
+    "versao": 2,
+    "notas": "Janela [4, 11] cobre a semeadura de outono/inverno (Brasil, Argentina, Austrália) e a de primavera (Canadá, EUA, Cazaquistão, norte da China); a temperatura escolhe os meses."
+  },
+  {
+    "cultura": "cevada_inverno",
+    "nomes": {
+      "pt": "cevada de inverno (ciclo longo)",
+      "en": "winter barley",
+      "es": "cebada de invierno"
+    },
+    "papel": "inverno",
+    "perene": false,
+    "agua": "media",
+    "tolera_seca": "media",
+    "ciclo_dias": 210,
+    "plantio_rel": [
+      3,
+      8
+    ],
+    "temp_ideal_c": "2-12",
+    "fixa_n": false,
+    "cobertura": false,
+    "forragem": false,
+    "mercado": "medio",
+    "geada_sensivel": false,
+    "fonte": "Referência aproximada (FAO ECOCROP para a faixa térmica; Embrapa/ZARC e calendários agrícolas FAO, USDA e MAFF para ciclo e janela), calibrada na simulação do TerraTurn. Revisar com agrônomo.",
+    "versao": 2
+  },
+  {
+    "cultura": "aveia_branca",
+    "nomes": {
+      "pt": "aveia-branca",
+      "en": "oats",
+      "es": "avena"
+    },
+    "papel": "inverno",
+    "perene": false,
+    "agua": "media",
+    "tolera_seca": "media",
+    "ciclo_dias": 130,
+    "plantio_rel": [
+      4,
+      11
+    ],
+    "temp_ideal_c": "12-22",
+    "fixa_n": false,
+    "cobertura": true,
+    "forragem": true,
+    "mercado": "medio",
+    "geada_sensivel": false,
+    "fonte": "Referência aproximada (FAO ECOCROP para a faixa térmica; Embrapa/ZARC e calendários agrícolas FAO, USDA e MAFF para ciclo e janela), calibrada na simulação do TerraTurn. Revisar com agrônomo.",
+    "versao": 2,
+    "notas": "Janela [4, 11] cobre a semeadura de outono/inverno (Brasil, Argentina, Austrália) e a de primavera (Canadá, EUA, Cazaquistão, norte da China); a temperatura escolhe os meses."
+  },
+  {
+    "cultura": "canola",
+    "nomes": {
+      "pt": "canola",
+      "en": "canola",
+      "es": "colza"
+    },
+    "papel": "inverno",
+    "perene": false,
+    "agua": "media",
+    "tolera_seca": "media",
+    "ciclo_dias": 140,
+    "plantio_rel": [
+      4,
+      11
+    ],
+    "temp_ideal_c": "12-22",
+    "fixa_n": false,
+    "cobertura": false,
+    "forragem": false,
+    "mercado": "medio",
+    "geada_sensivel": false,
+    "fonte": "Referência aproximada (FAO ECOCROP para a faixa térmica; Embrapa/ZARC e calendários agrícolas FAO, USDA e MAFF para ciclo e janela), calibrada na simulação do TerraTurn. Revisar com agrônomo.",
+    "versao": 2,
+    "notas": "Janela [4, 11] cobre a semeadura de outono/inverno (Brasil, Argentina, Austrália) e a de primavera (Canadá, EUA, Cazaquistão, norte da China); a temperatura escolhe os meses."
+  },
+  {
+    "cultura": "canola_inverno",
+    "nomes": {
+      "pt": "canola de inverno (ciclo longo)",
+      "en": "winter rapeseed",
+      "es": "colza de invierno"
+    },
+    "papel": "inverno",
+    "perene": false,
+    "agua": "media",
+    "tolera_seca": "media",
+    "ciclo_dias": 300,
+    "plantio_rel": [
+      2,
+      5
+    ],
+    "temp_ideal_c": "2-12",
+    "fixa_n": false,
+    "cobertura": false,
+    "forragem": false,
+    "mercado": "medio",
+    "geada_sensivel": false,
+    "notas": "Semeada no fim do verão e colhida no verão seguinte (Europa, China, Japão). Só fica apta onde o inverno é frio.",
+    "fonte": "Referência aproximada (FAO ECOCROP para a faixa térmica; Embrapa/ZARC e calendários agrícolas FAO, USDA e MAFF para ciclo e janela), calibrada na simulação do TerraTurn. Revisar com agrônomo.",
+    "versao": 2
+  },
+  {
+    "cultura": "aveia_preta",
+    "nomes": {
+      "pt": "aveia-preta",
+      "en": "black oat",
+      "es": "avena negra"
+    },
+    "papel": "cobertura",
+    "perene": false,
+    "agua": "baixa",
+    "tolera_seca": "media",
+    "ciclo_dias": 120,
+    "plantio_rel": [
+      4,
+      9
+    ],
+    "temp_ideal_c": "10-22",
+    "fixa_n": false,
+    "cobertura": true,
+    "forragem": true,
+    "mercado": "baixo",
+    "geada_sensivel": false,
+    "fonte": "Referência aproximada (FAO ECOCROP para a faixa térmica; Embrapa/ZARC e calendários agrícolas FAO, USDA e MAFF para ciclo e janela), calibrada na simulação do TerraTurn. Revisar com agrônomo.",
+    "versao": 1
+  },
+  {
+    "cultura": "centeio",
+    "nomes": {
+      "pt": "centeio",
+      "en": "cereal rye",
+      "es": "centeno"
+    },
+    "papel": "cobertura",
+    "perene": false,
+    "agua": "baixa",
+    "tolera_seca": "media",
+    "ciclo_dias": 180,
+    "plantio_rel": [
+      3,
+      8
+    ],
+    "temp_ideal_c": "2-18",
+    "fixa_n": false,
+    "cobertura": true,
+    "forragem": true,
+    "mercado": "baixo",
+    "geada_sensivel": false,
+    "notas": "A cobertura de inverno mais resistente ao frio.",
+    "fonte": "Referência aproximada (FAO ECOCROP para a faixa térmica; Embrapa/ZARC e calendários agrícolas FAO, USDA e MAFF para ciclo e janela), calibrada na simulação do TerraTurn. Revisar com agrônomo.",
+    "versao": 2
+  },
+  {
+    "cultura": "ervilhaca",
+    "nomes": {
+      "pt": "ervilhaca",
+      "en": "vetch",
+      "es": "vicia"
+    },
+    "papel": "cobertura",
+    "perene": false,
+    "agua": "media",
+    "tolera_seca": "media",
+    "ciclo_dias": 150,
+    "plantio_rel": [
+      4,
+      9
+    ],
+    "temp_ideal_c": "6-18",
+    "fixa_n": true,
+    "cobertura": true,
+    "forragem": true,
+    "mercado": "baixo",
+    "geada_sensivel": false,
+    "fonte": "Referência aproximada (FAO ECOCROP para a faixa térmica; Embrapa/ZARC e calendários agrícolas FAO, USDA e MAFF para ciclo e janela), calibrada na simulação do TerraTurn. Revisar com agrônomo.",
+    "versao": 1
+  },
+  {
+    "cultura": "nabo_forrageiro",
+    "nomes": {
+      "pt": "nabo forrageiro",
+      "en": "forage radish",
+      "es": "nabo forrajero"
+    },
+    "papel": "cobertura",
+    "perene": false,
+    "agua": "baixa",
+    "tolera_seca": "media",
+    "ciclo_dias": 90,
+    "plantio_rel": [
+      4,
+      9
+    ],
+    "temp_ideal_c": "12-22",
+    "fixa_n": false,
+    "cobertura": true,
+    "forragem": true,
+    "mercado": "baixo",
+    "geada_sensivel": false,
+    "fonte": "Referência aproximada (FAO ECOCROP para a faixa térmica; Embrapa/ZARC e calendários agrícolas FAO, USDA e MAFF para ciclo e janela), calibrada na simulação do TerraTurn. Revisar com agrônomo.",
+    "versao": 1
+  },
+  {
+    "cultura": "crotalaria",
+    "nomes": {
+      "pt": "crotalária",
+      "en": "sunn hemp",
+      "es": "crotalaria"
+    },
+    "papel": "cobertura",
+    "perene": false,
+    "agua": "baixa",
+    "tolera_seca": "media",
+    "ciclo_dias": 100,
+    "plantio_rel": [
+      0,
+      6
+    ],
+    "temp_ideal_c": "20-32",
+    "fixa_n": true,
+    "cobertura": true,
+    "forragem": false,
+    "mercado": "baixo",
+    "geada_sensivel": true,
+    "fonte": "Referência aproximada (FAO ECOCROP para a faixa térmica; Embrapa/ZARC e calendários agrícolas FAO, USDA e MAFF para ciclo e janela), calibrada na simulação do TerraTurn. Revisar com agrônomo.",
+    "versao": 1
+  },
+  {
+    "cultura": "milheto",
+    "nomes": {
+      "pt": "milheto",
+      "en": "pearl millet",
+      "es": "mijo perla"
+    },
+    "papel": "cobertura",
+    "perene": false,
+    "agua": "baixa",
+    "tolera_seca": "alta",
+    "ciclo_dias": 90,
+    "plantio_rel": [
+      0,
+      6
+    ],
+    "temp_ideal_c": "20-35",
+    "fixa_n": false,
+    "cobertura": true,
+    "forragem": true,
+    "mercado": "baixo",
+    "geada_sensivel": true,
+    "fonte": "Referência aproximada (FAO ECOCROP para a faixa térmica; Embrapa/ZARC e calendários agrícolas FAO, USDA e MAFF para ciclo e janela), calibrada na simulação do TerraTurn. Revisar com agrônomo.",
+    "versao": 1
+  },
+  {
+    "cultura": "mucuna",
+    "nomes": {
+      "pt": "mucuna-preta",
+      "en": "velvet bean",
+      "es": "mucuna"
+    },
+    "papel": "cobertura",
+    "perene": false,
+    "agua": "media",
+    "tolera_seca": "media",
+    "ciclo_dias": 150,
+    "plantio_rel": [
+      0,
+      4
+    ],
+    "temp_ideal_c": "20-30",
+    "fixa_n": true,
+    "cobertura": true,
+    "forragem": false,
+    "mercado": "baixo",
+    "geada_sensivel": true,
+    "fonte": "Referência aproximada (FAO ECOCROP para a faixa térmica; Embrapa/ZARC e calendários agrícolas FAO, USDA e MAFF para ciclo e janela), calibrada na simulação do TerraTurn. Revisar com agrônomo.",
+    "versao": 1
+  },
+  {
+    "cultura": "guandu",
+    "nomes": {
+      "pt": "feijão-guandu",
+      "en": "pigeon pea",
+      "es": "guandú"
+    },
+    "papel": "cobertura",
+    "perene": false,
+    "agua": "baixa",
+    "tolera_seca": "alta",
+    "ciclo_dias": 180,
+    "plantio_rel": [
+      0,
+      5
+    ],
+    "temp_ideal_c": "20-30",
+    "fixa_n": true,
+    "cobertura": true,
+    "forragem": true,
+    "mercado": "baixo",
+    "geada_sensivel": true,
+    "notas": "Raiz profunda, rompe camada compactada.",
+    "fonte": "Referência aproximada (FAO ECOCROP para a faixa térmica; Embrapa/ZARC e calendários agrícolas FAO, USDA e MAFF para ciclo e janela), calibrada na simulação do TerraTurn. Revisar com agrônomo.",
+    "versao": 1
+  },
+  {
+    "cultura": "braquiaria",
+    "nomes": {
+      "pt": "braquiária",
+      "en": "brachiaria grass",
+      "es": "braquiaria"
+    },
+    "papel": "forrageira",
+    "perene": false,
+    "agua": "baixa",
+    "tolera_seca": "alta",
+    "ciclo_dias": 150,
+    "plantio_rel": [
+      3,
+      5
+    ],
+    "temp_ideal_c": "20-35",
+    "fixa_n": false,
+    "cobertura": true,
+    "forragem": true,
+    "mercado": "medio",
+    "geada_sensivel": true,
+    "notas": "Também em consórcio com o milho safrinha (integração lavoura-pecuária).",
+    "fonte": "Referência aproximada (FAO ECOCROP para a faixa térmica; Embrapa/ZARC e calendários agrícolas FAO, USDA e MAFF para ciclo e janela), calibrada na simulação do TerraTurn. Revisar com agrônomo.",
+    "versao": 1
+  },
+  {
+    "cultura": "azevem",
+    "nomes": {
+      "pt": "azevém",
+      "en": "annual ryegrass",
+      "es": "raigrás anual"
+    },
+    "papel": "forrageira",
+    "perene": false,
+    "agua": "media",
+    "tolera_seca": "baixa",
+    "ciclo_dias": 180,
+    "plantio_rel": [
+      4,
+      9
+    ],
+    "temp_ideal_c": "8-20",
+    "fixa_n": false,
+    "cobertura": true,
+    "forragem": true,
+    "mercado": "baixo",
+    "geada_sensivel": false,
+    "fonte": "Referência aproximada (FAO ECOCROP para a faixa térmica; Embrapa/ZARC e calendários agrícolas FAO, USDA e MAFF para ciclo e janela), calibrada na simulação do TerraTurn. Revisar com agrônomo.",
+    "versao": 1
+  },
+  {
+    "cultura": "mandioca",
+    "nomes": {
+      "pt": "mandioca",
+      "en": "cassava",
+      "es": "mandioca"
+    },
+    "papel": "perene",
+    "perene": true,
+    "agua": "baixa",
+    "tolera_seca": "alta",
+    "ciclo_dias": 365,
+    "plantio_rel": [
+      0,
+      3
+    ],
+    "temp_ideal_c": "20-29",
+    "fixa_n": false,
+    "cobertura": false,
+    "forragem": true,
+    "mercado": "medio",
+    "geada_sensivel": true,
+    "notas": "Semi-perene (12 a 24 meses): não cabe na rotação de 12 meses. Está na tabela para o sistema reconhecer a cultura.",
+    "fonte": "Referência aproximada (FAO ECOCROP para a faixa térmica; Embrapa/ZARC e calendários agrícolas FAO, USDA e MAFF para ciclo e janela), calibrada na simulação do TerraTurn. Revisar com agrônomo.",
+    "versao": 1
+  },
+  {
+    "cultura": "cana_de_acucar",
+    "nomes": {
+      "pt": "cana-de-açúcar",
+      "en": "sugarcane",
+      "es": "caña de azúcar"
+    },
+    "papel": "perene",
+    "perene": true,
+    "agua": "alta",
+    "tolera_seca": "media",
+    "ciclo_dias": 365,
+    "plantio_rel": [
+      0,
+      6
+    ],
+    "temp_ideal_c": "22-32",
+    "fixa_n": false,
+    "cobertura": false,
+    "forragem": true,
+    "mercado": "alto",
+    "geada_sensivel": true,
+    "notas": "Reformada a cada 5 a 6 anos; a rotação acontece na reforma (soja, amendoim, crotalária).",
+    "fonte": "Referência aproximada (FAO ECOCROP para a faixa térmica; Embrapa/ZARC e calendários agrícolas FAO, USDA e MAFF para ciclo e janela), calibrada na simulação do TerraTurn. Revisar com agrônomo.",
+    "versao": 1
+  },
+  {
+    "cultura": "cafe",
+    "nomes": {
+      "pt": "café",
+      "en": "coffee",
+      "es": "café"
+    },
+    "papel": "perene",
+    "perene": true,
+    "agua": "media",
+    "tolera_seca": "media",
+    "ciclo_dias": 730,
+    "plantio_rel": [
+      0,
+      2
+    ],
+    "temp_ideal_c": "18-23",
+    "fixa_n": false,
+    "cobertura": false,
+    "forragem": false,
+    "mercado": "alto",
+    "geada_sensivel": true,
+    "notas": "Perene: não entra em rotação.",
+    "fonte": "Referência aproximada (FAO ECOCROP para a faixa térmica; Embrapa/ZARC e calendários agrícolas FAO, USDA e MAFF para ciclo e janela), calibrada na simulação do TerraTurn. Revisar com agrônomo.",
+    "versao": 1
+  }
+]

@@ -55,3 +55,21 @@ The Cloudflare Worker (`frontend/worker/index.ts`) forwards `/api/*` to the URL 
 Served from `app/br_locations.json` (27 states, 5,571 municipalities with IBGE codes), so the form works even when
 the IBGE API is unreachable from the server. Data: IBGE codes via
 [kelvins/municipios-brasileiros](https://github.com/kelvins/municipios-brasileiros) (MIT).
+
+## AI (rotation analysis and chat)
+
+`app/ia/llm_v17.py` and `app/ia/tabela_culturas_oficial_v2.json` are the approved, frozen engine from the AI team
+(56/56 rotation runs, 124/124 chat questions, 89% on the SAGE crop calendar). They are copied unchanged; `app/ia/motor.py`
+loads them and `app/ia/service.py` adapts the app's farm to the engine.
+
+- `POST /ai/studies {farm_id, language}` starts an analysis in the background; poll `GET /ai/studies/{id}`
+  (stages: `downloading_nasa_data` or `nasa_data_cached`, `analyzing`, `complete`/`failed`).
+- `GET /farms/{id}/studies/latest` returns the last analysis of a farm.
+- `POST /ai/chat {message, farm_id, language, history}` answers free questions with the farm's NASA data.
+- `GET /ai/status` tells whether the LLM key is configured.
+
+Set `ANTHROPIC_API_KEY` on the server (never in the repo). Cost measured by the AI team: about US$ 0.006 and 30 s per
+analysis, US$ 0.002 and 7 s per chat question. Daily limits per user: `AI_STUDIES_PER_DAY`, `AI_CHAT_PER_DAY`.
+
+`app/ia/cache_demo/` holds NASA data (POWER, MODIS NDVI and ET) for the 9 demo farms, so they answer in seconds.
+New areas are downloaded on the first analysis (a few minutes for MODIS) and kept in the `ia_file_cache` table.
