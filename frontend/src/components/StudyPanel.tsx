@@ -85,14 +85,16 @@ export default function StudyPanel({ farm, compact = false }: { farm: Farm; comp
   const startError = start.error instanceof ApiError ? start.error.message : start.error ? x('failed') : ''
   const rec = result?.analysis.recommendation
   const openSheet = useViewStore(s => s.setAiSheetOpen)
-  if (compact && !study && !isRunning) return null
   if (compact) return <section className="study-panel compact" aria-live="polite">
     <div className="study-top"><div><span className="eyebrow">{x('eyebrow')}</span><h2>{x('title')}</h2></div></div>
     {isRunning && <Progress stage={study?.stage ?? 'queued'} startedAt={study?.created_at} />}
     {study?.status === 'failed' && !isRunning && <><p className="form-error" role="alert">{x('failed')} {study.error}</p><button type="button" className="btn btn-outline btn-wide" disabled={start.isPending} onClick={() => start.mutate(language)}><RefreshCw size={15} /> {x('retry')}</button></>}
     {startError && <p className="form-error" role="alert">{startError}</p>}
     {result && rec && <div className="study-recommendation"><span className="eyebrow">{x('suggestion')}</span><h3>{cropLabel(rec.suggested_crop, result.crop_names, language)}</h3><p>{rec.message_to_farmer}</p></div>}
-    <button type="button" className="btn btn-primary btn-wide" onClick={() => openSheet(true)}><Sparkles size={16} /> {x('viewFull')}</button>
+    {!study && !isRunning && <p>{x('intro')}</p>}
+    {!study && !isRunning
+      ? <button type="button" className="btn btn-primary btn-wide" disabled={start.isPending} onClick={() => { start.mutate(language); openSheet(true) }}><Sparkles size={16} /> {x('analyze')}</button>
+      : <button type="button" className="btn btn-primary btn-wide" onClick={() => openSheet(true)}><Sparkles size={16} /> {x('viewFull')}</button>}
   </section>
   const stage = isRunning ? (study?.stage && TXT[study.stage] ? study.stage : 'queued') : ''
   return <section className={`study-panel ${compact ? 'compact' : ''}`} aria-live="polite">
