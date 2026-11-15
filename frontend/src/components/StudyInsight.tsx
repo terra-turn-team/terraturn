@@ -57,6 +57,8 @@ const TXT: Dict = {
   baixa: ['Low', 'Baixa', 'Baja'], media: ['Medium', 'Média', 'Media'], alta: ['High', 'Alta', 'Alta'],
   baixo: ['Low', 'Baixo', 'Bajo'], medio: ['Medium', 'Médio', 'Medio'], alto: ['High', 'Alto', 'Alto'],
   and: ['and', 'e', 'y'],
+  more: ['Read full explanation', 'Ler explicação completa', 'Leer explicación completa'],
+  less: ['Show less', 'Mostrar menos', 'Mostrar menos'],
 }
 const MONTH_FULL: Record<Language, string[]> = {
   en: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
@@ -147,6 +149,17 @@ function Evidence({ rotation }: { rotation: Rotation }) {
   </div>
 }
 
+// Mostra as 2 primeiras frases da explicação da IA; o resto abre sob demanda.
+function Message({ text }: { text: string }) {
+  const { x } = useTxt()
+  const [open, setOpen] = useState(false)
+  const parts = text.match(/[^.!?]+(?:[.!?]+(?=\s|$)|$)/g) ?? [text]
+  const short = parts.slice(0, 2).join('').trim()
+  const long = parts.length > 2
+  return <div className="si-message"><p>{open || !long ? text : short}</p>
+    {long && <button type="button" className="si-more" aria-expanded={open} onClick={() => setOpen(!open)}>{x(open ? 'less' : 'more')} <ChevronDown size={15} className={open ? 'flip' : ''} /></button>}</div>
+}
+
 type Row = { key: string; label: string; sub: string; cell: (r: Rotation) => ReactNode }
 
 export default function StudyInsight({ result }: { result: StudyResult }) {
@@ -196,7 +209,7 @@ export default function StudyInsight({ result }: { result: StudyResult }) {
           <h2>{label(rec.suggested_crop)}</h2>
           {before && <p className="si-after">{x('after')} {label(before).toLowerCase()}</p>}
           {sow && <div className="si-sow"><span><CalendarDays size={20} /> {x('sowIn')} {cap(full[sow - 1])}</span></div>}
-          <p className="si-message">{rec.message_to_farmer}</p>
+          <Message text={rec.message_to_farmer} />
         </div>
         {(drop || driest) && <div className="si-verdict-why">
           <span className="si-label">{x('why20')}</span>
