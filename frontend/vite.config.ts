@@ -32,17 +32,6 @@ export default defineConfig({
       }
     })
   ],
-  build: {
-    rollupOptions: {
-      output: {
-        manualChunks(id) {
-          if (id.includes('/@react-three/') || id.includes('/three/')) return 'three-vendor'
-          if (id.includes('/maplibre-gl/')) return 'maplibre-vendor'
-          if (id.includes('/recharts/') || id.includes('/d3-')) return 'charts-vendor'
-          if (id.includes('/react/') || id.includes('/react-dom/') || id.includes('/scheduler/')) return 'react-vendor'
-        }
-      }
-    }
-  },
+  build: {rollupOptions: {output: {manualChunks: {'maplibre':['maplibre-gl'], 'charts':['recharts'], 'three':['three','@react-three/fiber','@react-three/drei']}}}},
   server: { proxy: { '/api': { target: process.env.API_PROXY_TARGET || 'http://localhost:8000', changeOrigin: true } } }
 })
