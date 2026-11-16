@@ -209,6 +209,8 @@ for (const [profile, P] of Object.entries(PROFILES)) {
 
     test('editor: ajustar o contorno arrastando um vértice e salvar', async () => {
       const { ctx, page } = await open(profile)
+      let geocodeCalls = 0
+      await page.route('**/api/v1/geocode/reverse*', r => { geocodeCalls++; return r.fulfill({ json: { municipality: 'Uberaba', state: 'Minas Gerais', country: 'Brazil', country_code: 'BR', locality: '', source: 'test' } }) })
       const farmName = P.farm
       const target = (await farms(page)).find(f => f.name.startsWith(farmName))
       assert.ok(target, `fazenda ${farmName} não encontrada`)
@@ -241,6 +243,9 @@ for (const [profile, P] of Object.entries(PROFILES)) {
         for (let i = 1; i <= 10; i++) { await touch('touchMove', x1 + (x2 - x1) * i / 10, y1 + (y2 - y1) * i / 10); await page.waitForTimeout(20) }
         await touch('touchEnd')
       }
+      // ao ajustar o contorno, a localização é preenchida sozinha (serviço de endereço simulado)
+      await page.locator('.farm-modal').getByText('Municipality and state filled', { exact: false }).waitFor({ timeout: 10000 })
+      assert.equal(geocodeCalls > 0, true, 'localização não foi consultada sozinha')
       await page.waitForTimeout(500)
       await shot(page, `${profile}-editor`)
       await page.locator('.farm-modal-footer button').last().click()

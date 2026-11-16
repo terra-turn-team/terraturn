@@ -58,6 +58,10 @@ export default function FarmForm({farm,onClose,onSaved}:Props){
   finally{setGeocoding(false)}
  }
  const reverse=async()=>{if(center)await reverseCoordinates(center[0],center[1])}
+ // Ao desenhar ou ajustar o perímetro, país, estado e município são preenchidos sozinhos (o botão continua para refazer).
+ const centerKey=center?`${center[0].toFixed(5)},${center[1].toFixed(5)}`:''
+ const initialCenter=useRef(centerKey)
+ useEffect(()=>{if(!center||centerKey===initialCenter.current)return;initialCenter.current=centerKey;const timer=setTimeout(()=>{void reverseCoordinates(center[0],center[1])},700);return()=>clearTimeout(timer)},[centerKey])
  const cleanCoord=(v:string)=>{const x=v.replace(/[\u2212\u2013]/g,'-').replace(/[^0-9.,-]/g,'');const neg=x.startsWith('-');const body=x.replace(/-/g,'');const sep=body.search(/[.,]/);const num=sep<0?body:body.slice(0,sep+1)+body.slice(sep+1).replace(/[.,]/g,'');return (neg?'-':'')+num}
  const pastePair=(e:React.ClipboardEvent<HTMLInputElement>)=>{const m=e.clipboardData.getData('text').match(/(-?\d+(?:[.,]\d+)?)\s*[,;\s]\s*(-?\d+(?:[.,]\d+)?)/);if(m&&/[;\s]|,\s/.test(e.clipboardData.getData('text'))){e.preventDefault();setLat(cleanCoord(m[1]));setLon(cleanCoord(m[2]));setLocationError('')}}
  const gotoCoords=async()=>{

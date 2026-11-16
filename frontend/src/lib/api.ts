@@ -25,10 +25,12 @@ export async function api<T>(url: string, options: RequestInit = {}): Promise<T>
       throw new ApiError(0, 'Cannot reach the server. Check your connection and try again.')
     }
     const isJson = (res.headers.get('content-type') || '').includes('application/json')
-    const waking = [502, 503, 504].includes(res.status) || (!isJson && res.status !== 204 && !res.ok)
+    const body = !res.ok ? await res.json().catch(() => ({})) : null
+    // Repete só quando a API ainda não respondeu: página do Render acordando (não JSON) ou o Worker sem alcançar o servidor.
+    const fromWorker = typeof body?.detail === 'string' && /TerraTurn server/.test(body.detail)
+    const waking = !res.ok && ((!isJson && res.status !== 204) || ([502, 503, 504].includes(res.status) && fromWorker))
     if (waking && attempt < WAKE_DELAYS.length) { await sleep(WAKE_DELAYS[attempt]); continue }
     if (!res.ok) {
-      const body = await res.json().catch(() => ({}))
       throw new ApiError(res.status, typeof body.detail === 'string' ? body.detail : 'The server is starting up. Please try again in a minute.')
     }
     if (res.status === 204) return undefined as T
