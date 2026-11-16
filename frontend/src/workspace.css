@@ -505,3 +505,15 @@ html,body{overscroll-behavior:none;-webkit-tap-highlight-color:transparent}
 @container (max-width:820px){.si-verdict-why{padding-top:0}}
 /* Barra lateral: ícones centralizados com a logo */
 @media (min-width:761px){.rail-functions{align-items:center}.rail-bottom{justify-items:center}}
+/* Análise da IA em painel lateral direito: o mapa continua visível com a área em destaque */
+@media (min-width:761px){
+.ai-sheet{left:auto;right:0;top:0;bottom:0;width:min(560px,46vw);box-shadow:-18px 0 50px #1c2b2233;border-left:1px solid #e3ded2;animation:ai-slide .25s ease-out}
+.ai-sheet-body{padding:20px 22px 40px}
+.ai-sheet-body .study-panel .study-top h2{font-size:22px}
+}
+@keyframes ai-slide{from{transform:translateX(40px);opacity:0}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){.ai-sheet{animation:none}}
+/* Painel lateral: tamanhos pela largura do painel, não da tela */
+#root .study-insight .si-verdict h2{font-size:clamp(34px,9cqi,64px)}
+#root .terra-workspace .study-insight .si-verdict-why b{font-size:clamp(32px,7cqi,52px)}
+.workspace-map:has(~ .ai-sheet) .ai-pill,.terra-workspace:has(.ai-sheet) .ai-pill{display:none}
