@@ -5,7 +5,7 @@ import * as maplibregl from 'maplibre-gl'
 import type {Farm} from '../types'
 import {useI18n} from '../lib/i18n'
 import {useViewStore} from '../lib/viewStore'
-export type ViewMode='map'|'relief'|'satellite'|'3d'|'hybrid'
+export type ViewMode='map'|'satellite'|'3d'
 const BASE='https://tiles.openfreemap.org/styles/liberty'
 const DEM='https://tiles.mapterhorn.com/tilejson.json'
 const SATELLITE=import.meta.env.VITE_SATELLITE_TILES || 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
@@ -45,7 +45,7 @@ function TerrainMapGL({farm,mode,onInspect}:{farm:Farm;mode:Exclude<ViewMode,'3d
   const m=mapRef.current
   if(!m)return
   const apply=()=>{
-   const relief=mode==='relief'||mode==='hybrid',satellite=mode==='satellite'
+   const relief=false,satellite=mode==='satellite'
    if(m.getLayer('hillshade'))m.setLayoutProperty('hillshade','visibility',relief?'visible':'none')
    if(m.getLayer('satellite-raster'))m.setLayoutProperty('satellite-raster','visibility',satellite?'visible':'none')
    try{m.setTerrain(relief&&m.getSource('dem')?{source:'dem',exaggeration:1}:null)}catch{setError('Não foi possível carregar o relevo.')}
