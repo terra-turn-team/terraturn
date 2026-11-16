@@ -306,3 +306,25 @@ def test_agronomy_rules_cover_audit_points():
     for regra in ("~50 km grid", "rain onset", "February-April", "<land_use_check>", "Brachiaria"):
         assert regra in service.AGRONOMY_RULES
     assert service.AGRONOMY_RULES in service.CHAT_SYSTEM
+
+
+def test_calendar_cycles_overlap_short_horizon():
+    from types import SimpleNamespace
+
+    from app.ia import agronomy
+    from app.ia.motor import motor
+
+    motor()
+    rot = {"name": "Soja -> Sorgo", "is_current": False, "farmer_summary": "s", "why": "w", "uncertainty": "low",
+           "temperature_fit": "ok", "calendar": [{"crop": "soja", "sow_month": 10, "harvest_month": 2},
+                                                 {"crop": "sorgo", "sow_month": 2, "harvest_month": 6}]}
+    result = {"analysis": {"rotations": [rot], "recommendation": {"rotation_name": "Soja -> Sorgo"}}}
+    curto = SimpleNamespace(planning={"start_month": "2026-11", "horizon_months": 6})
+    cycles, _ = agronomy._cycles(curto, result, "pt")
+    # soja começou em outubro e o sorgo termina em junho: os dois aparecem, recortados em nov/2026-abr/2027
+    assert [(c["start_month"], c["end_month"]) for c in cycles] == [("2026-11", "2027-02"), ("2027-02", "2027-04")]
+    longo = SimpleNamespace(planning={"start_month": "2026-11", "horizon_months": 24})
+    cycles, _ = agronomy._cycles(longo, result, "pt")
+    datas = [(c["start_month"], c["end_month"]) for c in cycles]
+    assert datas[0] == ("2026-11", "2027-02") and len(datas) == 5 and datas[-1] == ("2028-10", "2028-10")
+    assert all(a[1] <= b[0] for a, b in zip(datas, datas[1:]))  # sem sobreposição

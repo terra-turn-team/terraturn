@@ -95,25 +95,29 @@ def _cycles(prop: Property, result: dict, language: str):
     end = add_months(start, horizon - 1)
     calendario = alvo["calendar"]
     lang = "pt" if language == "pt" else "en"
-    cycles, livre = [], start
-    for off in range(horizon):
-        mes = add_months(start, off)
-        if mes < livre:
+    # Todo ciclo da rotação que ocupa algum mês da janela do planejamento, mesmo começando antes ou terminando depois
+    # (antes só entravam ciclos inteiros dentro da janela, e horizontes curtos ficavam com o calendário vazio).
+    ano0, ano1 = int(start[:4]), int(end[:4])
+    ocorrencias = []
+    for item in calendario:
+        if not item.get("sow_month") or not item.get("harvest_month"):
             continue
-        for item in calendario:
-            if item["sow_month"] != int(mes[5:7]):
-                continue
-            fim = add_months(mes, (item["harvest_month"] - item["sow_month"]) % 12)
-            if fim > end:
-                continue
-            papel = (m.TABELA.get(item["crop"]) or {}).get("papel")
-            nome = ((m.TABELA.get(item["crop"]) or {}).get("nomes") or {}).get(lang) or item["crop"].replace("_", " ")
-            cycles.append({"crop": nome[:1].upper() + nome[1:], "kind": "cover" if papel == "cobertura" else "commercial",
-                           "start_month": mes, "end_month": fim,
-                           "rationale": f"{alvo['farmer_summary']} {alvo['why']}"[:4000],
-                           "uncertainty": f"{alvo['uncertainty']}: {alvo['temperature_fit']}"[:2000]})
-            livre = fim
-            break
+        for ano in range(ano0 - 1, ano1 + 1):
+            ini = f"{ano}-{int(item['sow_month']):02d}"
+            fim = add_months(ini, (item["harvest_month"] - item["sow_month"]) % 12)
+            if fim >= start and ini <= end:
+                ocorrencias.append((ini, fim, item))
+    cycles, livre = [], ""
+    for ini, fim, item in sorted(ocorrencias, key=lambda o: (o[0], o[1])):
+        if ini < livre:
+            continue
+        papel = (m.TABELA.get(item["crop"]) or {}).get("papel")
+        nome = ((m.TABELA.get(item["crop"]) or {}).get("nomes") or {}).get(lang) or item["crop"].replace("_", " ")
+        cycles.append({"crop": nome[:1].upper() + nome[1:], "kind": "cover" if papel == "cobertura" else "commercial",
+                       "start_month": max(ini, start), "end_month": min(fim, end),  # recortado na janela
+                       "rationale": f"{alvo['farmer_summary']} {alvo['why']}"[:4000],
+                       "uncertainty": f"{alvo['uncertainty']}: {alvo['temperature_fit']}"[:2000]})
+        livre = fim
     return cycles, alvo
 
 
