@@ -224,11 +224,23 @@ def deny_demo(user: User, edit: bool = False) -> None:
         raise HTTPException(status_code=403, detail="This is a read-only demo. Create a free account to save your own farm.")
 
 
+DEMO_LOGINS_PER_15_MIN = 1000
+
+
 @app.post(BASE + "/auth/demo", response_model=UserOut)
 def demo_login(request: Request, response: Response, db: Session = Depends(get_db)):
     from app.demo import DEMO_EMAIL, seed
 
-    rate_limit(db, request, "demo", "all", limit=60, minutes=15)
+    # Quem já está na demo reaproveita a sessão e não conta no limite.
+    try:
+        atual = current_user(request.cookies.get(COOKIE_NAME), db)
+        if atual.email == DEMO_EMAIL:
+            return output_user(atual)
+    except HTTPException:
+        pass
+    # Atrás do Worker do Cloudflare, vários visitantes podem chegar com o mesmo IP: o limite é por IP e alto o
+    # bastante para não barrar visitantes de verdade (entrar na demo não grava nada além da sessão).
+    rate_limit(db, request, "demo", "all", limit=DEMO_LOGINS_PER_15_MIN, minutes=15)
     user = db.query(User).filter(User.email == DEMO_EMAIL).first()
     if user is None:
         seed()
@@ -604,6 +616,31 @@ def pick_study(db: Session, prop: Property, language: str | None) -> AiStudy | N
         if same is not None:
             return same
     return rows[0]
+
+
+@app.get(BASE + "/farms/{farm_id}/report.pdf")
+def farm_report(farm_id: str, language: str | None = Query(default=None, max_length=8), user: User = Depends(current_user),
+                db: Session = Depends(get_db)):
+    """Relatório da fazenda em PDF: cadastro, dados NASA, clima mês a mês e a última análise da IA no idioma pedido."""
+    from app.ia import agronomy, service
+    from app.ia.motor import motor
+    from app.report import build_farm_report
+
+    prop = owned_farm(db, farm_id, user)
+    study = pick_study(db, prop, language)
+    context = agronomy.context_for(prop, study, language)
+    farm_data = land_use = None
+    try:
+        nome = motor().fazenda_mais_proxima(prop.latitude, prop.longitude)
+        farm_data = service.monthly_overview(nome) if nome else None
+        land_use = service.land_use_check(nome) if nome else None
+    except Exception:
+        logger.exception("Report: NASA data unavailable for farm %s", prop.id)
+    pdf = build_farm_report(prop, context, study, language, farm_data, land_use)
+    nome_arquivo = re.sub(r"[^a-z0-9]+", "-", unicodedata.normalize("NFKD", prop.nome_propriedade or "fazenda")
+                          .encode("ascii", "ignore").decode().lower()).strip("-")[:60] or "fazenda"
+    return Response(content=pdf, media_type="application/pdf",
+                    headers={"Content-Disposition": f'attachment; filename="terraturn-{nome_arquivo}.pdf"'})
 
 
 @app.get(BASE + "/farms/{farm_id}/agronomy")

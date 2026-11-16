@@ -44,6 +44,16 @@ export const sessionApi = {
   forgot: (email: string) => api<{message: string}>('/auth/forgot-password', { method: 'POST', body: JSON.stringify({ email }) }),
   reset: (token: string, password: string) => api<{message: string}>('/auth/reset-password', { method: 'POST', body: JSON.stringify({ token, password }) }),
 }
+// Baixa o relatório da fazenda em PDF gerado pelo servidor (cadastro, dados NASA, clima e análise da IA).
+export async function downloadFarmReport(farmId: string, language: string) {
+  const res = await fetch(`${BASE}/farms/${farmId}/report.pdf?language=${encodeURIComponent(language)}`, { credentials: 'include' })
+  if (!res.ok) throw new ApiError(res.status, 'Could not generate the PDF report. Please try again.')
+  const name = /filename="([^"]+)"/.exec(res.headers.get('content-disposition') || '')?.[1] || 'terraturn-relatorio.pdf'
+  const url = URL.createObjectURL(await res.blob())
+  const a = document.createElement('a'); a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove()
+  setTimeout(() => URL.revokeObjectURL(url), 2000)
+}
+
 export const farmApi = {
   list: async () => (LOCAL_DEMO ? await demoFarms.list() : await api<Farm[]>('/farms')).map(normalizeFarm),
   create: (farm: FarmInput) => LOCAL_DEMO?demoFarms.save(farm):api<Farm>('/farms', { method: 'POST', body: JSON.stringify(farm) }),

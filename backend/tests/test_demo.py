@@ -143,3 +143,26 @@ def test_demo_autogenerate_queues_both_languages(monkeypatch):
         assert {r.language for r in rows} == {"en", "pt"}
         db.query(AiStudy).filter(AiStudy.id.in_(queued)).delete()
         db.commit()
+
+
+def test_farm_report_pdf(client):
+    demo_login(client)
+    farm = client.get("/api/v1/farms").json()[0]
+    for lang in ("pt-BR", "en", "es"):
+        r = client.get(f"/api/v1/farms/{farm['id']}/report.pdf?language={lang}")
+        assert r.status_code == 200, r.text
+        assert r.headers["content-type"] == "application/pdf"
+        assert r.content.startswith(b"%PDF") and len(r.content) > 3000
+        assert 'filename="terraturn-' in r.headers["content-disposition"]
+    assert client.get("/api/v1/farms/nao-existe/report.pdf").status_code == 404
+
+
+def test_demo_login_reuses_session_and_has_high_limit(client):
+    from app import main
+
+    first = demo_login(client)
+    for _ in range(80):  # mais que o limite antigo de 60, mesma sessão: não conta
+        assert client.post("/api/v1/auth/demo", headers=ORIGIN).json()["id"] == first["id"]
+    assert main.DEMO_LOGINS_PER_15_MIN >= 1000
+    others = [TestClient(main.app) for _ in range(70)]  # visitantes novos atrás do mesmo IP
+    assert all(c.post("/api/v1/auth/demo", headers=ORIGIN).status_code == 200 for c in others)
