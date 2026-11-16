@@ -1,6 +1,6 @@
 import {useState} from 'react'
 import {AreaChart,Area,XAxis,YAxis,Tooltip,ResponsiveContainer,CartesianGrid} from 'recharts'
-import {ArrowUpRight,Check,CloudRain,Leaf,RefreshCw,Search,Sprout} from 'lucide-react'
+import {ArrowUpRight,Check,CloudRain,Download,Leaf,RefreshCw,Search,Sprout} from 'lucide-react'
 import type {AgronomyContext,Farm} from '../types'
 import {INDICATORS,GOALS,historyWindow} from '../lib/planning'
 import {useI18n,localeFor} from '../lib/i18n'
@@ -25,8 +25,10 @@ export function LayersPanel({farm,context}:{farm?:Farm;context?:AgronomyContext}
  
  <p className="fine-print">{t('As camadas exibem a disponibilidade e a origem dos dados. Valores ausentes não são substituídos por zero.')}</p></div>}
 // Planejamento: resumo da análise de IA e acesso à análise completa.
-export function PlanningPanel({farm}:{farm:Farm;context?:AgronomyContext;onEdit:()=>void;onRefresh:()=>void}){
- return <div className="panel-stack"><StudyPanel farm={farm} compact/></div>
+export function PlanningPanel({farm,onPdf,pdfBusy}:{farm:Farm;context?:AgronomyContext;onPdf:()=>void;pdfBusy:boolean;onEdit:()=>void;onRefresh:()=>void}){
+ const {t}=useI18n()
+ return <div className="panel-stack"><StudyPanel farm={farm} compact/>
+  <button className="btn btn-outline btn-wide" disabled={pdfBusy} onClick={onPdf}><Download size={16}/>{t(pdfBusy?'Gerando PDF…':'Relatório da fazenda (PDF)')}</button></div>
 }
 export function ClimatePanel({context,onRefresh,isFetching,error}:{context?:AgronomyContext;onRefresh:()=>void;isFetching:boolean;error:boolean}){const {t}=useI18n();const h=context?.history;return <div className="panel-stack"><article className="workspace-card"><div className="card-heading"><CloudRain size={17}/><strong>{t('Histórico climático')}</strong><span className="subtle-pill">5 {t('anos')}</span></div><p>{t('Observações anteriores ao início do planejamento, recebidas pela integração da equipe.')}</p>{h?.monthly.length?<div className="climate-chart"><ResponsiveContainer width="100%" height={190}><AreaChart data={h.monthly}><CartesianGrid strokeDasharray="3 3"/><XAxis dataKey="month" fontSize={9}/><YAxis width={35} fontSize={10}/><Tooltip/><Area name={t('Precipitação')+' (mm)'} type="monotone" dataKey="precipitation_mm" stroke="#438166" fill="#e2eee5" connectNulls={false}/></AreaChart></ResponsiveContainer><ResponsiveContainer width="100%" height={160}><AreaChart data={h.monthly}><XAxis dataKey="month" fontSize={9}/><YAxis width={35} fontSize={10}/><Tooltip/><Area name={t('Temperatura média')+' (°C)'} type="monotone" dataKey="temperature_c" stroke="#c78e4d" fill="#f4e7d5" connectNulls={false}/></AreaChart></ResponsiveContainer></div>:<div className="climate-empty"><CloudRain size={32}/><strong>{t('Sua série começa aqui.')}</strong><span>{t('Aguardando dados climáticos observados.')}</span></div>}<dl className="data-list"><div><dt>{t('Fonte')}</dt><dd>{h?.source??'NASA · '+t('Aguardando')}</dd></div><div><dt>{t('Período')}</dt><dd>{h?.start_date??historyWindow().start_date}<br/>{h?.end_date??historyWindow().end_date}</dd></div><div><dt>{t('Cobertura recebida')}</dt><dd>{h?.completeness_percent??0}%</dd></div><div><dt>{t('Última observação')}</dt><dd>{h?.observed_through??'—'}</dd></div><div><dt>{t('Resolução espacial')}</dt><dd>{h?.resolution??'—'}</dd></div></dl></article>{error&&<p className="form-error" role="alert">{t('Não foi possível consultar a integração.')}</p>}<button className="btn btn-outline btn-wide" disabled={isFetching} onClick={onRefresh}><RefreshCw size={15} className={isFetching?'spin':''}/>{t('Atualizar dados')}</button><p className="fine-print">{t('Cinco anos ajudam a caracterizar a sazonalidade. O histórico não garante as condições futuras. pH e matéria orgânica dependem de análise local do solo.')}</p></div>}
 
